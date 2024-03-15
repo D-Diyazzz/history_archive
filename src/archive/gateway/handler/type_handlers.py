@@ -47,4 +47,4 @@ async def get_type_collection_handler(id: int):
 async def delete_type_collection_handler(id: int):
     await service.delete_type_collection(data=id,  uow=UnitOfWork(reposiotry=TypeRepository, session_factory=get_session))
 
-    return ["Delete succes"]
+    return ["Delete success"]

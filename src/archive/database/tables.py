@@ -9,6 +9,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import registry
 
 from src.archive.domains.Type import Type
+from src.archive.domains.Class_collection import ClassCollection
 
 
 mapper_registry = registry()
@@ -21,7 +22,7 @@ type_collection = Table(
     Column("name", String(250), primary_key=True, nullable=False, unique=True)
 )
 
-Table(
+class_collection = Table(
     "class",
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
@@ -45,3 +46,4 @@ Table(
 
 def start_mappers():
     mapper_registry.map_imperatively(Type, type_collection)
+    mapper_registry.map_imperatively(ClassCollection, class_collection)
