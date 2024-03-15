@@ -12,6 +12,13 @@ from .class_collection_handlers import (
     delete_class_collection_handler,
 )
 
+from .form_collection_handler import (
+    create_form_collection_handler,
+    get_form_collection_handler,
+    get_list_form_collection_handler,
+    delete_form_collection_handler,
+)
+
 __all__ = [
     "create_type_handler",
     "get_list_of_types_handler",
@@ -20,5 +27,9 @@ __all__ = [
     "create_class_collection_handler",
     "get_class_collection_handler",
     "get_list_class_collection_handler",
-    "delete_class_collection_handler"
+    "delete_class_collection_handler",
+    "create_form_collection_handler",
+    "get_form_collection_handler",
+    "get_list_form_collection_handler",
+    "delete_form_collection_handler",
 ]
