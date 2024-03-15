@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "back"
+version = "0.1.0"
+description = ""
+authors = ["D-Diyazzz <diyazzz.dev@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = "^0.27.1"
+sqlalchemy = "^2.0.28"
+asyncpg = "^0.29.0"
+dotenv = "^0.0.5"
+alembic = "^1.13.1"
+python-dotenv = "^1.0.1"
+psycopg2 = "^2.9.9"
+greenlet = "^3.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
