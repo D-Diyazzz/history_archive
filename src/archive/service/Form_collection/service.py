@@ -56,7 +56,7 @@ class FormCollectionService:
         return form_collection
     
 
-    async def delete_class_collection(
+    async def delete_form_collection(
             self,
             data: id,
             uow: AbstractUnitOfWork,

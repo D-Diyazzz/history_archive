@@ -15,6 +15,11 @@ from src.archive.gateway.handler import (
     get_form_collection_handler,
     get_list_form_collection_handler,
     delete_form_collection_handler,
+
+    create_method_collection_handler,
+    get_method_collection_handler,
+    get_list_method_collection_handler,
+    delete_method_collection_handler,
 )
 
 
@@ -43,4 +48,12 @@ def get_form_collection_router() -> APIRouter:
     router.get("/form-collection", status_code=200)(get_list_form_collection_handler)
     router.get("/form-collection/{id}", status_code=200)(get_form_collection_handler)
     router.delete("/form-collection/{id}", status_code=202)(delete_form_collection_handler)
+    return router
+
+def get_method_collection_router() -> APIRouter:
+    router = APIRouter(tags=["Method collection"], prefix="/v1")
+    router.post("/method-collection", status_code=200)(create_method_collection_handler)
+    router.get("/method-collection", status_code=200)(get_list_method_collection_handler)
+    router.get("/method-collection/{id}", status_code=200)(get_method_collection_handler)
+    router.delete("/method-collection/{id}", status_code=202)(delete_method_collection_handler)
     return router

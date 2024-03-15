@@ -11,6 +11,7 @@ from sqlalchemy.orm import registry
 from src.archive.domains.Type import Type
 from src.archive.domains.Class_collection import ClassCollection
 from src.archive.domains.Form_collection import FormCollection
+from src.archive.domains.Method_collection import MethodCollection
 
 
 mapper_registry = registry()
@@ -37,7 +38,7 @@ form_collection = Table(
     Column("name", String(250), primary_key=True, nullable=False, unique=True)
 )
 
-Table(
+method_collection = Table(
     "method",
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
@@ -49,3 +50,4 @@ def start_mappers():
     mapper_registry.map_imperatively(Type, type_collection)
     mapper_registry.map_imperatively(ClassCollection, class_collection)
     mapper_registry.map_imperatively(FormCollection, form_collection)
+    mapper_registry.map_imperatively(MethodCollection, method_collection)
