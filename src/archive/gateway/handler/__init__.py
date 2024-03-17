@@ -26,6 +26,15 @@ from .method_collection_handler import (
     delete_method_collection_handler,
 )
 
+from .collection_handler import (
+    create_collection_handler,
+    get_collection_handler,
+    get_list_collecti0n_handler,
+    update_colelction_handler,
+    delete_collection_handler,
+)
+
+
 __all__ = [
     "create_type_handler",
     "get_list_of_types_handler",
@@ -43,4 +52,9 @@ __all__ = [
     "get_list_method_collection_handler",
     "get_method_collection_handler",
     "delete_method_collection_handler",
+    "create_collection_handler",
+    "get_collection_handler",
+    "get_list_collecti0n_handler",
+    "update_colelction_handler",
+    "delete_collection_handler",
 ]

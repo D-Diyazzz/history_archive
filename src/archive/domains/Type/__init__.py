@@ -1,6 +1,6 @@
-from .model import Type
+from .model import TypeCollection
 
 
 __all__ = [
-    'Type',
+    'TypeCollection',
 ]

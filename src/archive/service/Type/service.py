@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from src.archive.core import AbstractUnitOfWork
-from src.archive.domains.Type import Type
+from src.archive.domains.Type import TypeCollection
 
 
 class TypeServices:
@@ -10,8 +10,8 @@ class TypeServices:
             self,
             data: BaseModel,
             uow: AbstractUnitOfWork
-    ) -> Type:
-        type_collection = Type(
+    ) -> TypeCollection:
+        type_collection = TypeCollection(
             name=data.name,
         )
 
@@ -25,10 +25,10 @@ class TypeServices:
     async def get_list_of_type(
             self,
             uow: AbstractUnitOfWork,
-    ) -> list[Type]:
+    ) -> list[TypeCollection]:
         async with uow as uow:
             list_types = await uow.repository.get_list()
-            list_types = [Type(id=type.id, name=type.name) for type in list_types]
+            list_types = [TypeCollection(id=type.id, name=type.name) for type in list_types]
 
         return list_types
     
@@ -37,10 +37,10 @@ class TypeServices:
             self,
             data: id,
             uow: AbstractUnitOfWork,
-    ) -> Type:
+    ) -> TypeCollection:
         async with uow as uow:
             type = await uow.repository.get(id=data)
-            type = Type(id=type.id, name=type.name)
+            type = TypeCollection(id=type.id, name=type.name)
         return type
 
     

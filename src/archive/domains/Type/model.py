@@ -1,7 +1,7 @@
 from src.archive.core import AbstractBaseEntity
 
 
-class Type(AbstractBaseEntity):
+class TypeCollection(AbstractBaseEntity):
 
     def __init__(
             self,
