@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     Text,
     DateTime,
+    Enum,
 )
 from sqlalchemy.orm import registry, relationship
 
@@ -17,6 +18,7 @@ from src.archive.domains.Form_collection import FormCollection
 from src.archive.domains.Method_collection import MethodCollection
 from src.archive.domains.collection import Collection
 from src.archive.domains.document import Document
+from src.archive.domains.user import User, Role
 
 
 mapper_registry = registry()
@@ -91,6 +93,19 @@ documents = Table(
 )
 
 
+user = Table(
+    "user",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("firstname", String(250), nullable=False),
+    Column("lastname", String(250), nullable=False),
+    Column("email", String(250), nullable=False, unique=True, index=True),
+    Column("role", Enum(Role), nullable=False),
+    Column("hashed_password", Text, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False)
+)
+
+
 def start_mappers():
     mapper_registry.map_imperatively(TypeCollection, type_collection)
     mapper_registry.map_imperatively(ClassCollection, class_collection)
@@ -107,3 +122,4 @@ def start_mappers():
         }
     )
     mapper_registry.map_imperatively(Document, documents)
+    mapper_registry.map_imperatively(User, user)
