@@ -11,7 +11,6 @@ from src.archive.service.collection import CollectionService
 from src.archive.gateway.schemas import CollectionRequest, CollectionResponse, CollectionUpdateRequest
 from src.archive.database.engine import get_session
 
-import time
 
 service = CollectionService()
 
@@ -102,14 +101,13 @@ async def update_colelction_handler(id: int, file: UploadFile = File(None), data
         if file.content_type != 'application/pdf':
             raise HTTPException(status_code=400, detail="File is not in PDF format")
         
-        data["file_url"] = str(uuid4()) + "_"+ file.filename    
+        data["file_url"] = str(uuid4()) + "_"+ file.filename  
+        file = file.file.read()  
     else:
         data["file_url"] = None
             
-        
     try:
         data = parse_obj_as(CollectionUpdateRequest, data)
-        file = file.file.read()
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
     
@@ -137,6 +135,6 @@ async def update_colelction_handler(id: int, file: UploadFile = File(None), data
     return response
 
 async def delete_collection_handler(id: int):
-    await service.delete_class_collection(id=id, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+    await service.delete_collection(id=id, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
 
     return ["Delete success"]

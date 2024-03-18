@@ -3,6 +3,7 @@ from .class_collection_schemas import ClassCollectionRequest, ClassCollectionRes
 from .form_collection_shemas import FormCollectionRequest, FormCollectionResponse
 from .method_collection_schemas import MethodCollectionRequest, MethodCollectionResponse
 from .collection_schemas import CollectionRequest, CollectionResponse, CollectionUpdateRequest
+from .document_schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest
 
 
 __all__ = [
@@ -17,4 +18,7 @@ __all__ = [
     "CollectionRequest",
     "CollectionResponse",
     "CollectionUpdateRequest",
+    "DocumentRequest",
+    "DocumentResponse",
+    "DocumentUpdateRequest",
 ]

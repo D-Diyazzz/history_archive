@@ -34,6 +34,14 @@ from .collection_handler import (
     delete_collection_handler,
 )
 
+from .document_handler import(
+    create_document_handler,
+    get_document_handler,
+    get_list_document_handler,
+    update_document_handler,
+    delete_document_handler,
+)
+
 
 __all__ = [
     "create_type_handler",
@@ -57,4 +65,9 @@ __all__ = [
     "get_list_collecti0n_handler",
     "update_colelction_handler",
     "delete_collection_handler",
+    "create_document_handler",
+    "get_document_handler",
+    "get_list_document_handler",
+    "update_document_handler",
+    "delete_document_handler"
 ]

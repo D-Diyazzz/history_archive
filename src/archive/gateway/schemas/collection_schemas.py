@@ -37,7 +37,7 @@ class CollectionResponse(BaseModel):
 
 
 class CollectionUpdateRequest(BaseModel):
-    file_url: str
+    file_url: str | None
     theme: str | None
     purpose: str | None
     task: str | None

@@ -16,6 +16,7 @@ from src.archive.domains.Class_collection import ClassCollection
 from src.archive.domains.Form_collection import FormCollection
 from src.archive.domains.Method_collection import MethodCollection
 from src.archive.domains.collection import Collection
+from src.archive.domains.document import Document
 
 
 mapper_registry = registry()
@@ -70,6 +71,26 @@ collection = Table(
     Column("recommendations", Text, nullable=True),
 )
 
+documents = Table(
+    "documents",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("file_url", Text, nullable=False),
+    Column("title", String(700), nullable=False),
+    Column("heading", String(500), nullable=False),
+    Column("author", String(500), nullable=False),
+    Column("description_content", String(1000), nullable=False),
+    Column("dating", String(255), nullable=False),
+    Column("legends", Text, nullable=False),
+    Column("format_doc", String(500), nullable=False),
+    Column("color_palette", String(500), nullable=False),
+    Column("resolution", String(500), nullable=False),
+    Column("compression", String(500), nullable=False),
+    Column("scanner_model", String(500), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False)
+)
+
+
 def start_mappers():
     mapper_registry.map_imperatively(TypeCollection, type_collection)
     mapper_registry.map_imperatively(ClassCollection, class_collection)
@@ -85,3 +106,4 @@ def start_mappers():
             "method_coll": relationship(MethodCollection, uselist=False, backref="collection"),
         }
     )
+    mapper_registry.map_imperatively(Document, documents)

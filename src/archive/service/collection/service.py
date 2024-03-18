@@ -9,7 +9,7 @@ class CollectionService:
     async def create_collection(
             self,
             file: bytes,
-            data: dict,
+            data: BaseModel,
             uow: AbstractUnitOfWork,
     ) -> Collection:
         collection = Collection(
@@ -116,12 +116,12 @@ class CollectionService:
 
         return collection
 
-    async def delete_class_collection(
+    async def delete_collection(
             self,
             id: int,
             uow: AbstractUnitOfWork,
     ):
         async with uow as uow:
             await uow.repository.delete(id=id)
-        
+            await uow.commit()
         
