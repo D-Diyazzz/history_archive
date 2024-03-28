@@ -42,6 +42,12 @@ from .document_handler import(
     delete_document_handler,
 )
 
+from .auth_handler import(
+    registration_handler,
+    login_handler,
+    refresh_token_handler,
+)
+
 
 __all__ = [
     "create_type_handler",
@@ -69,5 +75,9 @@ __all__ = [
     "get_document_handler",
     "get_list_document_handler",
     "update_document_handler",
-    "delete_document_handler"
+    "delete_document_handler",
+
+    "registration_handler",
+    "login_handler",
+    "refresh_token_handler",
 ]

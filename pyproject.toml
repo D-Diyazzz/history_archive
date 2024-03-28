@@ -19,6 +19,7 @@ greenlet = "^3.0.3"
 pytz = "^2024.1"
 python-multipart = "^0.0.9"
 passlib = "^1.7.4"
+pyjwt = "^2.8.0"
 
 
 [build-system]

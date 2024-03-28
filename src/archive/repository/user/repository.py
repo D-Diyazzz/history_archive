@@ -13,14 +13,17 @@ class UserRepository(AbstractRepository):
 
     async def add(self, model: User) -> User:
         data = user_to_dict(model=model)
-        res = await self.session.execute(insert(User).returning(User), data)
-
-        user = dict_to_user(res.scalars().first())
-        return user
+        res = await self.session.execute(insert(User), data)
     
 
     async def get(self, id: int) -> User:
         res = await self.session.execute(select(User).filter_by(id=id))
+
+        user = dict_to_user(res.scalars().first())
+        return user
+    
+    async def get_by_email(self, email: str) -> User:
+        res = await self.session.execute(select(User).filter_by(email=email))
 
         user = dict_to_user(res.scalars().first())
         return user

@@ -32,6 +32,10 @@ from src.archive.gateway.handler import (
     get_list_document_handler,
     update_document_handler,
     delete_document_handler,
+
+    registration_handler,
+    login_handler,
+    refresh_token_handler,
 )
 
 
@@ -86,4 +90,11 @@ def get_document_router() -> APIRouter:
     router.get("/documet/{id}", status_code=200)(get_document_handler)
     router.patch("/document/{id}", status_code=200)(update_document_handler)
     router.delete("/document/{id}", status_code=202)(delete_document_handler)
+    return router
+
+def get_auth_router() -> APIRouter:
+    router = APIRouter(tags=["Auth"], prefix="/v1")
+    router.post("/register", status_code=201)(registration_handler)
+    router.post("/login", status_code=200)(login_handler)
+    router.post("/refresh-token", status_code=200)(refresh_token_handler)
     return router

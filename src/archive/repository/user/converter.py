@@ -17,7 +17,8 @@ def user_to_dict(model: User):
 
 def dict_to_user(user):
 
-    return User(
+    return User.upload(
+        id=user.id,
         firstname=user.firstname,
         lastname=user.lastname,
         email=user.email,

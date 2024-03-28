@@ -1,8 +1,11 @@
+from fastapi import Depends
+
 from src.archive.core import UnitOfWork
 from src.archive.repository.Class_collection import ClassCollectionRepository
 from src.archive.service.Class_collection import ClassCollectionService
 from src.archive.gateway.schemas import ClassCollectionRequest, ClassCollectionResponse
 from src.archive.database.engine import get_session
+from src.archive.dependencies.auth_dependencies import chech_access_token
 
 
 service = ClassCollectionService()
@@ -19,7 +22,7 @@ async def create_class_collection_handler(data: ClassCollectionRequest):
     return response
 
 
-async def get_list_class_collection_handler():
+async def get_list_class_collection_handler(data = Depends(chech_access_token)):
 
     list_class_collection = await service.get_list_class_collection(uow=UnitOfWork(reposiotry=ClassCollectionRepository, session_factory=get_session))
 

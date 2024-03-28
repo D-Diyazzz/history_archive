@@ -18,24 +18,58 @@ class Role(Enum):
 
 class User(AbstractBaseEntity):
 
+    _id: int | None
+    _firstname: str
+    _lastname: str
+    _email: str
+    _password: str
+    _role: Role
+    _created_at: datetime
+
+
     def __init__(
             self,
+            id: int = None,
+    ):
+        self._id = id
+
+
+    @classmethod    
+    def create(
+            cls,
             firstname: str,
             lastname: str,
             email: str,
             password: str,
-            id: int = None,
-            role: Role = Role.RedactorUser,
-            created_at: datetime = None,
     ):
-        self._id = id
-        self._firstname = firstname
-        self._lastname = lastname
-        self._email = email
-        self._password = pwd_context.hash(password)
-        self._role = role
-        self._created_at = created_at if created_at else datetime.now(pytz.UTC)
-
+        user = cls()
+        user._firstname = firstname
+        user._lastname = lastname
+        user._email = email
+        user._password = pwd_context.hash(password)
+        user._role = Role.BasicUser
+        user._created_at = datetime.now(pytz.UTC)
+        return user
+    
+    @classmethod
+    def upload(
+        cls,
+        firstname: str,
+        lastname: str,
+        email: str,
+        password: str,
+        id: int,
+        role: Role,
+        created_at: datetime,
+    ):
+        user = cls(id=id)
+        user._firstname = firstname
+        user._lastname = lastname
+        user._email = email
+        user._password = password
+        user._role = role
+        user._created_at = created_at
+        return user
 
     @property
     def get_id(self) -> int:
@@ -64,3 +98,6 @@ class User(AbstractBaseEntity):
     @property
     def get_created_at(self) -> str:
         return self._created_at
+    
+    def verify_password(self, input_password: str) -> bool:
+        return pwd_context.verify(input_password, self.get_password)
