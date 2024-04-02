@@ -4,7 +4,7 @@ from .form_collection_shemas import FormCollectionRequest, FormCollectionRespons
 from .method_collection_schemas import MethodCollectionRequest, MethodCollectionResponse
 from .collection_schemas import CollectionRequest, CollectionResponse, CollectionUpdateRequest
 from .document_schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest
-from .auth_schemas import RegistrationForm, LoginForm, TokenResponse, RefreshTokenRequest
+from .auth_schemas import RegistrationForm, LoginForm, TokenResponse, RefreshTokenRequest, LoginResponse
 
 
 __all__ = [
@@ -26,4 +26,5 @@ __all__ = [
     "LoginForm",
     "TokenResponse",
     "RefreshTokenRequest",
+    "LoginResponse",
 ]

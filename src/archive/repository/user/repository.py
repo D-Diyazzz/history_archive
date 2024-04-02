@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, delete, update
+from sqlalchemy.exc import NoResultFound
 
 from src.archive.core import AbstractRepository
 from src.archive.domains.user import User, Role
@@ -24,8 +25,13 @@ class UserRepository(AbstractRepository):
     
     async def get_by_email(self, email: str) -> User:
         res = await self.session.execute(select(User).filter_by(email=email))
+        res = res.scalars().first()
 
-        user = dict_to_user(res.scalars().first())
+        if res is None:
+            raise NoResultFound(f"User with this email {email} not found!")
+
+        user = dict_to_user(res)
+    
         return user
     
     async def get_list(self) -> list[User]:

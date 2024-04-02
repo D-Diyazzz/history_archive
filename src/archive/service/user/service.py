@@ -62,7 +62,7 @@ class UserService:
             key=SECRET_KEY
         )
 
-        return access_token, refresh_token
+        return access_token, refresh_token, data
     
     async def refresh_token(
             self,
