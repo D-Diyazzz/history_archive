@@ -1,7 +1,7 @@
 import json
 
 from uuid import uuid4
-from fastapi import UploadFile, File, Form
+from fastapi import UploadFile, File, Form, Depends
 from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 
@@ -10,6 +10,7 @@ from src.archive.repository.document import DocumentRepository
 from src.archive.service.document import DocumentService
 from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest
 from src.archive.database.engine import get_session
+from src.archive.dependencies.auth_dependencies import chech_access_token, chech_role
 
 
 service = DocumentService()
@@ -71,7 +72,7 @@ async def get_document_handler(id: int):
     return response
 
 
-async def get_list_document_handler():
+async def get_list_document_handler(user_data = Depends(chech_access_token)):
     documents = await service.get_list_document(uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
     response = [

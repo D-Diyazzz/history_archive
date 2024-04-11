@@ -59,11 +59,11 @@ def get_class_collection_router() -> APIRouter:
 
 
 def get_form_collection_router() -> APIRouter:
-    router = APIRouter(tags=["Form collection"], prefix="/v1")
-    router.post("/form-collection", status_code=201)(create_form_collection_handler)
-    router.get("/form-collection", status_code=200)(get_list_form_collection_handler)
-    router.get("/form-collection/{id}", status_code=200)(get_form_collection_handler)
-    router.delete("/form-collection/{id}", status_code=202)(delete_form_collection_handler)
+    router = APIRouter(tags=["Format collection"], prefix="/v1")
+    router.post("/format-collection", status_code=201)(create_form_collection_handler)
+    router.get("/format-collection", status_code=200)(get_list_form_collection_handler)
+    router.get("/format-collection/{id}", status_code=200)(get_form_collection_handler)
+    router.delete("/format-collection/{id}", status_code=202)(delete_form_collection_handler)
     return router
 
 def get_method_collection_router() -> APIRouter:
@@ -87,7 +87,7 @@ def get_document_router() -> APIRouter:
     router = APIRouter(tags=["Document"], prefix="/v1")
     router.post("/document", status_code=201)(create_document_handler)
     router.get("/document", status_code=200)(get_list_document_handler)
-    router.get("/documet/{id}", status_code=200)(get_document_handler)
+    router.get("/document/{id}", status_code=200)(get_document_handler)
     router.patch("/document/{id}", status_code=200)(update_document_handler)
     router.delete("/document/{id}", status_code=202)(delete_document_handler)
     return router

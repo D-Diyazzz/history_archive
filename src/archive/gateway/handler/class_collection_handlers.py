@@ -5,7 +5,7 @@ from src.archive.repository.Class_collection import ClassCollectionRepository
 from src.archive.service.Class_collection import ClassCollectionService
 from src.archive.gateway.schemas import ClassCollectionRequest, ClassCollectionResponse
 from src.archive.database.engine import get_session
-from src.archive.dependencies.auth_dependencies import chech_access_token
+from src.archive.dependencies.auth_dependencies import chech_access_token, chech_role
 
 
 service = ClassCollectionService()

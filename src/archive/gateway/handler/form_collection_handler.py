@@ -47,6 +47,6 @@ async def get_form_collection_handler(id: int):
 
 async def delete_form_collection_handler(id: int):
 
-    await service.delete_class_collection(data=id,  uow=UnitOfWork(reposiotry=FormCollectionRepository, session_factory=get_session))
+    await service.delete_form_collection(data=id,  uow=UnitOfWork(reposiotry=FormCollectionRepository, session_factory=get_session))
 
     return ["Delete success"]

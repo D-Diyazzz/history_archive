@@ -43,4 +43,4 @@ def chech_role(authorization_header: str = Security(APIKeyHeader(name="Authoriza
     except jwt.exceptions.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Authorization error")
     
-    raise HTTPException(status_code=401, detail="Access denied")
+    raise HTTPException(status_code=403, detail="Access denied")
