@@ -15,7 +15,7 @@ from src.archive.dependencies.auth_dependencies import chech_access_token, chech
 
 service = DocumentService()
 
-async def create_document_handler(file: UploadFile = File(...), data: str = Form(...)):
+async def create_document_handler(user_data = Depends(chech_role), file: UploadFile = File(...), data: str = Form(...)):
     if file.content_type != 'application/pdf':
         raise HTTPException(status_code=400, detail="File is not in PDF format")
 

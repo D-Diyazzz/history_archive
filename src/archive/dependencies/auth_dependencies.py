@@ -36,7 +36,7 @@ def chech_role(authorization_header: str = Security(APIKeyHeader(name="Authoriza
     clear_token = authorization_header.replace("Bearer ", "")
     try:
         data = jwt.decode(clear_token, SECRET_KEY, ALGORITHM)
-        if data["role"] == Role.AdminUser or data["role"] == Role.RedactorUser:
+        if data["role"] == Role.AdminUser.value or data["role"] == Role.RedactorUser.value:
             return data
     except jwt.exceptions.DecodeError:
         raise HTTPException(status_code=401, detail="Authorization error")
