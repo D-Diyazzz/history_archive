@@ -1,6 +1,7 @@
 import json
 
 from uuid import uuid4
+from typing import List
 from fastapi import UploadFile, File, Form, Depends
 from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
@@ -15,19 +16,20 @@ from src.archive.dependencies.auth_dependencies import chech_access_token, chech
 
 service = DocumentService()
 
-async def create_document_handler(user_data = Depends(chech_role), file: UploadFile = File(...), data: str = Form(...)):
-    if file.content_type != 'application/pdf':
-        raise HTTPException(status_code=400, detail="File is not in PDF format")
+async def create_document_handler(user_data = Depends(chech_role), files: List[UploadFile] = File(...), data: str = Form(...)):
+    for file in files:
+        if file.content_type != 'application/pdf':
+            raise HTTPException(status_code=400, detail="File is not in PDF format")
 
     try:
         data = json.loads(data)
-        data["file_url"] = str(uuid4()) + "_"+ file.filename
+        data["file_url"] = str(uuid4()) + "_"+ files.filename
         data = parse_obj_as(DocumentRequest, data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
 
 
-    document = await service.create_document(file=file.file.read(), data=data, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
+    document = await service.create_document(file=files.file.read(), data=data, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
     response = DocumentResponse(
         id=document.get_id,
