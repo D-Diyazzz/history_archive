@@ -12,20 +12,18 @@ class DocumentService:
             data: BaseModel,
             uow: AbstractUnitOfWork,
     ) -> Document:
-        
+
         document = Document(
             file_url=data.file_url,
-            title=data.title,
-            heading=data.heading,
             author=data.author,
-            description_content=data.description_content,
             dating=data.dating,
-            legends=data.legends,
-            format_doc=data.format_doc,
-            color_palette=data.color_palette,
-            resolution=data.resolution,
-            compression=data.compression,
-            scanner_model=data.scanner_model,
+            place_of_creating=data.place_of_creating,
+            variety=data.variety,
+            addressee=data.addressee,
+            brief_content=data.brief_content,
+            case_prod_number=data.case_prod_number,
+            main_text=data.main_text,
+            search_data=data.search_data,
         )
 
         async with uow as uow:

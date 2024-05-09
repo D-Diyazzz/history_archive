@@ -40,8 +40,8 @@ class UserRepository(AbstractRepository):
 
         return [dict_to_user(res) for res in results]
     
-    async def update(self, id: int, data: User) -> User:
-        data = user_to_dict(data)
+    async def update(self, id: int, model: User) -> User:
+        data = user_to_dict(model)
 
         res = await self.session.execute(update(User).filter_by(id=id).returning(User), data)
 
