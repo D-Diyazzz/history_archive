@@ -71,6 +71,29 @@ class SearchData:
         self._other = other
 
 
+    def update(
+        self,
+        new_cypher: str = None,
+        new_fund: str = None,
+        new_inventory: str = None,
+        new_case: str = None,
+        new_leaf: str = None,
+        new_authenticity: str = None,
+        new_lang: str = None,
+        new_playback_method: str = None,
+        new_other: str = None
+    ):
+        self._cypher = new_cypher if new_cypher else self._cypher
+        self._fund = new_fund if new_fund else self._fund
+        self._inventory = new_inventory if new_inventory else self._inventory
+        self._case = new_case if new_case else self._case
+        self._leaf = new_leaf if new_leaf else self._leaf
+        self._authenticity = new_authenticity if new_authenticity else self._authenticity
+        self._lang = new_lang if new_lang else self._lang
+        self._playback_method = new_playback_method if new_playback_method else self._playback_method
+        self._other = new_other if new_other else self._other
+
+
     @property
     def id(self) -> int:
         return self._id

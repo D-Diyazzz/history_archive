@@ -1,5 +1,7 @@
 import pytest
 
+from unittest.mock import Mock
+
 from src.archive.core import AbstractBaseEntity, AbstractRepository, AbstractUnitOfWork
 from src.archive.domains.document import Document, SearchData
 
@@ -18,6 +20,21 @@ def init_search_data():
     )
 
 @pytest.fixture
+def init_search_data_mock():
+    data = Mock()
+    data.cypher = "cypher"
+    data.fund = "fund"
+    data.inventory = "inventory"
+    data.case = "case"
+    data.leaf = "leaf"
+    data.authenticity = "authenticity"
+    data.lang = "lang"
+    data.playback_method = "playback method"
+    data.other = None
+
+    return data
+
+@pytest.fixture
 def upload_search_data():
     return SearchData(
         id=1,
@@ -31,6 +48,22 @@ def upload_search_data():
         playback_method="playback method",
         other="other"
     )
+
+@pytest.fixture
+def upload_search_data_mock():
+    data = Mock()
+    data.id = 1
+    data.cypher = "cypher"
+    data.fund = "fund"
+    data.inventory = "inventory"
+    data.case = "case"
+    data.leaf = "leaf"
+    data.authenticity = "authenticity"
+    data.lang=  "lang"
+    data.playback_method = "playback method"
+    data.other = "other"
+
+    return data
 
 def init_document(init_search_data):
     return Document(
@@ -77,7 +110,18 @@ def fake_document_repository_class(upload_search_data):
                 brief_content=model.brief_content,
                 case_prod_number=model.case_prod_number,
                 main_text=model.main_text,
-                search_data=upload_search_data,
+                search_data=SearchData(
+                    id=1,
+                    cypher=model.search_data.cypher,
+                    fund=model.search_data.fund,
+                    inventory=model.search_data.inventory,
+                    case=model.search_data.case,
+                    leaf=model.search_data.leaf,
+                    authenticity=model.search_data.authenticity,
+                    lang=model.search_data.lang,
+                    playback_method=model.search_data.playback_method,
+                    other=model.search_data.other
+                ),
                 created_at=model.created_at
             )
         
@@ -93,17 +137,31 @@ def fake_document_repository_class(upload_search_data):
                 brief_content="brief content",
                 case_prod_number="case prod number",
                 main_text="main text",
-                search_data="search data",
+                search_data=upload_search_data,
             )
         
         async def get_list(self) -> list[Document]:
             pass
 
-        async def update(self, id: int, model: Document):
-            pass
+        async def update(self, model: Document):
+            return Document(
+                id=model.id,
+                file_url=model.file_url,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                variety=model.variety,
+                addressee=model.addressee,
+                brief_content=model.brief_content,
+                case_prod_number=model.case_prod_number,
+                main_text=model.main_text,
+                search_data=model.search_data,
+                created_at=model.created_at
+            )
 
         async def delete(self, id: int):
             pass
+
     return FakeDocumentRepository
 
 
