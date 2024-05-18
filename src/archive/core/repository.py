@@ -17,7 +17,7 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, id, model: AbstractBaseEntity):
+    async def update(self, model: AbstractBaseEntity):
         raise NotImplementedError
     
     @abstractmethod
