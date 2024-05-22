@@ -58,8 +58,7 @@ class DocumentService:
 
         async with uow as uow:
             document = await uow.repository.get(id=id)
-            search_data = document.search_data
-            search_data.update(
+            document.search_data.update(
                 new_cypher = data.search_data.cypher,
                 new_fund=data.search_data.fund,
                 new_inventory=data.search_data.inventory,
@@ -81,7 +80,6 @@ class DocumentService:
                 new_brief_content = data.brief_content,
                 new_case_prod_number = data.case_prod_number,
                 new_main_text = data.main_text,
-                updated_search_data = search_data
             )
             document = await uow.repository.update(model=document)
             await uow.commit()

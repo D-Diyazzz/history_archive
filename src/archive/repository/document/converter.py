@@ -1,6 +1,21 @@
 from src.archive.domains.document import Document, SearchData
 
 
+def search_data_to_dict(model: Document):
+    model_dict = {
+        "search_data_cypher": model.search_data.cypher if model.search_data and model.search_data.cypher else None,
+        "search_data_fund": model.search_data.fund if model.search_data and model.search_data.fund else None,
+        "search_data_inventory": model.search_data.inventory if model.search_data and model.search_data.inventory else None,
+        "search_data_case": model.search_data.case if model.search_data and model.search_data.case else None,
+        "search_data_leaf": model.search_data.leaf if model.search_data and model.search_data.leaf else None,
+        "search_data_authenticity": model.search_data.authenticity if model.search_data and model.search_data.authenticity else None,
+        "search_data_lang": model.search_data.lang if model.search_data and model.search_data.lang else None,
+        "search_data_playback_method": model.search_data.playback_method if model.search_data and model.search_data.playback_method else None,
+        "search_data_other": model.search_data.other if model.search_data and model.search_data.other else None,
+    }
+
+    return model_dict
+
 def document_to_dict(model: Document):
 
     model_dict = {
@@ -14,18 +29,11 @@ def document_to_dict(model: Document):
         "case_prod_number": model.case_prod_number if model.case_prod_number else None,
         "main_text": model.main_text if model.main_text else None,
         "created_at": model.created_at if model.created_at else None,
-        "search_data_cypher": model.search_data.cypher if model.search_data and model.search_data.cypher else None,
-        "search_data_fund": model.search_data.fund if model.search_data and model.search_data.fund else None,
-        "search_data_inventory": model.search_data.inventory if model.search_data and model.search_data.inventory else None,
-        "search_data_case": model.search_data.case if model.search_data and model.search_data.case else None,
-        "search_data_leaf": model.search_data.leaf if model.search_data and model.search_data.leaf else None,
-        "search_data_authenticity": model.search_data.authenticity if model.search_data and model.search_data.authenticity else None,
-        "search_data_lang": model.search_data.lang if model.search_data and model.search_data.lang else None,
-        "search_data_playback_method": model.search_data.playback_method if model.search_data and model.search_data.playback_method else None,
-        "search_data_other": model.search_data.other if model.search_data and model.search_data.other else None,
+        "search_data_id": model.search_data.id if model.search_data and model.search_data.id else None,
     }
 
-    return {k: v for k, v in model_dict.items() if v is not None}
+    return model_dict
+    # return {k: v for k, v in model_dict.items() if v is not None}
 
 
 def dict_to_document(data):
