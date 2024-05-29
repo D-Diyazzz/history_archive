@@ -1,12 +1,13 @@
 import pytz
 from datetime import datetime
 from abc import ABC        
+from typing import List
 
 
 class AbstarctDocument(ABC):
     def __init__(
             self,
-            file_url: str,
+            file_urls: List[str],
             author: str,
             dating: str,
             place_of_creating: str,
@@ -14,7 +15,7 @@ class AbstarctDocument(ABC):
             created_at: datetime = None
     ):
         self._id = id
-        self._file_url = file_url
+        self._file_urls = file_urls
         self._author = author
         self._dating = dating
         self._place_of_creating = place_of_creating
@@ -25,8 +26,8 @@ class AbstarctDocument(ABC):
         return self._id
     
     @property
-    def file_url(self) -> str:
-        return self._file_url
+    def file_urls(self) -> List[str]:
+        return self._file_urls
     
     @property
     def author(self) -> str:

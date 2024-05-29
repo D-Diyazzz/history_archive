@@ -9,7 +9,7 @@ from src.archive.domains.document import PhonoDocument
 class TestUnitPhonoDocumentModel:
     def test_init_photo_document_model(self):
         document = PhonoDocument(
-            file_url="file_url",
+            file_urls=["file_url1.pdf", "file_url2.pdf"],
             author="author",
             dating="2018",
             place_of_creating="almaty",
@@ -23,7 +23,7 @@ class TestUnitPhonoDocumentModel:
 
         assert document.id is None
         assert isinstance(document.created_at, datetime)
-        assert document.file_url == "file_url"
+        assert document.file_urls == ["file_url1.pdf", "file_url2.pdf"]
         assert document.author == "author"
         assert document.dating == "2018"
         assert document.place_of_creating == "almaty"
@@ -39,7 +39,7 @@ class TestUnitPhonoDocumentModel:
 
         document = PhonoDocument(
             id = 1,
-            file_url="file_url",
+            file_urls=["file_url1.pdf", "file_url2.pdf"],
             author="author",
             dating="2018",
             place_of_creating="almaty",
@@ -54,7 +54,7 @@ class TestUnitPhonoDocumentModel:
 
         assert document.id is 1
         assert document.created_at == time
-        assert document.file_url == "file_url"
+        assert document.file_urls == ["file_url1.pdf", "file_url2.pdf"]
         assert document.author == "author"
         assert document.dating == "2018"
         assert document.place_of_creating == "almaty"

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from src.archive.core import AbstractBaseEntity
 from .abstractions import SearchData, AbstarctDocument
@@ -7,7 +8,7 @@ from .abstractions import SearchData, AbstarctDocument
 class Document(AbstarctDocument, AbstractBaseEntity):
     def __init__(
             self,
-            file_url: str,
+            file_urls: List[str],
             author: str,
             dating: str,
             place_of_creating: str,
@@ -23,7 +24,7 @@ class Document(AbstarctDocument, AbstractBaseEntity):
     ):
         AbstarctDocument.__init__(
             self=self,
-            file_url=file_url, 
+            file_urls=file_urls, 
             author=author, 
             dating=dating, 
             place_of_creating=place_of_creating, 
@@ -64,7 +65,7 @@ class Document(AbstarctDocument, AbstractBaseEntity):
     
     def update(
             self,
-            new_file_url: str = None,
+            new_file_urls: List[str] = None,
             new_author: str = None,
             new_dating: str = None,
             new_place_of_creating: str = None,
@@ -75,7 +76,7 @@ class Document(AbstarctDocument, AbstractBaseEntity):
             new_main_text: str = None,
             updated_search_data: SearchData = None,
     ):
-        self._file_url = new_file_url if new_file_url else self._file_url
+        self._file_urls = new_file_urls if new_file_urls else self._file_url
         self._author = new_author if new_author else self._author
         self._dating = new_dating if new_dating else self._dating
         self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating

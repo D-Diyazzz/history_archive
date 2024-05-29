@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from src.archive.core import AbstractBaseEntity
 from .abstractions import AbstarctDocument
@@ -7,7 +8,7 @@ from .abstractions import AbstarctDocument
 class PhonoDocument(AbstarctDocument, AbstractBaseEntity):
     def __init__(
             self,
-            file_url: str,
+            file_urls: List[str],
             author: str,
             dating: str,
             place_of_creating: str,
@@ -23,7 +24,7 @@ class PhonoDocument(AbstarctDocument, AbstractBaseEntity):
     ):
         AbstarctDocument.__init__(
             self=self,
-            file_url=file_url, 
+            file_urls=file_urls, 
             author=author, 
             dating=dating, 
             place_of_creating=place_of_creating, 
