@@ -9,6 +9,7 @@ from sqlalchemy import (
     Text,
     DateTime,
     Enum,
+    JSON
 )
 from sqlalchemy.orm import registry, relationship
 
@@ -97,7 +98,7 @@ documents = Table(
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
-    Column("file_url", Text, nullable=False),
+    Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
     Column("dating", String(255), nullable=False),
     Column("place_of_creating", String(500), nullable=False),
@@ -114,7 +115,7 @@ photo_documents = Table(
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
-    Column("file_url", Text, nullable=False),
+    Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
     Column("dating", String(255), nullable=False),
     Column("place_of_creating", String(500), nullable=False),
@@ -132,7 +133,7 @@ video_documents = Table(
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
-    Column("file_url", Text, nullable=False),
+    Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
     Column("dating", String(255), nullable=False),
     Column("place_of_creating", String(500), nullable=False),
@@ -149,7 +150,7 @@ phono_documents = Table(
     "phono_documents",
     mapper_registry.metadata,
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
-    Column("file_url", Text, nullable=False),
+    Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
     Column("dating", String(255), nullable=False),
     Column("place_of_creating", String(500), nullable=False),

@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from src.archive.config import POSTGRES_URL
+from src.archive.config import POSTGRES_URL, TEST_POSTGRES_URL
 
-def init_engine(url:str = POSTGRES_URL) -> AsyncEngine:
+def init_engine(url:str = TEST_POSTGRES_URL) -> AsyncEngine:
     async_engine = create_async_engine(
         url=url,
         echo=True,

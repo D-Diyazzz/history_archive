@@ -1,3 +1,5 @@
+import json
+
 from src.archive.domains.document import Document, SearchData
 
 
@@ -19,7 +21,7 @@ def search_data_to_dict(model: Document):
 def document_to_dict(model: Document):
 
     model_dict = {
-        "file_url": model.file_url if model.file_url else None,
+        "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
         "author": model.author if model.author else None,
         "dating": model.dating if model.dating else None,
         "place_of_creating": model.place_of_creating if model.place_of_creating else None,
@@ -52,7 +54,7 @@ def dict_to_document(data):
 
     return Document(
         id=data.id,
-        file_url=data.file_url,
+        file_urls=data.file_urls,
         author=data.author,
         dating=data.dating,
         place_of_creating=data.place_of_creating,

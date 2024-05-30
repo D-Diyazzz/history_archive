@@ -1,9 +1,11 @@
 import pytest
 import time
 import pytz
+import json
 
 from datetime import datetime
 from sqlalchemy import text
+from typing import List
 
 from src.archive.repository.document import DocumentRepository
 from src.archive.domains.document import Document, SearchData
@@ -42,7 +44,7 @@ def upload_search_data():
 @pytest.fixture
 def init_document(init_search_data):
     return Document(
-        file_url="test_url.pdf",
+        file_urls=["test_url_1.pdf", "test_url_2.pdf"],
         author="author",
         dating="2020",
         place_of_creating="almaty",
@@ -57,7 +59,7 @@ def init_document(init_search_data):
 def upload_document(id: int, upload_search_data):
     return Document(
         id=id,
-        file_url="test_url.pdf",
+        file_urls=["test_url_1.pdf", "test_url_2.pdf"],
         author="author",
         dating="2020",
         place_of_creating="almaty",
@@ -72,7 +74,7 @@ def upload_document(id: int, upload_search_data):
 
 async def save_document(
     engine,
-    file_url: str,
+    file_urls: List[str],
     author: str,
     dating: str,
     place_of_creating: str,
@@ -113,7 +115,7 @@ async def save_document(
             insert_document,
             {
                 "search_data_id": search_data_id,
-                "file_url": file_url,
+                "file_urls": json.dumps(file_urls),
                 "author": author,
                 "dating": dating,
                 "place_of_creating": place_of_creating,
@@ -167,7 +169,7 @@ class TestDocumentRepository:
                 }
             )).one()
 
-            assert document.file_url == "test_url.pdf"
+            assert document.file_urls == ["test_url_1.pdf", "test_url_2.pdf"]
             assert document.author == "author"
             assert document.dating == "2020"
             assert document.place_of_creating == "almaty"
@@ -220,7 +222,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "place of creating",
@@ -260,7 +262,7 @@ class TestDocumentRepository:
                 }
             )).one()
 
-            assert document.file_url == "test_url.pdf"
+            assert document.file_urls == ["test_url_1.pdf", "test_url_2.pdf"]
             assert document.author == "author"
             assert document.dating == "2020"
             assert document.place_of_creating == "almaty"
@@ -314,7 +316,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "place of creating",
@@ -338,7 +340,7 @@ class TestDocumentRepository:
         await session.commit()
 
         assert document.id == 1
-        assert document.file_url == "file_url"
+        assert document.file_urls == ["test_url_1.pdf", "test_url_2.pdf"]
         assert document.author == "author"
         assert document.dating == "dating"
         assert document.place_of_creating == "place of creating"
@@ -382,7 +384,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "place of creating",
@@ -407,7 +409,7 @@ class TestDocumentRepository:
         assert len(documents) == 1
 
         assert documents[0].id == 1
-        assert documents[0].file_url == "file_url"
+        assert documents[0].file_urls == ["test_url_1.pdf", "test_url_2.pdf"]
         assert documents[0].author == "author"
         assert documents[0].dating == "dating"
         assert documents[0].place_of_creating == "place of creating"
@@ -451,7 +453,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "place of creating",
@@ -473,7 +475,7 @@ class TestDocumentRepository:
 
         search_data_id_two, document_id_two = await save_document(
             engine=engine,
-            file_url = "file_url two",
+            file_urls = ["two_test_url_1.pdf", "two_test_url_2.pdf"],
             author = "author two",
             dating = "dating two",
             place_of_creating = "place of creating two",
@@ -498,7 +500,7 @@ class TestDocumentRepository:
         assert len(documents) == 2
 
         assert documents[0].id == 1
-        assert documents[0].file_url == "file_url"
+        assert documents[0].file_urls == ["test_url_1.pdf", "test_url_2.pdf"]
         assert documents[0].author == "author"
         assert documents[0].dating == "dating"
         assert documents[0].place_of_creating == "place of creating"
@@ -519,7 +521,7 @@ class TestDocumentRepository:
         assert documents[0].search_data.other == "other"
 
         assert documents[1].id == 2
-        assert documents[1].file_url == "file_url two"
+        assert documents[1].file_urls == ["two_test_url_1.pdf", "two_test_url_2.pdf"]
         assert documents[1].author == "author two"
         assert documents[1].dating == "dating two"
         assert documents[1].place_of_creating == "place of creating two"
@@ -563,7 +565,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "almaty",
@@ -591,7 +593,7 @@ class TestDocumentRepository:
             new_lang="new lang"
         )
         document.update(
-            new_file_url = "new_file_url",
+            new_file_urls = ["new_test_url_1.pdf"],
             new_dating = "new_dating",
             new_variety = "new variety",
             new_brief_content = "new brief content",
@@ -602,7 +604,7 @@ class TestDocumentRepository:
         await session.commit()
 
         assert document.id == 1
-        assert document.file_url == "new_file_url"
+        assert document.file_urls == ["new_test_url_1.pdf"]
         assert document.author == "author"
         assert document.dating == "new_dating"
         assert document.place_of_creating == "almaty"
@@ -646,7 +648,7 @@ class TestDocumentRepository:
 
         search_data_id, document_id = await save_document(
             engine=engine,
-            file_url = "file_url",
+            file_urls = ["test_url_1.pdf", "test_url_2.pdf"],
             author = "author",
             dating = "dating",
             place_of_creating = "almaty",

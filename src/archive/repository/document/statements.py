@@ -32,7 +32,7 @@ insert_document = text("""
 
     insert into documents (
         search_data_id,
-        file_url,
+        file_urls,
         author,
         dating,
         place_of_creating,
@@ -44,7 +44,7 @@ insert_document = text("""
         created_at
     ) values (
         :search_data_id,
-        :file_url,
+        :file_urls,
         :author,
         :dating,
         :place_of_creating,
@@ -102,7 +102,7 @@ update_document = text("""
 
     update documents
     set
-        file_url=:file_url,
+        file_urls=:file_urls,
         author=:author,
         dating=:dating,
         place_of_creating=:place_of_creating,
