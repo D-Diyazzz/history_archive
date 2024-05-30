@@ -67,7 +67,7 @@ def upload_search_data_mock():
 
 def init_document(init_search_data):
     return Document(
-        file_url="test_url.pdf",
+        file_urls=["file_url_1.pdf", "file_url_2.pdf"],
         author="author",
         dating="2020",
         place_of_creating="almaty",
@@ -82,7 +82,7 @@ def init_document(init_search_data):
 def upload_document(id: int, upload_search_data):
     return Document(
         id=id,
-        file_url="test_url.pdf",
+        file_urls=["file_url_1.pdf", "file_url_2.pdf"],
         author="author",
         dating="2020",
         place_of_creating="almaty",
@@ -101,7 +101,7 @@ def fake_document_repository_class(upload_search_data):
         async def add(self, model: Document):
             return Document(
                 id=1,
-                file_url=model.file_url,
+                file_urls=model.file_urls,
                 author=model.author,
                 dating=model.dating,
                 place_of_creating=model.place_of_creating,
@@ -128,7 +128,7 @@ def fake_document_repository_class(upload_search_data):
         async def get(self, id: int) -> Document:
             return Document(
                 id=id,
-                file_url="test_url.pdf",
+                file_urls=["file_url_1.pdf", "file_url_2.pdf"],
                 author="author",
                 dating="2020",
                 place_of_creating="almaty",
@@ -146,7 +146,7 @@ def fake_document_repository_class(upload_search_data):
         async def update(self, model: Document):
             return Document(
                 id=model.id,
-                file_url=model.file_url,
+                file_urls=model.file_urls,
                 author=model.author,
                 dating=model.dating,
                 place_of_creating=model.place_of_creating,

@@ -1,5 +1,6 @@
 import os
 
+from typing import List, Dict
 from pydantic import BaseModel
 
 from src.archive.core import AbstractUnitOfWork
@@ -10,13 +11,13 @@ class DocumentService:
 
     async def create_document(
             self,
-            file: bytes,
+            files: Dict[str, bytes],
             data: BaseModel,
             uow: AbstractUnitOfWork,
     ) -> Document:
 
         document = Document(
-            file_url=data.file_url,
+            file_urls=list(files.keys()),
             author=data.author,
             dating=data.dating,
             place_of_creating=data.place_of_creating,
@@ -41,9 +42,10 @@ class DocumentService:
         async with uow as uow:
             document = await uow.repository.add(document)
             await uow.commit()
-        
-        with open(f"files/{data.file_url}", "wb") as buffer:
-            buffer.write(file)
+
+        for file_url, file_bytes in files.items():
+            with open(f"files/{file_url}", "wb") as buffer:
+                buffer.write(file_bytes)
         
         return document
 
@@ -52,7 +54,7 @@ class DocumentService:
             self,
             id: int,
             data: BaseModel,
-            file: bytes | None,
+            files: Dict[str, bytes] | None,
             uow: AbstractUnitOfWork,
     ) -> Document:
 
@@ -69,9 +71,9 @@ class DocumentService:
                 new_playback_method=data.search_data.playback_method,
                 new_other=data.search_data.other
             )
-            old_file_url = f"files/{document.file_url}"
+            old_file_urls = document.file_urls
             document.update(
-                new_file_url = data.file_url,
+                new_file_urls = list(files.keys()) if files else None,
                 new_author = data.author,
                 new_dating = data.dating,
                 new_place_of_creating = data.place_of_creating,
@@ -83,13 +85,21 @@ class DocumentService:
             )
             document = await uow.repository.update(model=document)
             await uow.commit()
+    
 
-        if old_file_url != document.file_url:
-            os.rename(old_file_url, f"files/{document.file_url}")
+        # if old_file_url != document.file_url:
+        #     os.rename(old_file_url, f"files/{document.file_url}")
 
-        if file:
-            with open(f"files/{document.file_url}", "wb") as buffer:
-                buffer.write(file)
+        if files:
+            for old_file_url in old_file_urls:
+                try:
+                    os.remove(f"files/{old_file_url}")
+                except FileNotFoundError:
+                    pass
+
+            for file_url, file_bytes in files.items():
+                with open(f"files/{file_url}", "wb") as buffer:
+                    buffer.write(file_bytes)
         
         return document
 
@@ -103,4 +113,9 @@ class DocumentService:
             await uow.repository.delete(id=document.id)
             await uow.commit()
 
-        os.remove(f"files/{document.file_url}")
+        file_urls = document.file_urls
+        for file_url in file_urls:
+            try:
+                os.remove(f"files/{file_url}")
+            except FileNotFoundError:
+                pass

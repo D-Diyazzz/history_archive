@@ -76,7 +76,7 @@ class Document(AbstarctDocument, AbstractBaseEntity):
             new_main_text: str = None,
             updated_search_data: SearchData = None,
     ):
-        self._file_urls = new_file_urls if new_file_urls else self._file_url
+        self._file_urls = new_file_urls if new_file_urls else self._file_urls
         self._author = new_author if new_author else self._author
         self._dating = new_dating if new_dating else self._dating
         self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating

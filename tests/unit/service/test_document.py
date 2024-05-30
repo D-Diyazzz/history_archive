@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from unittest.mock import Mock, mock_open, AsyncMock, patch
+from unittest.mock import Mock, mock_open, AsyncMock, patch, call
 from datetime import datetime
 
 from src.archive.domains.document import Document, SearchData
@@ -12,7 +12,6 @@ from src.archive.service.document import DocumentService
 def init_document_mock(init_search_data_mock):
 
     data = Mock()
-    data.file_url = "test_url.pdf"
     data.author = "author"
     data.dating = "2020"
     data.place_of_creating = "almaty"
@@ -29,7 +28,6 @@ def init_document_mock(init_search_data_mock):
 def upload_document_mock(upload_search_data_mock, id=1):
     data = Mock()
     data.id = id
-    data.file_url="test_url.pdf"
     data.author="author"
     data.dating="2020"
     data.place_of_creating="almaty"
@@ -58,11 +56,15 @@ class TestUnitDocumentService:
         m_open = mock_open()
 
         with patch('builtins.open', m_open):
-            document = await service.create_document(file=b'file_bytes', data=init_document_mock, uow=uow)
+            files = {
+                "file_url_1.pdf": b'file_bytes_1',
+                "file_url_2.pdf": b'file_bytes_2'
+            }
+            document = await service.create_document(files=files, data=init_document_mock, uow=uow)
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_url == "test_url.pdf"
+            assert document.file_urls == ["file_url_1.pdf", "file_url_2.pdf"]
             assert document.author == "author"
             assert document.dating == "2020"
             assert document.place_of_creating == "almaty"
@@ -83,9 +85,16 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "playback method"
             assert document.search_data.other is None
 
-            m_open.assert_called_once_with(f"files/{document.file_url}", "wb")             
-            handle = m_open()
-            handle.write.assert_called_once_with(b'file_bytes')
+            m_open.assert_has_calls([
+                call(f"files/file_url_1.pdf", "wb"),
+                call(f"files/file_url_2.pdf", "wb")
+            ], any_order=True)
+
+            handle_1 = m_open()
+            handle_1.write.assert_any_call(b'file_bytes_1')
+
+            handle_2 = m_open()
+            handle_2.write.assert_any_call(b'file_bytes_2')
 
     @pytest.mark.asyncio
     async def test_update_with_file_document(
@@ -96,7 +105,6 @@ class TestUnitDocumentService:
     ):
         update_data = Mock()
 
-        update_data.file_url = "new_test_url.pdf"
         update_data.author = "new author"
         update_data.dating = "new 2020"
         update_data.place_of_creating = "new almaty"
@@ -112,12 +120,17 @@ class TestUnitDocumentService:
 
         m_open = mock_open()
 
-        with patch('builtins.open', m_open), patch('os.rename') as mock_rename:
-            document = await service.update_document(id=1, file=b'new file_bytes', data=update_data, uow=uow)
+        files = {
+            "new_file_url_1.pdf": b'new_file_bytes_1',
+            "new_file_url_2.pdf": b'new_file_bytes_2'
+        }
+
+        with patch('builtins.open', m_open), patch('os.remove') as mock_remove:
+            document = await service.update_document(id=1, files=files, data=update_data, uow=uow)
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_url == "new_test_url.pdf"
+            assert document.file_urls == ["new_file_url_1.pdf", "new_file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "new 2020"
             assert document.place_of_creating == "new almaty"
@@ -138,11 +151,21 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "playback method"
             assert document.search_data.other == "other"
 
-            mock_rename.assert_called_once_with("files/test_url.pdf", "files/new_test_url.pdf")
+            mock_remove.assert_has_calls([
+                call("files/file_url_1.pdf"),
+                call("files/file_url_2.pdf")
+            ], any_order=True)
 
-            m_open.assert_called_once_with(f"files/new_test_url.pdf", "wb")             
-            handle = m_open()
-            handle.write.assert_called_once_with(b'new file_bytes')
+            m_open.assert_has_calls([
+                call(f"files/new_file_url_1.pdf", "wb"),
+                call(f"files/new_file_url_2.pdf", "wb")
+            ], any_order=True)
+
+            handle_1 = m_open()
+            handle_1.write.assert_any_call(b'new_file_bytes_1')
+
+            handle_2 = m_open()
+            handle_2.write.assert_any_call(b'new_file_bytes_2')
 
     @pytest.mark.asyncio
     async def test_update_without_file_document(
@@ -153,7 +176,6 @@ class TestUnitDocumentService:
     ):
         update_data = Mock()
 
-        update_data.file_url = "new_test_url.pdf"
         update_data.author = "new author"
         update_data.dating = "new 2020"
         update_data.place_of_creating = "new almaty"
@@ -169,12 +191,12 @@ class TestUnitDocumentService:
 
         m_open = mock_open()
 
-        with patch('builtins.open', m_open), patch('os.rename') as mock_rename:
-            document = await service.update_document(id=1, file=None, data=update_data, uow=uow)
+        with patch('builtins.open', m_open), patch('os.remove') as mock_remove:
+            document = await service.update_document(id=1, files=None, data=update_data, uow=uow)
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_url == "new_test_url.pdf"
+            assert document.file_urls == ["file_url_1.pdf", "file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "new 2020"
             assert document.place_of_creating == "new almaty"
@@ -195,7 +217,11 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "playback method"
             assert document.search_data.other == "other"
 
-            mock_rename.assert_called_once_with("files/test_url.pdf", "files/new_test_url.pdf")
+            with pytest.raises(AssertionError) as error:
+                mock_remove.assert_has_calls([
+                    call("file_url_1.pdf"),
+                    call("file_url_2.pdf")
+                ], any_order=True)
 
             with pytest.raises(AssertionError) as error:
                 m_open.assert_called_once_with(f"files/new_test_url", "wb")             
@@ -224,7 +250,6 @@ class TestUnitDocumentService:
         update_serach_data.other = "new other"
         update_data = Mock()
 
-        update_data.file_url = "new_test_url.pdf"
         update_data.author = "new author"
         update_data.dating = "new 2020"
         update_data.place_of_creating = "new almaty"
@@ -240,12 +265,17 @@ class TestUnitDocumentService:
 
         m_open = mock_open()
 
-        with patch('builtins.open', m_open), patch('os.rename') as mock_rename:
-            document = await service.update_document(id=1, file=None, data=update_data, uow=uow)
+        files = {
+            "file_url_1.pdf": b'file_bytes_1',
+            "new_file_url_2.pdf": b'new_file_bytes_2'
+        }
+
+        with patch('builtins.open', m_open), patch('os.remove') as mock_remove:
+            document = await service.update_document(id=1, files=files, data=update_data, uow=uow)
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_url == "new_test_url.pdf"
+            assert document.file_urls == ["file_url_1.pdf", "new_file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "new 2020"
             assert document.place_of_creating == "new almaty"
@@ -266,14 +296,21 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "new playback method"
             assert document.search_data.other == "new other"
 
-            mock_rename.assert_called_once_with("files/test_url.pdf", "files/new_test_url.pdf")
+            mock_remove.assert_has_calls([
+                call("files/file_url_1.pdf"),
+                call("files/file_url_2.pdf")
+            ], any_order=True)
 
-            with pytest.raises(AssertionError) as error:
-                m_open.assert_called_once_with(f"files/{document.file_url}", "wb")             
-                handle = m_open()
-                handle.write.assert_called_once_with(b'new file_bytes')
+            m_open.assert_has_calls([
+                call(f"files/file_url_1.pdf", "wb"),
+                call(f"files/new_file_url_2.pdf", "wb")
+            ], any_order=True)
 
-            assert str(error.value) == "Expected 'open' to be called once. Called 0 times."
+            handle_1 = m_open()
+            handle_1.write.assert_any_call(b'file_bytes_1')
+
+            handle_2 = m_open()
+            handle_2.write.assert_any_call(b'new_file_bytes_2')
 
     @pytest.mark.asyncio
     async def test_update_with_some_updated_data(
@@ -310,12 +347,12 @@ class TestUnitDocumentService:
 
         m_open = mock_open()
 
-        with patch('builtins.open', m_open), patch('os.rename') as mock_rename:
-            document = await service.update_document(id=1, file=None, data=update_data, uow=uow)
+        with patch('builtins.open', m_open), patch('os.remove') as mock_remove:
+            document = await service.update_document(id=1, files=None, data=update_data, uow=uow)
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_url == "test_url.pdf"
+            assert document.file_urls == ["file_url_1.pdf", "file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "2020"
             assert document.place_of_creating == "new almaty"
@@ -336,11 +373,14 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "new playback method"
             assert document.search_data.other == "other"
 
-            with pytest.raises(AssertionError) as rename_error:
-                mock_rename.assert_called_once_with("files/test_url.pdf", "files/new_test_url.pdf")
+            with pytest.raises(AssertionError) as remove_error:
+                mock_remove.assert_has_calls([
+                    call("files/file_url_1.pdf"),
+                    call("files/file_url_2.pdf")
+                ], any_order=True)
           
             with pytest.raises(AssertionError) as error:
-                m_open.assert_called_once_with(f"files/{document.file_url}", "wb")             
+                m_open.assert_called_once_with(f"files/{document.file_urls}", "wb")             
                 handle = m_open()
                 handle.write.assert_called_once_with(b'new file_bytes')
 
@@ -358,4 +398,7 @@ class TestUnitDocumentService:
 
         with patch('os.remove') as mock_remove:
             await service.delete_document(id=upload_document_mock.id, uow=uow)
-            mock_remove.assert_called_once_with(f"files/{upload_document_mock.file_url}")
+            mock_remove.assert_has_calls([
+                call("files/file_url_1.pdf"),
+                call("files/file_url_2.pdf")
+            ], any_order=True)
