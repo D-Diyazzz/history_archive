@@ -1,49 +1,45 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
+
+
+from .search_data_schemas import SearchDataRequest, SearchDataResponse, SearchDataUpdate
 
 
 class DocumentRequest(BaseModel):
-    file_url: str
-    title: str
-    heading: str
     author: str
-    description_content: str
     dating: str
-    legends: str
-    format_doc: str
-    color_palette: str
-    resolution: str
-    compression: str
-    scanner_model: str
+    place_of_creating: str
+    variety: str
+    addressee: str
+    brief_content: str
+    case_prod_number: str
+    main_text: str
+    search_data: SearchDataRequest
 
 
 class DocumentResponse(BaseModel):
     id: int
-    file_url: str
-    title: str
-    heading: str
+    file_urls: List[str]
     author: str
-    description_content: str
     dating: str
-    legends: str
-    format_doc: str
-    color_palette: str
-    resolution: str
-    compression: str
-    scanner_model: str
+    place_of_creating: str
+    variety: str
+    addressee: str
+    brief_content: str
+    case_prod_number: str
+    main_text: str
+    search_data: SearchDataResponse
     created_at: datetime
 
 
 class DocumentUpdateRequest(BaseModel):
-    file_url: str | None
-    title: str | None
-    heading: str | None
     author: str | None
-    description_content: str | None
     dating: str | None
-    legends: str | None
-    format_doc: str | None
-    color_palette: str | None
-    resolution: str | None
-    compression: str | None
-    scanner_model: str | None
+    place_of_creating: str | None
+    variety: str | None
+    addressee: str | None
+    brief_content: str | None
+    case_prod_number: str | None
+    main_text: str | None
+    search_data: SearchDataUpdate | None

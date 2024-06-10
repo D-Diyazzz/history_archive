@@ -9,93 +9,49 @@ from pydantic import parse_obj_as
 from src.archive.core import UnitOfWork
 from src.archive.repository.document import DocumentRepository
 from src.archive.service.document import DocumentService
-from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest
-from src.archive.database.engine import get_session
+from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest, SearchDataResponse
+from src.archive.database.engine import get_session, init_engine
 from src.archive.dependencies.auth_dependencies import chech_access_token, chech_role
+from src.archive.gateway.converter import DocumentConverter
+from src.archive.views import DocumentViews
 
 
 service = DocumentService()
+allowed_formats = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/png", "image/jpeg", "image/webp", "image/jpg"]
 
 async def create_document_handler(user_data = Depends(chech_role), files: List[UploadFile] = File(...), data: str = Form(...)):
+    files_dict = {}
     for file in files:
-        if file.content_type != 'application/pdf':
-            raise HTTPException(status_code=400, detail="File is not in PDF format")
-
+        if file.content_type not in allowed_formats:
+            raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
+        filename = str(uuid4()) + "_"+ file.filename 
+        files_dict[filename] = await file.read()
     try:
         data = json.loads(data)
-        data["file_url"] = str(uuid4()) + "_"+ files.filename
         data = parse_obj_as(DocumentRequest, data)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
+    
+    document = await service.create_document(files=files_dict, data=data, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
-
-    document = await service.create_document(file=files.file.read(), data=data, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
-
-    response = DocumentResponse(
-        id=document.get_id,
-        file_url=document.get_file_url,
-        title=document.get_title,
-        heading=document.get_heading,
-        author=document.get_author,
-        description_content=document.get_description_content,
-        dating=document.get_dating,
-        legends=document.get_legends,
-        format_doc=document.get_format_doc,
-        color_palette=document.get_color_palette,
-        resolution=document.get_resolution,
-        compression=document.get_compression,
-        scanner_model=document.get_scanner_model,
-        created_at=document.get_created_at
-    )
+    response = DocumentConverter.model_to_document(document=document)
 
     return response
 
 
 async def get_document_handler(id: int):
-    document = await service.get_document(id=id, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
-    response = DocumentResponse(
-        id=document.get_id,
-        file_url=document.get_file_url,
-        title=document.get_title,
-        heading=document.get_heading,
-        author=document.get_author,
-        description_content=document.get_description_content,
-        dating=document.get_dating,
-        legends=document.get_legends,
-        format_doc=document.get_format_doc,
-        color_palette=document.get_color_palette,
-        resolution=document.get_resolution,
-        compression=document.get_compression,
-        scanner_model=document.get_scanner_model,
-        created_at=document.get_created_at
-    )
+    document = await DocumentViews.get_document_by_id_view(id=id, engine=init_engine())
 
-    return response
+    return document
 
 
 async def get_list_document_handler(user_data = Depends(chech_access_token)):
-    documents = await service.get_list_document(uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
-    response = [
-        DocumentResponse(
-            id=document.get_id,
-            file_url=document.get_file_url,
-            title=document.get_title,
-            heading=document.get_heading,
-            author=document.get_author,
-            description_content=document.get_description_content,
-            dating=document.get_dating,
-            legends=document.get_legends,
-            format_doc=document.get_format_doc,
-            color_palette=document.get_color_palette,
-            resolution=document.get_resolution,
-            compression=document.get_compression,
-            scanner_model=document.get_scanner_model,
-            created_at=document.get_created_at
-    ) for document in documents]
+    documents = await DocumentViews.get_documents_view(engine=init_engine())
 
-    return response
+    return documents
 
 
 async def update_document_handler(id: int, file: UploadFile = File(None), data: str = Form(...)):

@@ -24,7 +24,6 @@ async def registration_handler(data: RegistrationForm):
 
 
 async def login_handler(data: LoginForm):
-
     try:
         access_token, refresh_token, user_data = await service.login(data=data, uow=UnitOfWork(reposiotry=UserRepository, session_factory=get_session))
     except NoResultFound as e:

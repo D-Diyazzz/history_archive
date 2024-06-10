@@ -192,19 +192,4 @@ user = Table(
 
 
 def start_mappers():
-    mapper_registry.map_imperatively(TypeCollection, type_collection)
-    mapper_registry.map_imperatively(ClassCollection, class_collection)
-    mapper_registry.map_imperatively(FormCollection, form_collection)
-    mapper_registry.map_imperatively(MethodCollection, method_collection)
-    mapper_registry.map_imperatively(
-        Collection, 
-        collection, 
-        properties={
-            "type_coll": relationship(TypeCollection, uselist=False, backref="collection"),
-            "class_coll": relationship(ClassCollection, uselist=False, backref="collection"),
-            "form_coll": relationship(FormCollection, uselist=False, backref="collection"),
-            "method_coll": relationship(MethodCollection, uselist=False, backref="collection"),
-        }
-    )
-    mapper_registry.map_imperatively(Document, documents)
     mapper_registry.map_imperatively(User, user)

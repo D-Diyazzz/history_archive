@@ -19,7 +19,7 @@ def search_data_to_dict(model: Document):
     return model_dict
 
 def document_to_dict(model: Document):
-
+    print(model.author)
     model_dict = {
         "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
         "author": model.author if model.author else None,

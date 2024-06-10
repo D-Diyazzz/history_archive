@@ -37,9 +37,11 @@ class UserService:
         
         async with uow as uow:
             user = await uow.repository.get_by_email(email=data.email)
-        
+            uow.commit()
+
         if user.verify_password(data.password) is False:
             raise Exception("Wrong password or email")
+        
         data = dict(
             id=user.get_id,
             role=user.get_role.name,
