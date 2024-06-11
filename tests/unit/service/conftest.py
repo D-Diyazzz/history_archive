@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import Mock
 
 from src.archive.core import AbstractBaseEntity, AbstractRepository, AbstractUnitOfWork
-from src.archive.domains.document import Document, SearchData
+from src.archive.domains.document import Document, SearchData, PhonoDocument
 
 
 @pytest.fixture
@@ -163,6 +163,65 @@ def fake_document_repository_class(upload_search_data):
             pass
 
     return FakeDocumentRepository
+
+
+@pytest.fixture
+def fake_phonodocument_repository_class():
+    class FakePhonoDocumentRepository(AbstractRepository):
+        async def add(self, model: PhonoDocument):
+            return PhonoDocument(
+                id=1,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                genre=model.genre,
+                brief_summary=model.brief_summary,
+                addressee=model.addressee,
+                cypher=model.cypher,
+                lang=model.lang,
+                storage_media=model.storage_media,
+                created_at=model.created_at
+            )
+        
+        async def get(self, id: int) -> PhonoDocument:
+            return PhonoDocument(
+                id=id,
+                file_urls=["file_url_1.mp3", "file_url_2.mp3"],
+                author="author",
+                dating="2020",
+                place_of_creating="almaty",
+                genre="genre",
+                brief_summary="brief summary",
+                addressee="addressee",
+                cypher="cypher",
+                lang="lang",
+                storage_media="storage media",
+            )
+        
+        async def get_list(self) -> list[PhonoDocument]:
+            pass
+
+        async def update(self, model: PhonoDocument):
+            return PhonoDocument(
+                id=model.id,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                genre=model.genre,
+                brief_summary=model.brief_summary,
+                addressee=model.addressee,
+                cypher=model.cypher,
+                lang=model.lang,
+                storage_media=model.storage_media,
+                created_at=model.created_at
+            )
+
+        async def delete(self, id: int):
+            pass
+
+    return FakePhonoDocumentRepository
 
 
 @pytest.fixture
