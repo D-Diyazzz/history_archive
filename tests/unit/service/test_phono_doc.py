@@ -211,8 +211,6 @@ class TestUnitPhonoDocService:
                     call(f"files/new_file_url_2.mp3", "wb")
                 ], any_order=True)
 
-            print(error.value)
-
             assert str(error.value) == "'open' does not contain all of (call('', ('files/new_file_url_1.mp3', 'wb'), {}), call('', ('files/new_file_url_2.mp3', 'wb'), {})) in its call list, found [] instead"
 
 

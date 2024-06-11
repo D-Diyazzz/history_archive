@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import Mock
 
 from src.archive.core import AbstractBaseEntity, AbstractRepository, AbstractUnitOfWork
-from src.archive.domains.document import Document, SearchData, PhonoDocument
+from src.archive.domains.document import Document, SearchData, PhonoDocument, PhotoDocument, VideoDocument
 
 
 @pytest.fixture
@@ -222,6 +222,90 @@ def fake_phonodocument_repository_class():
             pass
 
     return FakePhonoDocumentRepository
+
+
+@pytest.fixture
+def fake_photodocument_repository_class():
+    class FakePhotoDocumentRepository(AbstractRepository):
+        async def add(self, model: PhotoDocument):
+            return PhotoDocument(
+                id=1,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                title=model.title,
+                completeness_of_reproduction=model.completeness_of_reproduction,
+                storage_media=model.storage_media,
+                color=model.color,
+                size_of_original=model.size_of_original,
+                image_scale=model.image_scale,
+                search_data=SearchData(
+                    id=1,
+                    cypher=model.search_data.cypher,
+                    fund=model.search_data.fund,
+                    inventory=model.search_data.inventory,
+                    case=model.search_data.case,
+                    leaf=model.search_data.leaf,
+                    authenticity=model.search_data.authenticity,
+                    lang=model.search_data.lang,
+                    playback_method=model.search_data.playback_method,
+                    other=model.search_data.other
+                ),
+                created_at=model.created_at
+            )
+        
+        async def get(self, id: int) -> PhotoDocument:
+            return PhotoDocument(
+                id=id,
+                file_urls=["file_url_1.jpg", "file_url_2.jpg"],
+                author="author",
+                dating="2020",
+                place_of_creating="almaty",
+                title="title",
+                completeness_of_reproduction="completeness",
+                storage_media="storage media",
+                color="color",
+                size_of_original="size of original",
+                image_scale="image scale",
+                search_data=SearchData(
+                    id=1,
+                    cypher="cypher",
+                    fund="fund",
+                    inventory="inventory",
+                    case="case",
+                    leaf="leaf",
+                    authenticity="authentic",
+                    lang="lang",
+                    playback_method="playback method",
+                    other="other"
+                )
+            )
+        
+        async def get_list(self) -> list[PhotoDocument]:
+            pass
+
+        async def update(self, model: PhotoDocument):
+            return PhotoDocument(
+                id=model.id,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                title=model.title,
+                completeness_of_reproduction=model.completeness_of_reproduction,
+                storage_media=model.storage_media,
+                color=model.color,
+                size_of_original=model.size_of_original,
+                image_scale=model.image_scale,
+                search_data=model.search_data,
+                created_at=model.created_at
+            )
+
+        async def delete(self, id: int):
+            pass
+
+    return FakePhotoDocumentRepository
 
 
 @pytest.fixture
