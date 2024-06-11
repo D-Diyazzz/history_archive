@@ -63,3 +63,27 @@ class PhonoDocument(AbstarctDocument, AbstractBaseEntity):
     @property
     def storage_media(self) -> str:
         return self._storage_media
+
+    def update(
+            self,
+            new_file_urls: List[str] = None,
+            new_author: str = None,
+            new_dating: str = None,
+            new_place_of_creating: str = None,
+            new_genre: str = None,
+            new_brief_summary: str = None,
+            new_addressee: str = None,
+            new_cypher: str = None,
+            new_lang: str = None,
+            new_storage_media: str = None
+    ):
+        self._file_urls = new_file_urls if new_file_urls else self._file_urls
+        self._author = new_author if new_author else self._author
+        self._dating = new_dating if new_dating else self._dating
+        self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating
+        self._genre = new_genre if new_genre else self._genre
+        self._brief_summary = new_brief_summary if new_brief_summary else self._brief_summary
+        self._addressee = new_addressee if new_addressee else self._addressee
+        self._cypher = new_cypher if new_cypher else self._cypher
+        self._lang = new_lang if new_lang else self._lang
+        self._storage_media = new_storage_media if new_storage_media else self._storage_media

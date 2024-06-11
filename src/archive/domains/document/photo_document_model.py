@@ -68,3 +68,30 @@ class PhotoDocument(AbstarctDocument, AbstractBaseEntity):
     @property
     def search_data(self) -> SearchData:
         return self._search_data
+
+    def update(
+            self,
+            new_file_urls: List[str] = None,
+            new_author: str = None,
+            new_dating: str = None,
+            new_place_of_creating: str = None,
+            new_title: str = None,
+            new_completeness_of_reproduction: str = None,
+            new_storage_media: str = None,
+            new_color: str = None,
+            new_size_of_original: str = None,
+            new_image_scale: str = None,
+            updated_search_data: SearchData = None
+    ):
+        self._file_urls = new_file_urls if new_file_urls else self._file_urls
+        self._author = new_author if new_author else self._author
+        self._dating = new_dating if new_dating else self._dating
+        self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating
+        self._title = new_title if new_title else self._title
+        self._completeness_of_reproduction = new_completeness_of_reproduction if new_completeness_of_reproduction else self._completeness_of_reproduction
+        self._storage_media = new_storage_media if new_storage_media else self._storage_media
+        self._color = new_color if new_color else self._color
+        self._size_of_original = new_size_of_original if new_size_of_original else self._size_of_original
+        self._image_scale = new_image_scale if new_image_scale else self._image_scale
+        self._search_data = updated_search_data if updated_search_data else self._search_data
+

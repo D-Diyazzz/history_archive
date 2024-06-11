@@ -68,3 +68,30 @@ class VideoDocument(AbstarctDocument, AbstractBaseEntity):
     @property
     def search_data(self) -> SearchData:
         return self._search_data
+
+    def update(
+            self,
+            new_file_urls: List[str] = None,
+            new_author: str = None,
+            new_dating: str = None,
+            new_place_of_creating: str = None,
+            new_title: str = None,
+            new_volume: str = None,
+            new_num_of_parts: str = None,
+            new_color: str = None,
+            new_creator: str = None,
+            new_info_of_publication: str = None,
+            updated_search_data: SearchData = None
+    ):
+        self._file_urls = new_file_urls if new_file_urls else self._file_urls
+        self._author = new_author if new_author else self._author
+        self._dating = new_dating if new_dating else self._dating
+        self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating
+        self._title = new_title if new_title else self._title
+        self._volume = new_volume if new_volume else self._volume
+        self._num_of_parts = new_num_of_parts if new_num_of_parts else self._num_of_parts
+        self._color = new_color if new_color else self._color
+        self._creator = new_creator if new_creator else self._creator
+        self._info_of_publication = new_info_of_publication if new_info_of_publication else self._info_of_publication
+        self._search_data = updated_search_data if updated_search_data else self._search_data
+
