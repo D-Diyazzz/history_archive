@@ -309,6 +309,90 @@ def fake_photodocument_repository_class():
 
 
 @pytest.fixture
+def fake_videodocument_repository_class():
+    class FakeVideoDocumentRepository(AbstractRepository):
+        async def add(self, model: VideoDocument):
+            return VideoDocument(
+                id=1,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                title=model.title,
+                volume=model.volume,
+                num_of_parts=model.num_of_parts,
+                color=model.color,
+                creator=model.creator,
+                info_of_publication=model.info_of_publication,
+                search_data=SearchData(
+                    id=1,
+                    cypher=model.search_data.cypher,
+                    fund=model.search_data.fund,
+                    inventory=model.search_data.inventory,
+                    case=model.search_data.case,
+                    leaf=model.search_data.leaf,
+                    authenticity=model.search_data.authenticity,
+                    lang=model.search_data.lang,
+                    playback_method=model.search_data.playback_method,
+                    other=model.search_data.other
+                ),
+                created_at=model.created_at
+            )
+        
+        async def get(self, id: int) -> VideoDocument:
+            return VideoDocument(
+                id=id,
+                file_urls=["file_url_1.mp4", "file_url_2.mp4"],
+                author="author",
+                dating="2020",
+                place_of_creating="almaty",
+                title="title",
+                volume="volume",
+                num_of_parts="num of parts",
+                color="color",
+                creator="creator",
+                info_of_publication="info of publication",
+                search_data=SearchData(
+                    id=1,
+                    cypher="cypher",
+                    fund="fund",
+                    inventory="inventory",
+                    case="case",
+                    leaf="leaf",
+                    authenticity="authentic",
+                    lang="lang",
+                    playback_method="playback method",
+                    other="other"
+                )
+            )
+        
+        async def get_list(self) -> list[VideoDocument]:
+            pass
+
+        async def update(self, model: VideoDocument):
+            return VideoDocument(
+                id=model.id,
+                file_urls=model.file_urls,
+                author=model.author,
+                dating=model.dating,
+                place_of_creating=model.place_of_creating,
+                title=model.title,
+                volume=model.volume,
+                num_of_parts=model.num_of_parts,
+                color=model.color,
+                creator=model.creator,
+                info_of_publication=model.info_of_publication,
+                search_data=model.search_data,
+                created_at=model.created_at
+            )
+
+        async def delete(self, id: int):
+            pass
+
+    return FakeVideoDocumentRepository
+
+
+@pytest.fixture
 def fake_unit_of_work():
     class FakeUnitOfWork(AbstractUnitOfWork):
         def __init__(self, repository: AbstractRepository) -> None:
