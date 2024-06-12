@@ -1,4 +1,4 @@
-from .repository import DocumentRepository
+from .doc_repository import DocumentRepository
 
 
 __all__ = [
