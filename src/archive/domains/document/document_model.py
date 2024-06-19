@@ -62,6 +62,13 @@ class Document(AbstarctDocument, AbstractBaseEntity):
     @property
     def search_data(self) -> SearchData:
         return self._search_data
+
+    def remove_url_files_from_files(
+            self,
+            file_urls: List[str]
+    ):
+        for file in file_urls:
+            self._file_urls = [f for f in self._file_urls if f != file]
     
     def update(
             self,
@@ -76,7 +83,8 @@ class Document(AbstarctDocument, AbstractBaseEntity):
             new_main_text: str = None,
             updated_search_data: SearchData = None,
     ):
-        self._file_urls = new_file_urls if new_file_urls else self._file_urls
+        if new_file_urls:
+            self._file_urls.extend(new_file_urls)
         self._author = new_author if new_author else self._author
         self._dating = new_dating if new_dating else self._dating
         self._place_of_creating = new_place_of_creating if new_place_of_creating else self._place_of_creating

@@ -40,6 +40,7 @@ from .document_handler import(
     get_list_document_handler,
     update_document_handler,
     delete_document_handler,
+    remove_files_handler,
 )
 
 from .auth_handler import(
@@ -76,6 +77,7 @@ __all__ = [
     "get_list_document_handler",
     "update_document_handler",
     "delete_document_handler",
+    "remove_files_handler",
 
     "registration_handler",
     "login_handler",

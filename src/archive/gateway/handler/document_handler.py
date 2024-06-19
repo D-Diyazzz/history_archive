@@ -54,6 +54,13 @@ async def get_list_document_handler(user_data = Depends(chech_access_token)):
     return documents
 
 
+async def remove_files_handler(id: int, data: List[str]):
+    document = await service.remove_file_in_document(id=id, files=data,uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
+
+    response = DocumentConverter.model_to_document(document=document)
+
+    return response
+
 async def update_document_handler(id: int, file: UploadFile = File(None), data: str = Form(...)):
     data = json.loads(data)
 

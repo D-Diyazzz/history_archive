@@ -4,6 +4,7 @@ import os
 from unittest.mock import Mock, mock_open, AsyncMock, patch, call
 from datetime import datetime
 
+from src.archive.core import repository
 from src.archive.domains.document import Document, SearchData
 from src.archive.service.document import DocumentService
 
@@ -127,10 +128,10 @@ class TestUnitDocumentService:
 
         with patch('builtins.open', m_open), patch('os.remove') as mock_remove:
             document = await service.update_document(id=1, files=files, data=update_data, uow=uow)
-
+            print(document.__dict__)
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_urls == ["new_file_url_1.pdf", "new_file_url_2.pdf"]
+            assert document.file_urls == ["file_url_1.pdf", "file_url_2.pdf","new_file_url_1.pdf", "new_file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "new 2020"
             assert document.place_of_creating == "new almaty"
@@ -150,11 +151,6 @@ class TestUnitDocumentService:
             assert document.search_data.lang == "lang"
             assert document.search_data.playback_method == "playback method"
             assert document.search_data.other == "other"
-
-            mock_remove.assert_has_calls([
-                call("files/file_url_1.pdf"),
-                call("files/file_url_2.pdf")
-            ], any_order=True)
 
             m_open.assert_has_calls([
                 call(f"files/new_file_url_1.pdf", "wb"),
@@ -266,7 +262,6 @@ class TestUnitDocumentService:
         m_open = mock_open()
 
         files = {
-            "file_url_1.pdf": b'file_bytes_1',
             "new_file_url_2.pdf": b'new_file_bytes_2'
         }
 
@@ -275,7 +270,7 @@ class TestUnitDocumentService:
 
             assert document.id == 1
             assert isinstance(document.created_at, datetime)
-            assert document.file_urls == ["file_url_1.pdf", "new_file_url_2.pdf"]
+            assert document.file_urls == ["file_url_1.pdf", "file_url_2.pdf","new_file_url_2.pdf"]
             assert document.author == "new author"
             assert document.dating == "new 2020"
             assert document.place_of_creating == "new almaty"
@@ -296,18 +291,9 @@ class TestUnitDocumentService:
             assert document.search_data.playback_method == "new playback method"
             assert document.search_data.other == "new other"
 
-            mock_remove.assert_has_calls([
-                call("files/file_url_1.pdf"),
-                call("files/file_url_2.pdf")
-            ], any_order=True)
-
             m_open.assert_has_calls([
-                call(f"files/file_url_1.pdf", "wb"),
                 call(f"files/new_file_url_2.pdf", "wb")
             ], any_order=True)
-
-            handle_1 = m_open()
-            handle_1.write.assert_any_call(b'file_bytes_1')
 
             handle_2 = m_open()
             handle_2.write.assert_any_call(b'new_file_bytes_2')
@@ -385,6 +371,88 @@ class TestUnitDocumentService:
                 handle.write.assert_called_once_with(b'new file_bytes')
 
             assert str(error.value) == "Expected 'open' to be called once. Called 0 times."
+
+    @pytest.mark.asyncio
+    async def test_remove_file_from_document(
+        self,
+        fake_unit_of_work,
+        fake_document_repository_class,
+    ): 
+        uow = fake_unit_of_work(repository=fake_document_repository_class)
+        service = DocumentService()
+
+        with patch('os.remove') as mock_remove:
+            files = ['file_url_1.pdf']
+            document = await service.remove_file_in_document(id=1, files=files, uow=uow)
+            
+            assert document.id == 1
+            assert isinstance(document.created_at, datetime)
+            assert document.file_urls == ["file_url_2.pdf"]
+            assert document.author == "author"
+            assert document.dating == "2020"
+            assert document.place_of_creating == "almaty"
+            assert document.variety == "varietry"
+            assert document.addressee == "addressee"
+            assert document.brief_content == "brief content"
+            assert document.case_prod_number == "case prod number"
+            assert document.main_text == "main text"
+
+            assert document.search_data.id is 1
+            assert document.search_data.cypher == "cypher"
+            assert document.search_data.fund == "fund"
+            assert document.search_data.inventory == "inventory"
+            assert document.search_data.case == "case"
+            assert document.search_data.leaf == "leaf"
+            assert document.search_data.authenticity == "authenticity"
+            assert document.search_data.lang == "lang"
+            assert document.search_data.playback_method == "playback method"
+            assert document.search_data.other == "other"
+
+            mock_remove.assert_has_calls([
+                call("files/file_url_1.pdf")
+            ], any_order=True)
+
+    @pytest.mark.asyncio
+    async def test_remove_all_files_from_document(
+        self,
+        fake_unit_of_work,
+        fake_document_repository_class,
+    ): 
+        uow = fake_unit_of_work(repository=fake_document_repository_class)
+        service = DocumentService()
+
+        with patch('os.remove') as mock_remove:
+            files = ['file_url_1.pdf', 'file_url_2.pdf']
+            document = await service.remove_file_in_document(id=1, files=files, uow=uow)
+            
+            assert document.id == 1
+            assert isinstance(document.created_at, datetime)
+            assert document.file_urls == []
+            assert document.author == "author"
+            assert document.dating == "2020"
+            assert document.place_of_creating == "almaty"
+            assert document.variety == "varietry"
+            assert document.addressee == "addressee"
+            assert document.brief_content == "brief content"
+            assert document.case_prod_number == "case prod number"
+            assert document.main_text == "main text"
+
+            assert document.search_data.id is 1
+            assert document.search_data.cypher == "cypher"
+            assert document.search_data.fund == "fund"
+            assert document.search_data.inventory == "inventory"
+            assert document.search_data.case == "case"
+            assert document.search_data.leaf == "leaf"
+            assert document.search_data.authenticity == "authenticity"
+            assert document.search_data.lang == "lang"
+            assert document.search_data.playback_method == "playback method"
+            assert document.search_data.other == "other"
+
+            mock_remove.assert_has_calls([
+                call("files/file_url_1.pdf"),
+                call("files/file_url_2.pdf")
+            ], any_order=True)
+
     
     @pytest.mark.asyncio
     async def test_delete_document(

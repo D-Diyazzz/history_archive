@@ -49,6 +49,29 @@ class DocumentService:
         
         return document
 
+    
+    async def remove_file_in_document(
+            self,
+            id: int,
+            files: List[str],
+            uow: AbstractUnitOfWork,
+    ) -> Document:
+        
+        async with uow as uow:
+            document = await uow.repository.get(id=id)
+            document.remove_url_files_from_files(files)
+
+            document = await uow.repository.update(model=document)
+            await uow.commit()
+        
+        for file_url in files:
+            try:
+                os.remove(f"files/{file_url}")
+            except FileNotFoundError:
+                pass
+
+        return document
+
 
     async def update_document(
             self,
@@ -71,7 +94,6 @@ class DocumentService:
                 new_playback_method=data.search_data.playback_method,
                 new_other=data.search_data.other
             )
-            old_file_urls = document.file_urls
             document.update(
                 new_file_urls = list(files.keys()) if files else None,
                 new_author = data.author,
@@ -91,12 +113,6 @@ class DocumentService:
         #     os.rename(old_file_url, f"files/{document.file_url}")
 
         if files:
-            for old_file_url in old_file_urls:
-                try:
-                    os.remove(f"files/{old_file_url}")
-                except FileNotFoundError:
-                    pass
-
             for file_url, file_bytes in files.items():
                 with open(f"files/{file_url}", "wb") as buffer:
                     buffer.write(file_bytes)
