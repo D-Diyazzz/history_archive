@@ -90,7 +90,7 @@ def get_document_router() -> APIRouter:
     router.get("/document", status_code=200)(get_list_document_handler)
     router.get("/document/{id}", status_code=200)(get_document_handler)
     router.patch("/document/{id}", status_code=200)(update_document_handler)
-    router.patch("/document/{id}/remove-file", status_code=200)(remove_files_handler)
+    router.delete("/document/{id}/file", status_code=200)(remove_files_handler)
     router.delete("/document/{id}", status_code=202)(delete_document_handler)
     return router
 
