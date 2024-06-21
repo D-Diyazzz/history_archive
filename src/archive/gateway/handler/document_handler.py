@@ -61,42 +61,24 @@ async def remove_files_handler(id: int, data: List[str]):
 
     return response
 
-async def update_document_handler(id: int, file: UploadFile = File(None), data: str = Form(...)):
+async def update_document_handler(id: int,  files: List[UploadFile] = File(None),data: str = Form(...)):
     data = json.loads(data)
-
-    if file:
-        if file.content_type != 'application/pdf':
-            raise HTTPException(status_code=400, detail="File is not in PDF format")
-        
-        data["file_url"] = str(uuid4()) + "_"+ file.filename    
-        file = file.file.read()
-    else:
-        data["file_url"] = None
-            
-        
+    files_dict = {}
+    if files:
+        for file in files:
+            if file.content_type not in allowed_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
+            filename = str(uuid4()) + "_"+ file.filename 
+            files_dict[filename] = await file.read()            
+    
     try:
         data = parse_obj_as(DocumentUpdateRequest, data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
     
-    document = await service.update_document(id=id, data=data, file=file, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
+    document = await service.update_document(id=id, data=data, files=files_dict, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
-    response = DocumentResponse(
-        id=document.get_id,
-        file_url=document.get_file_url,
-        title=document.get_title,
-        heading=document.get_heading,
-        author=document.get_author,
-        description_content=document.get_description_content,
-        dating=document.get_dating,
-        legends=document.get_legends,
-        format_doc=document.get_format_doc,
-        color_palette=document.get_color_palette,
-        resolution=document.get_resolution,
-        compression=document.get_compression,
-        scanner_model=document.get_scanner_model,
-        created_at=document.get_created_at
-    )
+    response = DocumentConverter.model_to_document(document=document)
 
     return response
 
