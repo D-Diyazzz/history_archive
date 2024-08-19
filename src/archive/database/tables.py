@@ -1,3 +1,6 @@
+import uuid
+
+from pytz import timezone
 from sqlalchemy import (
     MetaData, 
     Table, 
@@ -12,66 +15,53 @@ from sqlalchemy import (
     JSON
 )
 from sqlalchemy.orm import registry, relationship
+from sqlalchemy.dialects.postgresql import UUID
 
-from src.archive.domains.Type import TypeCollection
-from src.archive.domains.Class_collection import ClassCollection
-from src.archive.domains.Form_collection import FormCollection
-from src.archive.domains.Method_collection import MethodCollection
-from src.archive.domains.collection import Collection
-from src.archive.domains.document import Document
 from src.archive.domains.user import User, Role
 
 
 mapper_registry = registry()
 
 
-type_collection = Table(
-    "type_coll",
-    mapper_registry.metadata,
-    Column("id", Integer, primary_key=True, index=True, autoincrement=True),
-    Column("name", String(250), nullable=False, unique=True)
-)
-
-class_collection = Table(
-    "class_coll",
-    mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
-    Column("name", String(250), nullable=False, unique=True)
-)
-
-form_collection = Table(
-    "format_coll",
-    mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
-    Column("name", String(250), nullable=False, unique=True)
-)
-
-method_collection = Table(
-    "method_coll",
-    mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
-    Column("name", String(250), nullable=False, unique=True)
-)
-
 collection = Table(
     "collection",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True),
     Column("file_url", Text, nullable=False),
+    Column("html_url", Text, nullable=False),
     Column("theme", String(700), nullable=False),
-    Column("purpose", String(500), nullable=False),
-    Column("task", String(1000), nullable=False),
-    Column("type_id", BigInteger, ForeignKey("type_coll.id"), nullable=False),
-    Column("class_id", BigInteger, ForeignKey("class_coll.id"), nullable=False),
-    Column("format_id", BigInteger, ForeignKey("format_coll.id"), nullable=False),
-    Column("method_id", BigInteger, ForeignKey("method_coll.id"), nullable=False),
+    Column("title", String(700), nullable=False),
+    Column("author_id", BigInteger, ForeignKey("user.id"), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False),
 
-    Column("preface", Text, nullable=True),
-    Column("note", Text, nullable=True),
-    Column("indication", Text, nullable=True),
-    Column("intro_text", Text, nullable=True),
-    Column("recommendations", Text, nullable=True),
+)
+
+scientific_council_group = Table(
+    "scientific_council_group",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("scientific_council_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False)
+)
+
+redactor_group = Table(
+    "redactor_group",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("redactor_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False)
+)
+
+notification_collection = Table(
+    "notification_collection",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("user_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
+    Column("text", Text, nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False)
 )
 
 # documents = Table(
@@ -96,7 +86,7 @@ collection = Table(
 documents = Table(
     "documents",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id",  UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True),
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
     Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
@@ -110,10 +100,18 @@ documents = Table(
     Column("created_at", DateTime(timezone=True), nullable=False)
 )
 
+document_links = Table(
+    "document_links",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("document_id", UUID(as_uuid=True), ForeignKey("documents.id", ondelete="CASCADE"), nullable=False)
+)
+
 photo_documents = Table(
     "photo_documents",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True),
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
     Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
@@ -128,10 +126,18 @@ photo_documents = Table(
     Column("created_at", DateTime(timezone=True), nullable=False)
 )
 
+photo_document_links = Table(
+    "photo_document_links",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("photo_document_id", UUID(as_uuid=True), ForeignKey("photo_documents.id", ondelete="CASCADE"), nullable=False)
+)
+
 video_documents = Table(
     "video_documents",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True), 
     Column("search_data_id", BigInteger, ForeignKey("search_data.id", ondelete="CASCADE"), nullable=False),
     Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
@@ -146,10 +152,18 @@ video_documents = Table(
     Column("created_at", DateTime(timezone=True), nullable=False)
 )
 
+video_document_links = Table(
+    "video_document_links",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("video_document_id", UUID(as_uuid=True), ForeignKey("video_documents.id", ondelete="CASCADE"), nullable=False)
+)
+
 phono_documents = Table(
     "phono_documents",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True),
     Column("file_urls", JSON, nullable=False),
     Column("author", String(500), nullable=False),
     Column("dating", String(255), nullable=False),
@@ -161,6 +175,14 @@ phono_documents = Table(
     Column("lang", String(255), nullable=False),
     Column("storage_media", String(255), nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False)
+)
+
+phono_document_links = Table(
+    "phono_document_links",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("phono_document_id", UUID(as_uuid=True), ForeignKey("phono_documents.id", ondelete="CASCADE"), nullable=False)
 )
 
 search_data = Table(
@@ -181,7 +203,7 @@ search_data = Table(
 user = Table(
     "user",
     mapper_registry.metadata,
-    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True,index=True),
     Column("firstname", String(250), nullable=False),
     Column("lastname", String(250), nullable=False),
     Column("email", String(250), nullable=False, unique=True, index=True),

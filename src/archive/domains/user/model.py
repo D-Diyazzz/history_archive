@@ -14,6 +14,7 @@ class Role(Enum):
     BasicUser = "BasicUser"
     AdminUser = "AdminUser"
     RedactorUser = "RedactorUser"
+    ScientificCouncil = "ScientificCouncil"
 
 
 class User(AbstractBaseEntity):
