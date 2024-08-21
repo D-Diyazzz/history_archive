@@ -3,52 +3,28 @@ from src.archive.domains.collection import Collection, Class, Type, Format, Meth
 
 def collection_to_dict(model: Collection):
     model_dict = {
-        "file_url": model.get_file_url if model.get_file_url else None,
-        "theme": model.get_theme if model.get_theme else None,
-        "purpose": model.get_purpose if model.get_purpose else None,
-        "task": model.get_task if model.get_task else None,
-        "type_id": model.get_type_coll.id if model.get_type_coll.id else None,
-        "class_id": model.get_class_coll.id if model.get_class_coll.id else None,
-        "format_id": model.get_format_coll.id if model.get_format_coll.id else None,
-        "method_id": model.get_method_coll.id if model.get_method_coll.id else None,
-        "preface": model.get_preface if model.get_preface else None,
-        "note": model.get_note if model.get_note else None,
-        "indication": model.get_indication if model.get_indication else None,
-        "intro_text": model.get_intro_text if model.get_intro_text else None,
-        "recommendations": model.get_recommendations if model.get_recommendations else None,
-        "created_at": model.get_created_at if model.get_created_at else None,
+        "id": model.id,
+        "file_url": model.file_url,
+        "html_url": model.html_url,
+        "theme": model.theme,
+        "title": model.title,
+        "author_id": model.author_id,
+        "hash_code": model.hash_code,
+        "is_approved": model.is_approved,
+        "created_at": model.created_at
     }
 
-    return {k: v for k, v in model_dict.items() if v is not None}
+    return model_dict
 
-
-def dict_to_collection(collection, type_coll, class_coll, format_coll, method_coll):
+def dict_to_collection(collection):
     return Collection(
         id=collection.id,
         file_url=collection.file_url,
+        html_url=collection.html_url,
         theme=collection.theme,
-        purpose=collection.purpose,
-        task=collection.task,
-        type_coll=Type(
-            id=type_coll.id,
-            name=type_coll.name
-        ),
-        class_coll=Class(
-            id=class_coll.id,
-            name=class_coll.name
-        ),
-        format_coll=Format(
-            id=format_coll.id,
-            name=format_coll.name
-        ),
-        method_coll=Method(
-            id=method_coll.id,
-            name=method_coll.name
-        ),
-        preface=collection.preface,
-        note=collection.note,
-        indication=collection.indication,
-        intro_text=collection.intro_text,
-        recommendations=collection.recommendations,
+        title=collection.title,
+        author_id=collection.author_id,
+        hash_code=collection.hash_code,
+        is_approved=collection.is_approved,
         created_at=collection.created_at
     )

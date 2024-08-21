@@ -1,7 +1,9 @@
+from enum import unique
 import uuid
 
 from pytz import timezone
 from sqlalchemy import (
+    Boolean,
     MetaData, 
     Table, 
     Column, 
@@ -31,7 +33,9 @@ collection = Table(
     Column("html_url", Text, nullable=False),
     Column("theme", String(700), nullable=False),
     Column("title", String(700), nullable=False),
-    Column("author_id", BigInteger, ForeignKey("user.id"), nullable=False),
+    Column("author_id", UUID(as_uuid=True), ForeignKey("user.id"), nullable=False),
+    Column("hash_code", String(7), nullable=False, unique=True),
+    Column("is_approved", Boolean, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False),
 
 )
