@@ -1,21 +1,12 @@
 from pydantic import BaseModel
 from datetime import datetime
+from uuid import UUID
 
 
 class CollectionRequest(BaseModel):
-    file_url: str
     theme: str
-    purpose: str
-    task: str
-    type_coll_id: int
-    class_coll_id: int
-    format_coll_id: int
-    method_coll_id: int
-    preface: str | None
-    note: str | None
-    indication: str | None
-    intro_text: str | None
-    recommendations: str | None
+    title: str
+    author_id: UUID
 
 
 class CollectionResponse(BaseModel):

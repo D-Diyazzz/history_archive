@@ -1,43 +1,25 @@
 from pydantic import BaseModel
+from uuid import uuid4
 
 from src.archive.core import AbstractUnitOfWork
-from src.archive.domains.collection import Collection, Type, Class, Method, Format
+from src.archive.domains.collection import Collection
 
 
 class CollectionService: 
 
     async def create_collection(
             self,
-            file: bytes,
             data: BaseModel,
             uow: AbstractUnitOfWork,
     ) -> Collection:
+        file_url = str(uuid4()) + ".pdf"
+        html_url = str(uuid4()) + ".html"
         collection = Collection(
-            file_url=data.file_url,
+            file_url=file_url,
+            html_url=html_url,
             theme=data.theme,
-            purpose=data.purpose,
-            task=data.task,
-            type_coll=Type(
-                id=data.type_coll_id,
-                name=None
-            ),
-            class_coll=Class(
-                id=data.class_coll_id,
-                name=None
-            ),
-            format_coll=Format(
-                id=data.format_coll_id,
-                name=None
-            ),
-            method_coll=Method(
-                id=data.method_coll_id,
-                name=None
-            ),
-            preface=data.preface,
-            note=data.note,
-            indication=data.indication,
-            intro_text=data.intro_text,
-            recommendations=data.recommendations,
+            title=data.title,
+            author_id=data.author_id,
         )
 
         async with uow as uow:
@@ -45,8 +27,11 @@ class CollectionService:
             await uow.commit()
         
 
-        with open(f"files/{data.file_url}", "wb") as buffer:
-            buffer.write(file)
+        with open(f"files/collection/{file_url}", "w"):
+            pass
+
+        with open(f"files/collection/{html_url}", "w"):
+            pass
 
         return collection
     

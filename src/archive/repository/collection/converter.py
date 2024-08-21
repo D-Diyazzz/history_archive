@@ -1,4 +1,4 @@
-from src.archive.domains.collection import Collection, Class, Type, Format, Method
+from src.archive.domains.collection import Collection
 
 
 def collection_to_dict(model: Collection):

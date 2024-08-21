@@ -14,37 +14,13 @@ from src.archive.database.engine import get_session
 
 service = CollectionService()
 
-async def create_collection_handler(file: UploadFile = File(...), data: str = Form(...)):
+async def create_collection_handler(data: CollectionRequest):
 
-    if file.content_type != 'application/pdf':
-        raise HTTPException(status_code=400, detail="File is not in PDF format")
+    collection = await service.create_collection(data=data, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
 
-    try:
-        data = json.loads(data)
-        data["file_url"] = str(uuid4()) + "_"+ file.filename
-        data = parse_obj_as(CollectionRequest, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
-
-    collection = await service.create_collection(file=file.file.read(), data=data, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
-
-    response = CollectionResponse(
-        id=collection.get_id,
-        file_url=collection.get_file_url,
-        theme=collection.get_theme,
-        purpose=collection.get_purpose,
-        task=collection.get_task,
-        type_coll=collection.get_type_coll.name,
-        class_coll=collection.get_class_coll.name,
-        format_coll=collection.get_format_coll.name,
-        method_coll=collection.get_method_coll.name,
-        preface=collection.get_preface,
-        note=collection.get_note,
-        indication=collection.get_indication,
-        intro_text=collection.get_intro_text,
-        recommendations=collection.get_recommendations,
-        created_at=collection.get_created_at
-    )
+    response = {
+        "id": collection.id
+    }
     return response
 
 
