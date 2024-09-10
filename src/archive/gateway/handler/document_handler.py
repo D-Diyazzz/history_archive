@@ -11,7 +11,7 @@ from src.archive.repository.document import DocumentRepository
 from src.archive.service.document import DocumentService
 from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest, SearchDataResponse
 from src.archive.database.engine import get_session, init_engine
-from src.archive.dependencies.auth_dependencies import chech_access_token, chech_role
+from src.archive.dependencies.auth_dependencies import check_access_token, check_role
 from src.archive.gateway.converter import DocumentConverter
 from src.archive.views import DocumentViews
 
@@ -19,7 +19,7 @@ from src.archive.views import DocumentViews
 service = DocumentService()
 allowed_formats = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/png", "image/jpeg", "image/webp", "image/jpg"]
 
-async def create_document_handler(user_data = Depends(chech_role), files: List[UploadFile] = File(...), data: str = Form(...)):
+async def create_document_handler(user_data = Depends(check_role), files: List[UploadFile] = File(...), data: str = Form(...)):
     files_dict = {}
     for file in files:
         if file.content_type not in allowed_formats:
@@ -47,7 +47,7 @@ async def get_document_handler(id: int):
     return document
 
 
-async def get_list_document_handler(user_data = Depends(chech_access_token)):
+async def get_list_document_handler(user_data = Depends(check_access_token)):
 
     documents = await DocumentViews.get_documents_view(engine=init_engine())
 

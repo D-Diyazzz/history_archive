@@ -1,43 +1,31 @@
+from typing import List, Optional, Union
 from pydantic import BaseModel
 from datetime import datetime
 from uuid import UUID
+
+from src.archive.gateway.schemas.document_schemas import DocumentResponse, PhonoDocumentResponse, PhotoDocumentResponse, VideoDocumentResponse
+from src.archive.gateway.schemas.user_schemas import UserResponse
 
 
 class CollectionRequest(BaseModel):
     theme: str
     title: str
-    author_id: UUID
 
 
 class CollectionResponse(BaseModel):
-    id: int
+    id: str
     file_url: str
+    html_url: str
     theme: str
-    purpose: str
-    task: str
-    type_coll: str
-    class_coll: str
-    format_coll: str
-    method_coll: str
-    preface: str | None
-    note: str | None
-    indication: str | None
-    intro_text: str | None
-    recommendations: str | None
+    title: str
+    author: UserResponse
+    scientific_council_group: Optional[List[UserResponse]]
+    redactor_group: Optional[List[UserResponse]]
+    documents: Optional[List[Union[DocumentResponse, PhotoDocumentResponse, PhonoDocumentResponse, VideoDocumentResponse]]]
+    is_approved: bool
+    hash_code: str
     created_at: datetime
+    activeEditor: Optional[UserResponse]
 
 
-class CollectionUpdateRequest(BaseModel):
-    file_url: str | None
-    theme: str | None
-    purpose: str | None
-    task: str | None
-    type_coll_id: int | None
-    class_coll_id: int | None
-    format_coll_id: int | None
-    method_coll_id: int | None
-    preface: str | None
-    note: str | None
-    indication: str | None
-    intro_text: str | None
-    recommendations: str | None
+

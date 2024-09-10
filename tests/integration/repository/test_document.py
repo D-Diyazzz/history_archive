@@ -8,38 +8,10 @@ from sqlalchemy import text
 from typing import List
 
 from src.archive.repository.document import DocumentRepository
-from src.archive.domains.document import Document, SearchData
+from src.archive.domains.document import Document
 from src.archive.database.tables import mapper_registry
 from src.archive.repository.document.statements import insert_document, insert_search_data
 
-
-@pytest.fixture
-def init_search_data():
-    return SearchData(
-        cypher="cypher",
-        fund="fund",
-        inventory="inventory",
-        case="case",
-        leaf="leaf",
-        authenticity="authenticity",
-        lang="lang",
-        playback_method="playback method"
-    )
-
-@pytest.fixture
-def upload_search_data():
-    return SearchData(
-        id=1,
-        cypher="cypher",
-        fund="fund",
-        inventory="inventory",
-        case="case",
-        leaf="leaf",
-        authenticity="authenticity",
-        lang="lang",
-        playback_method="playback method",
-        other="other"
-    )
 
 @pytest.fixture
 def init_document(init_search_data):
@@ -631,7 +603,7 @@ class TestDocumentRepository:
 
     
     @pytest.mark.asyncio
-    async def test_update_document(
+    async def test_delete_document(
         self,
         init_engine,
         get_session,

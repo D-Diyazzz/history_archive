@@ -1,7 +1,7 @@
 import hashlib
 from datetime import datetime
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from src.archive.core import AbstractBaseEntity
 
@@ -21,7 +21,7 @@ class Collection(AbstractBaseEntity):
             reference = None
     ):
         AbstractBaseEntity.__init__(self, reference)
-        self._id = id or UUID()
+        self._id = id or uuid4()
         self._file_url = file_url
         self._html_url = html_url
         self._theme = theme

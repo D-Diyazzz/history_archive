@@ -19,7 +19,7 @@ class Role(Enum):
 
 class User(AbstractBaseEntity):
 
-    _id: int | None
+    _id: str | None
     _firstname: str
     _lastname: str
     _email: str
@@ -30,7 +30,7 @@ class User(AbstractBaseEntity):
 
     def __init__(
             self,
-            id: int = None,
+            id: str = None,
     ):
         self._id = id
 
@@ -59,7 +59,7 @@ class User(AbstractBaseEntity):
         lastname: str,
         email: str,
         password: str,
-        id: int,
+        id: str,
         role: Role,
         created_at: datetime,
     ):
@@ -73,7 +73,7 @@ class User(AbstractBaseEntity):
         return user
 
     @property
-    def get_id(self) -> int:
+    def get_id(self) -> str:
         return self._id
     
     @property

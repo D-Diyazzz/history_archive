@@ -1,22 +1,28 @@
 import json
 
-from uuid import uuid4
-from fastapi import UploadFile, File, Form
+from uuid import UUID, uuid4
+from fastapi import Depends, UploadFile, File, Form
 from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
+from sqlalchemy.ext.asyncio import engine
 
-from src.archive.core import UnitOfWork
+from src.archive.core import UnitOfWork, cache_service
+from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role
+from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
 from src.archive.service.collection import CollectionService
-from src.archive.gateway.schemas import CollectionRequest, CollectionResponse, CollectionUpdateRequest
-from src.archive.database.engine import get_session
+from src.archive.gateway.schemas import CollectionRequest
+from src.archive.database.engine import get_session, init_engine
+from src.archive.views.collection_views import CollectionViews
+from src.archive.views.user_views import UserViews
 
 
 service = CollectionService()
+redis_service = RedisCacheService()
 
-async def create_collection_handler(data: CollectionRequest):
+async def create_collection_handler(data: CollectionRequest, user_data = Depends(check_role)):
 
-    collection = await service.create_collection(data=data, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+    collection = await service.create_collection(data=data,author_id=UUID(user_data["id"]), uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
 
     response = {
         "id": collection.id
@@ -24,93 +30,22 @@ async def create_collection_handler(data: CollectionRequest):
     return response
 
 
-async def get_collection_handler(id: int):
-    collection = await service.get_collection(id=id, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+async def open_session_handler(id: str, user_data = Depends(check_role)):
 
-    response = CollectionResponse(
-        id=collection.get_id,
-        file_url=collection.get_file_url,
-        theme=collection.get_theme,
-        purpose=collection.get_purpose,
-        task=collection.get_task,
-        type_coll=collection.get_type_coll.name,
-        class_coll=collection.get_class_coll.name,
-        format_coll=collection.get_format_coll.name,
-        method_coll=collection.get_method_coll.name,
-        preface=collection.get_preface,
-        note=collection.get_note,
-        indication=collection.get_indication,
-        intro_text=collection.get_intro_text,
-        recommendations=collection.get_recommendations,
-        created_at=collection.get_created_at
-    )
-    return response
-
-async def get_list_collecti0n_handler():
-    collections = await service.get_list_collection(uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
-    response = [
-        CollectionResponse(
-            id=collection.get_id,
-            file_url=collection.get_file_url,
-            theme=collection.get_theme,
-            purpose=collection.get_purpose,
-            task=collection.get_task,
-            type_coll=collection.get_type_coll.name,
-            class_coll=collection.get_class_coll.name,
-            format_coll=collection.get_format_coll.name,
-            method_coll=collection.get_method_coll.name,
-            preface=collection.get_preface,
-            note=collection.get_note,
-            indication=collection.get_indication,
-            intro_text=collection.get_intro_text,
-            recommendations=collection.get_recommendations,
-            created_at=collection.get_created_at
-    ) for collection in collections]
-
-    return response
-
-async def update_colelction_handler(id: int, file: UploadFile = File(None), data: str = Form(...)):
-
-    data = json.loads(data)
-
-    if file:
-        if file.content_type != 'application/pdf':
-            raise HTTPException(status_code=400, detail="File is not in PDF format")
-        
-        data["file_url"] = str(uuid4()) + "_"+ file.filename  
-        file = file.file.read()  
-    else:
-        data["file_url"] = None
-            
     try:
-        data = parse_obj_as(CollectionUpdateRequest, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
-    
-    collection = await service.update_collection(id=id, data=data, file=file, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+        await service.connect_to_editing(user_id=user_data["id"], document_id=id, cache_service=redis_service)
 
-    
-    response = CollectionResponse(
-        id=collection.get_id,
-        file_url=collection.get_file_url,
-        theme=collection.get_theme,
-        purpose=collection.get_purpose,
-        task=collection.get_task,
-        type_coll=collection.get_type_coll.name,
-        class_coll=collection.get_class_coll.name,
-        format_coll=collection.get_format_coll.name,
-        method_coll=collection.get_method_coll.name,
-        preface=collection.get_preface,
-        note=collection.get_note,
-        indication=collection.get_indication,
-        intro_text=collection.get_intro_text,
-        recommendations=collection.get_recommendations,
-        created_at=collection.get_created_at
-    )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+async def get_collection_admin_handler(id: str, user_data = Depends(check_all_admin_group_role)):
+
+    response = await CollectionViews.get_collection_by_id_view(id=id, engine=init_engine())
+
+    if redis_service.exists(id):
+        user_response = await UserViews.get_user_by_id_view(id=redis_service.get(id), engine=init_engine())
+
+        response.activeEditor = user_response
 
     return response
-
-async def delete_collection_handler(id: int):
-    await service.delete_collection(id=id, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
-
-    return ["Delete success"]

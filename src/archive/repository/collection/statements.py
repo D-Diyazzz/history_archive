@@ -3,6 +3,7 @@ from sqlalchemy import text
 
 insert_collection = text("""
     insert into collection(
+        "id",
         "file_url",
         "html_url",
         "theme",
@@ -12,6 +13,7 @@ insert_collection = text("""
         "is_approved",
         "created_at"
     ) values (
+        :id,
         :file_url,
         :html_url,
         :theme,

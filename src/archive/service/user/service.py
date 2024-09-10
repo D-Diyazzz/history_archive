@@ -43,7 +43,7 @@ class UserService:
             raise Exception("Wrong password or email")
         
         data = dict(
-            id=user.get_id,
+            id=str(user.get_id),
             role=user.get_role.name,
             name=user.get_firstname,
         )

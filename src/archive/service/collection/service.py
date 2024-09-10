@@ -1,14 +1,100 @@
 from pydantic import BaseModel
-from uuid import uuid4
+from uuid import uuid4, UUID
+from fpdf import FPDF
 
-from src.archive.core import AbstractUnitOfWork
+from src.archive.core import AbstractUnitOfWork, AbstractCacheService
 from src.archive.domains.collection import Collection
+from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S
+
+
+start_html_content = '''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+
+@page {
+    margin: 0;  /* Убираем отступы страницы */
+    padding: 0; /* Убираем внутренние отступы страницы */
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    border: none; /* Убираем любые границы */
+    outline: none; /* Убираем обводку */
+    background-color: red;
+    
+}
+
+.pdf-redactor-page {
+    width: 794px;
+    height: 1123px;
+    background-color: white;
+    margin-left: 0;
+    margin-right: 0;
+    border: 1px solid black;  /* Убираем границу */
+    outline: none; /* Убираем обводку */
+    word-wrap: break-word;
+    box-sizing: border-box;
+    padding:93px;
+}
+
+.pdf-redactor-page-edit {
+    width: 100%;
+    outline: none;
+    word-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+    border: none; /* Убираем границу */
+    outline: none; /* Убираем обводку */
+}
+
+.pdf-redactor-page-edit p{
+	caret-color: black;
+}
+
+.pdf-redactor-page-edit p span{
+	caret-color: black;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.italic{
+	font-style: italic;
+}
+
+.central-text-position{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.right-text-position{
+	text-align: right;
+}
+
+p{
+	margin-top: 5px;
+	margin-bottom:0;
+}
+
+    </style>
+</head>
+
+</html>
+'''
 
 
 class CollectionService: 
 
     async def create_collection(
             self,
+            author_id: UUID,
             data: BaseModel,
             uow: AbstractUnitOfWork,
     ) -> Collection:
@@ -19,7 +105,7 @@ class CollectionService:
             html_url=html_url,
             theme=data.theme,
             title=data.title,
-            author_id=data.author_id,
+            author_id=author_id,
         )
 
         async with uow as uow:
@@ -27,86 +113,21 @@ class CollectionService:
             await uow.commit()
         
 
-        with open(f"files/collection/{file_url}", "w"):
-            pass
-
-        with open(f"files/collection/{html_url}", "w"):
-            pass
-
-        return collection
-    
-    async def get_collection(
-            self,
-            id: int,
-            uow: AbstractUnitOfWork,
-    ) -> Collection:
-        
-        async with uow as uow:
-            colleciton = await uow.repository.get(id=id)
-
-        return colleciton
-    
-    async def get_list_collection(
-            self,
-            uow: AbstractUnitOfWork,
-    ) -> list[Collection]:
-        
-        async with uow as uow:
-            collections = await uow.repository.get_list()
-        
-        return collections
-
-    async def update_collection(
-            self,
-            id: int,
-            data: BaseModel,
-            file: bytes | None,
-            uow: AbstractUnitOfWork,
-    ) -> Collection:
-        collection = Collection(
-            file_url=data.file_url,
-            theme=data.theme,
-            purpose=data.purpose,
-            task=data.task,
-            type_coll=Type(
-                id=data.type_coll_id,
-                name=None
-            ),
-            class_coll=Class(
-                id=data.class_coll_id,
-                name=None
-            ),
-            format_coll=Format(
-                id=data.format_coll_id,
-                name=None
-            ),
-            method_coll=Method(
-                id=data.method_coll_id,
-                name=None
-            ),
-            preface=data.preface,
-            note=data.note,
-            indication=data.indication,
-            intro_text=data.intro_text,
-            recommendations=data.recommendations,
-        )
-
-        async with uow as uow:
-            collection = await uow.repository.update(id=id, data=collection)
-            await uow.commit()
-
-        if file:
-            with open(f"files/{data.file_url}", "wb") as buffer:
-                buffer.write(file)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.output(f"files/collections/{file_url}")
+        with open(f"files/collections/{html_url}", "w") as html_file:
+            html_file.write(start_html_content)
 
         return collection
-
-    async def delete_collection(
-            self,
-            id: int,
-            uow: AbstractUnitOfWork,
+   
+    async def connect_to_editing(
+           self,
+           user_id: UUID,
+           document_id: UUID,
+           cache_service: AbstractCacheService
     ):
-        async with uow as uow:
-            await uow.repository.delete(id=id)
-            await uow.commit()
-        
+       if cache_service.exists(document_id):
+           raise ValueError(f"Document with id {document_id} already editing")
+
+       cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
