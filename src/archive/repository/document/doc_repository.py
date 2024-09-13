@@ -23,7 +23,7 @@ class DocumentRepository(AbstractRepository):
         search_data_id = search_data_id.scalars().first()
         model._search_data._id = search_data_id
         document_data_dict = document_to_dict(model=model)
-
+        print(model.__dict__)
         id = await self.session.execute(
             insert_document,
             document_data_dict

@@ -40,7 +40,7 @@ async def create_document_handler(user_data = Depends(check_role), files: List[U
     return response
 
 
-async def get_document_handler(id: int):
+async def get_document_handler(id: str):
 
     document = await DocumentViews.get_document_by_id_view(id=id, engine=init_engine())
 

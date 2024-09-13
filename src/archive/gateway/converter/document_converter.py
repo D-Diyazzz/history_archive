@@ -8,8 +8,9 @@ class DocumentConverter:
 
     @classmethod
     def row_to_document(cls, document: Row) -> DocumentResponse:
+        print(document.id)
         return DocumentResponse(
-            id=document.id,
+            id=str(document.id),
             file_urls=document.file_urls,
             author=document.author,
             dating=document.dating,

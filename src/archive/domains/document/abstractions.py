@@ -1,4 +1,5 @@
 import pytz
+from uuid import UUID, uuid4
 from datetime import datetime
 from abc import ABC        
 from typing import List
@@ -14,7 +15,7 @@ class AbstarctDocument(ABC):
             id: int = None,
             created_at: datetime = None
     ):
-        self._id = id
+        self._id = id or uuid4()
         self._file_urls = file_urls
         self._author = author
         self._dating = dating
@@ -22,7 +23,7 @@ class AbstarctDocument(ABC):
         self._created_at = created_at if created_at else datetime.now(pytz.UTC)
 
     @property
-    def id(self) -> int:
+    def id(self) -> UUID:
         return self._id
     
     @property

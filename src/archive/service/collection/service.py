@@ -1,3 +1,5 @@
+import re
+
 from pydantic import BaseModel
 from uuid import uuid4, UUID
 from fpdf import FPDF
@@ -5,6 +7,7 @@ from fpdf import FPDF
 from src.archive.core import AbstractUnitOfWork, AbstractCacheService
 from src.archive.domains.collection import Collection
 from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S
+from src.archive.adapters import PDFAdapter
 
 
 start_html_content = '''
@@ -123,11 +126,45 @@ class CollectionService:
    
     async def connect_to_editing(
            self,
-           user_id: UUID,
-           document_id: UUID,
+           user_id: str,
+           document_id: str,
            cache_service: AbstractCacheService
     ):
        if cache_service.exists(document_id):
            raise ValueError(f"Document with id {document_id} already editing")
 
        cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
+
+
+    async def edit_collection(
+            self,
+            user_id: str,
+            document_id: str,
+            data: BaseModel,
+            cache_service: AbstractCacheService,
+            uow: AbstractUnitOfWork,
+    ):
+        async with uow as uow:
+            collection = await uow.repository.get(id=document_id)
+            if collection.theme != data.theme or collection.title != data.title:
+                collection.update(
+                    new_theme = data.theme,
+                    new_title = data.title
+                )
+                print(collection.__dict__)
+                collection = await uow.repository.update(model=collection)
+            await uow.commit()
+
+        with open(f"files/collections/{collection.html_url}", 'r', encoding='utf-8') as file:
+            html_content = file.read()
+
+        pattern = re.compile(r'(?<=</head>)(.*?)(?=</html>)', re.DOTALL)
+
+        updated_html_content = re.sub(pattern, data.html_data, html_content)
+
+        with open(f"files/collections/{collection.html_url}", 'w', encoding='utf-8') as file:
+            file.write(updated_html_content)
+
+        PDFAdapter.html_to_pdf(html_code=updated_html_content, path=f"files/collections/{collection.file_url}") 
+
+        cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)

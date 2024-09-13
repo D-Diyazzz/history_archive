@@ -28,4 +28,7 @@ class CollectionResponse(BaseModel):
     activeEditor: Optional[UserResponse]
 
 
-
+class CollectionEditRequest(BaseModel):
+    theme: str
+    title: str
+    html_data: str

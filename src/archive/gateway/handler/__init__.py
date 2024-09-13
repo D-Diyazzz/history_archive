@@ -2,6 +2,7 @@ from .collection_handler import (
     create_collection_handler,
     open_session_handler,
     get_collection_admin_handler,
+    edit_collection_handler,
 )
 
 from .document_handler import(
@@ -28,6 +29,7 @@ __all__ = [
     "create_document_handler",
     "get_document_handler",
     "get_list_document_handler",
+    "edit_collection_handler",
     "update_document_handler",
     "delete_document_handler",
     "remove_files_handler",

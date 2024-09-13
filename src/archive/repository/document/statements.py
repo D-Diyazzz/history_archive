@@ -31,6 +31,7 @@ insert_search_data = text("""
 insert_document = text("""
 
     insert into documents (
+        id,
         search_data_id,
         file_urls,
         author,
@@ -43,6 +44,7 @@ insert_document = text("""
         main_text,
         created_at
     ) values (
+        :id,
         :search_data_id,
         :file_urls,
         :author,

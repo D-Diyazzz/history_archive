@@ -43,7 +43,7 @@ class CollectionRepository(AbstractRepository):
         return [dict_to_collection(r) for r in res]
 
     async def update(self, model: Collection):
-        data = collection_to_dict(data)
+        data = collection_to_dict(model)
         
         await self.session.execute(
             update_collection,
