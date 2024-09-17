@@ -18,6 +18,8 @@ from src.archive.gateway.handler import (
     registration_handler,
     login_handler,
     refresh_token_handler,
+
+    get_admin_users_handler,
 )
 
 
@@ -46,4 +48,9 @@ def get_auth_router() -> APIRouter:
     router.post("/register", status_code=201)(registration_handler)
     router.post("/login", status_code=200)(login_handler)
     router.post("/refresh-token", status_code=200)(refresh_token_handler)
+    return router
+
+def get_user_router() -> APIRouter:
+    router = APIRouter(tags=["User"], prefix="/v1")
+    router.get("/user/admin", status_code=200)(get_admin_users_handler)
     return router

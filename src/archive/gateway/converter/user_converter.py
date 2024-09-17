@@ -1,4 +1,5 @@
 from sqlalchemy import Row
+from typing import List
 
 from src.archive.gateway.schemas.user_schemas import UserResponse
 
@@ -14,3 +15,7 @@ class UserConverter:
             role=user.role,
             email=user.email
         )
+
+    @classmethod
+    def row_to_user_list(cls, users: Row) -> List[UserResponse]:
+        return [cls.row_to_user(user) for user in users]

@@ -22,6 +22,10 @@ from .auth_handler import(
     refresh_token_handler,
 )
 
+from .user_handler import(
+    get_admin_users_handler,
+)
+
 
 __all__ = [
 
@@ -37,6 +41,7 @@ __all__ = [
     "update_document_handler",
     "delete_document_handler",
     "remove_files_handler",
+    "get_admin-users_handler",
 
     "registration_handler",
     "login_handler",

@@ -30,6 +30,7 @@ class DocumentResponse(BaseModel):
     main_text: str
     search_data: SearchDataResponse
     created_at: datetime
+    type: str = "document"
 
 
 class DocumentUpdateRequest(BaseModel):
