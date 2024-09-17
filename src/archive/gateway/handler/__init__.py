@@ -3,6 +3,8 @@ from .collection_handler import (
     open_session_handler,
     get_collection_admin_handler,
     edit_collection_handler,
+    pin_document_to_collection_handler,
+    delete_document_link_handler,
 )
 
 from .document_handler import(
@@ -26,6 +28,8 @@ __all__ = [
     "create_collection_handler",
     "open_session_handler",
     "get_collection_admin_handler",
+    "pin_document_to_collection_handler",
+    "delete_document_link_handler",
     "create_document_handler",
     "get_document_handler",
     "get_list_document_handler",

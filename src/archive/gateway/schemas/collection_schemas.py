@@ -32,3 +32,8 @@ class CollectionEditRequest(BaseModel):
     theme: str
     title: str
     html_data: str
+
+
+class CollectionPinDocumentRequest(BaseModel):
+    doc_id: str
+    doc_type: str

@@ -8,7 +8,6 @@ class DocumentConverter:
 
     @classmethod
     def row_to_document(cls, document: Row) -> DocumentResponse:
-        print(document.id)
         return DocumentResponse(
             id=str(document.id),
             file_urls=document.file_urls,
@@ -34,17 +33,16 @@ class DocumentConverter:
             ),
             created_at=document.created_at
         )
-    
+
     @classmethod
     def row_to_document_list(cls, documents) -> List[DocumentResponse]:
-        print(type(documents))
         return [cls.row_to_document(doc) for doc in documents]
 
 
     @classmethod
     def model_to_document(cls, document: Document) -> DocumentResponse:
         return DocumentResponse(
-        id=document.id,
+        id=str(document.id),
         file_urls=document.file_urls,
         author=document.author,
         dating=document.dating,

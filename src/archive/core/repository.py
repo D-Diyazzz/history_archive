@@ -23,3 +23,14 @@ class AbstractRepository(ABC):
     @abstractmethod
     async def delete(self, id):
         raise NotImplementedError
+
+
+class AbstractLinkRepository(ABC):
+
+    @abstractmethod
+    async def add(self, obj_id, related_obj_id, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, obj_id, related_obj_id, **kwargs):
+        raise NotImplementedError

@@ -5,6 +5,8 @@ from src.archive.gateway.handler import (
     open_session_handler,
     get_collection_admin_handler,
     edit_collection_handler,
+    pin_document_to_collection_handler,
+    delete_document_link_handler,
 
     create_document_handler,
     get_document_handler,
@@ -25,6 +27,8 @@ def get_collection_router() -> APIRouter:
     router.get("/collection/{id}/admin", status_code=200)(get_collection_admin_handler)
     router.post("/collection/{id}/session", status_code=200)(open_session_handler)
     router.patch("/collection/{id}", status_code=200)(edit_collection_handler)
+    router.post("/collection/{id}/document", status_code=200)(pin_document_to_collection_handler)
+    router.delete("/collection/{id}/document", status_code=200)(delete_document_link_handler)
     return router
 
 def get_document_router() -> APIRouter:

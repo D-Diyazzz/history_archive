@@ -1,5 +1,6 @@
 from sqlalchemy import Row
 
+from src.archive.gateway.converter.document_converter import DocumentConverter
 from src.archive.gateway.schemas.collection_schemas import CollectionResponse
 from src.archive.gateway.schemas.user_schemas import UserResponse
 
@@ -7,7 +8,12 @@ from src.archive.gateway.schemas.user_schemas import UserResponse
 class CollectionConverter:
 
     @classmethod
-    def row_to_collection(cls, collection: Row) -> CollectionResponse:
+    def row_to_collection(
+            cls, 
+            collection: Row,
+            documents: Row
+        ) -> CollectionResponse:
+        documents_res = DocumentConverter.row_to_document_list(documents=documents)
         return CollectionResponse(
             id=str(collection.id),
             file_url=collection.file_url,
@@ -23,7 +29,7 @@ class CollectionConverter:
             ),
             scientific_council_group=None,
             redactor_group=None,
-            documents=None,
+            documents=documents_res,
             is_approved=collection.is_approved,
             hash_code=collection.hash_code,
             created_at=collection.created_at,

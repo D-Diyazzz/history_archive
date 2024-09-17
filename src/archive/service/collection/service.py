@@ -45,7 +45,7 @@ html, body {
 }
 
 .pdf-redactor-page-edit {
-    width: 100%;
+width: 100%;
     outline: none;
     word-wrap: break-word;
     word-break: break-word;
@@ -168,3 +168,28 @@ class CollectionService:
         PDFAdapter.html_to_pdf(html_code=updated_html_content, path=f"files/collections/{collection.file_url}") 
 
         cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
+
+
+    async def pin_document(
+            self,
+            id: str,
+            data: BaseModel,
+            uow: AbstractUnitOfWork,
+    ):
+        async with uow as uow:
+            id = await uow.repository.add(obj_id=id, related_obj_id=data.doc_id, doc_type=data.doc_type)
+            await uow.commit()
+
+        return id
+
+    async def delete_document_link(
+            self,
+            id: str,
+            data: BaseModel,
+            uow: AbstractUnitOfWork
+    ):
+        async with uow as uow:
+            await uow.repository.delete(obj_id=id, related_obj_id=data.doc_id, doc_type=data.doc_type)
+            await uow.commit()
+
+

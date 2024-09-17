@@ -52,19 +52,31 @@ class CollectionViews:
                 """), {
                     "id": id
                 }
-            ))
+            )).all()
 
             documents_row = (await conn.execute(
                 text("""
-                    SELECT d.*
+                    SELECT d.*,
+                        s.id as search_data_id,
+                        s.cypher as search_data_cypher,
+                        s.fund as search_data_fund,
+                        s.inventory as search_data_inventory,
+                        s.case as search_data_case,
+                        s.leaf as search_data_leaf,
+                        s.authenticity as search_data_authenticity,
+                        s.lang as search_data_lang,
+                        s.playback_method as search_data_playback_method,
+                        s.other as search_data_other
+
                     FROM documents d
                     JOIN document_links dl ON d.id = dl.document_id
+                    JOIN search_data s on d.search_data_id = s.id
                     WHERE dl.collection_id = :collection_id
                 """),{
                     "collection_id": id
                     }
-                ))
-
+                )).all()
+            print(documents_row)
             photo_documents_row = (await conn.execute(
                 text("""
                     SELECT pd.*
@@ -74,7 +86,7 @@ class CollectionViews:
                 """),{
                     "collection_id": id
                     }
-                ))
+                )).all()
 
             video_documents_row = (await conn.execute(
                 text("""
@@ -85,7 +97,7 @@ class CollectionViews:
                 """),{
                     "collection_id": id
                     }
-                ))
+                )).all()
 
             phono_documents_row = (await conn.execute(
                 text("""
@@ -96,7 +108,7 @@ class CollectionViews:
                 """),{
                     "collection_id": id
                     }
-                ))
+                )).all()
 
-            return CollectionConverter.row_to_collection(collection=coll_row)
+            return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row)
 

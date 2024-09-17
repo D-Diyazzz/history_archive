@@ -110,7 +110,6 @@ document_links = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("document_id", UUID(as_uuid=True), ForeignKey("documents.id", ondelete="CASCADE"), nullable=False),
-    Column("sequence_number", Integer, nullable=False)
 )
 
 photo_documents = Table(
@@ -137,7 +136,6 @@ photo_document_links = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("photo_document_id", UUID(as_uuid=True), ForeignKey("photo_documents.id", ondelete="CASCADE"), nullable=False),
-    Column("sequence_number", Integer, nullable=False)
 )
 
 video_documents = Table(
@@ -164,7 +162,6 @@ video_document_links = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("video_document_id", UUID(as_uuid=True), ForeignKey("video_documents.id", ondelete="CASCADE"), nullable=False),
-    Column("sequence_number", Integer, nullable=False)
 )
 
 phono_documents = Table(
@@ -190,7 +187,6 @@ phono_document_links = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id", UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("phono_document_id", UUID(as_uuid=True), ForeignKey("phono_documents.id", ondelete="CASCADE"), nullable=False),
-    Column("sequence_number", Integer, nullable=False)
 )
 
 search_data = Table(

@@ -6,12 +6,13 @@ from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 from sqlalchemy.ext.asyncio import engine
 
-from src.archive.core import UnitOfWork, cache_service
+from src.archive.core import UnitOfWork, cache_service, LinkUnitOfWork
 from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role
 from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
+from src.archive.repository.document_links import DocumentsLinkRepostiory
 from src.archive.service.collection import CollectionService
-from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest
+from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest, CollectionPinDocumentRequest
 from src.archive.database.engine import get_session, init_engine
 from src.archive.views.collection_views import CollectionViews
 from src.archive.views.user_views import UserViews
@@ -54,4 +55,16 @@ async def get_collection_admin_handler(id: str, user_data = Depends(check_all_ad
 async def edit_collection_handler(id: str, data:CollectionEditRequest, user_data=Depends(check_role)):
     
     await service.edit_collection(user_id=user_data["id"], document_id=id, data=data, cache_service=redis_service, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+    return ["200"]
+
+
+async def pin_document_to_collection_handler(id: str, data:CollectionPinDocumentRequest, user_data=Depends(check_role)):
+    
+    id = await service.pin_document(id=id, data=data, uow=LinkUnitOfWork(reposiotry=DocumentsLinkRepostiory, session_factory=get_session))
+    return {"link_id": id}
+
+
+async def delete_document_link_handler(id: str, data: CollectionPinDocumentRequest, user_data=Depends(check_role)):
+
+    await service.delete_document_link(id=id, data=data, uow=LinkUnitOfWork(reposiotry=DocumentsLinkRepostiory, session_factory=get_session))
     return ["200"]
