@@ -18,3 +18,14 @@ insert_collection_notification = text("""
 delete_collection_notification = text("""
     delete from notification_collection where id=:id
 """)
+
+select_collection_notification_by_id = text("""
+    select * from notification_collection where id=:id
+""")
+
+update_collection_notification = text("""
+    update notification_collection
+    set 
+        is_seen=:is_seen
+    where id=:id
+""")

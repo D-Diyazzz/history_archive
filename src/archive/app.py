@@ -7,6 +7,7 @@ from src.archive.gateway.urls import (
     get_document_router,
     get_auth_router,
     get_user_router,
+    get_notification_router,
 )
 from src.archive.database import start_mappers
 
@@ -38,3 +39,4 @@ app.include_router(get_collection_router())
 app.include_router(get_document_router())
 app.include_router(get_auth_router())
 app.include_router(get_user_router())
+app.include_router(get_notification_router())

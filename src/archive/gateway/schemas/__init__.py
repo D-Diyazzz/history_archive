@@ -3,6 +3,7 @@ from .document_schemas import DocumentRequest, DocumentResponse, DocumentUpdateR
 from .auth_schemas import RegistrationForm, LoginForm, TokenResponse, RefreshTokenRequest, LoginResponse
 from .search_data_schemas import SearchDataRequest, SearchDataResponse, SearchDataUpdate
 from .user_schemas import UserResponse
+from .notification_schemas import NotificationAddToCollectionResponse
 
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     "SearchDataRequest",
     "SearchDataResponse",
     "SearchDataUpdate",
-    "UserResponse"
+    "UserResponse",
+    "NotificationAddToCollectionResponse",
 ]

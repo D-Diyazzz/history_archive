@@ -40,6 +40,6 @@ class CollectionNotification(AbstractBaseEntity):
     def created_at(self) -> datetime:
         return self._created_at
 
-    def make_id_seen(self):
+    def make_it_seen(self):
         self._is_seen = True
 

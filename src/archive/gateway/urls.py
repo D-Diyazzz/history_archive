@@ -1,3 +1,4 @@
+from sys import prefix
 from fastapi import APIRouter
 
 from src.archive.gateway.handler import (
@@ -21,6 +22,9 @@ from src.archive.gateway.handler import (
     refresh_token_handler,
 
     get_admin_users_handler,
+
+    get_notifications_handler,
+    read_collection_notification_handler,
 )
 
 
@@ -55,4 +59,11 @@ def get_auth_router() -> APIRouter:
 def get_user_router() -> APIRouter:
     router = APIRouter(tags=["User"], prefix="/v1")
     router.get("/user/admin", status_code=200)(get_admin_users_handler)
+    return router
+
+
+def get_notification_router() -> APIRouter:
+    router = APIRouter(tags=["Notification"], prefix="/v1")
+    router.get("/notification/{id}", status_code=200)(get_notifications_handler)
+    router.patch("/notification/{id}", status_code=200)(read_collection_notification_handler)
     return router
