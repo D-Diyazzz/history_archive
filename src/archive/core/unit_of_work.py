@@ -6,6 +6,7 @@ from src.archive.core import AbstractBaseEntity, AbstractRepository, AbstractLin
 
 class AbstractUnitOfWork(ABC):
     repository: AbstractRepository
+    link_repository: AbstractLinkRepository
 
     async def __aenter__(self):
         return self
@@ -24,13 +25,15 @@ class AbstractUnitOfWork(ABC):
 
 class UnitOfWork(AbstractUnitOfWork):
 
-    def __init__(self, reposiotry: AbstractRepository, session_factory: AsyncSession):
+    def __init__(self, session_factory: AsyncSession, reposiotry: AbstractRepository=None, link_repository: AbstractLinkRepository=None):
         self.session_factory = session_factory
         self.repository = reposiotry
+        self.link_repository = link_repository
 
     async def __aenter__(self):
         self.session = await self.session_factory()
-        self.repository = self.repository(self.session)
+        self.repository = self.repository(self.session) if self.repository else None
+        self.link_repository = self.link_repository(self.session) if self.link_repository else None
         return await super().__aenter__()
     
     async def __aexit__(self, *args):

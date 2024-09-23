@@ -14,7 +14,8 @@ from sqlalchemy import (
     Text,
     DateTime,
     Enum,
-    JSON
+    JSON,
+    UniqueConstraint
 )
 from sqlalchemy.orm import registry, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -46,7 +47,8 @@ scientific_council_group = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("scientific_council_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
-    Column("created_at", DateTime(timezone=True), nullable=False)
+    Column("is_approved", Boolean, nullable=False, default=False),
+    UniqueConstraint('collection_id', 'scientific_council_id', name='uix_collection_scientific_council')
 )
 
 redactor_group = Table(
@@ -55,7 +57,8 @@ redactor_group = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("redactor_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
-    Column("created_at", DateTime(timezone=True), nullable=False)
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint('collection_id', 'redactor_id', name='uix_collection_redactor')
 )
 
 notification_collection = Table(
@@ -64,8 +67,9 @@ notification_collection = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("user_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
-    Column("text", Text, nullable=True),
-    Column("created_at", DateTime(timezone=True), nullable=False)
+    Column("is_seen", Boolean, nullable=False, default=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint('collection_id', 'user_id', name='uix_collection_user')
 )
 
 # documents = Table(

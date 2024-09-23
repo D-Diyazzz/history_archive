@@ -5,9 +5,12 @@ from uuid import uuid4, UUID
 from fpdf import FPDF
 
 from src.archive.core import AbstractUnitOfWork, AbstractCacheService
+from src.archive.core.unit_of_work import AbstractLinkUnitOfWork
 from src.archive.domains.collection import Collection
 from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S
 from src.archive.adapters import PDFAdapter
+from src.archive.domains.notification import CollectionNotification
+from src.archive.domains.user import Role
 
 
 start_html_content = '''
@@ -174,7 +177,7 @@ class CollectionService:
             self,
             id: str,
             data: BaseModel,
-            uow: AbstractUnitOfWork,
+            uow: AbstractLinkUnitOfWork,
     ):
         async with uow as uow:
             id = await uow.repository.add(obj_id=id, related_obj_id=data.doc_id, doc_type=data.doc_type)
@@ -186,10 +189,29 @@ class CollectionService:
             self,
             id: str,
             data: BaseModel,
-            uow: AbstractUnitOfWork
+            uow: AbstractLinkUnitOfWork
     ):
         async with uow as uow:
             await uow.repository.delete(obj_id=id, related_obj_id=data.doc_id, doc_type=data.doc_type)
+            await uow.commit()
+
+
+    async def bind_user_to_scientific_group(
+            self,
+            coll_id: str,
+            user_data: BaseModel,
+            uow: AbstractUnitOfWork,    
+    ):
+        if user_data.role != Role.ScientificCouncil.value:
+            raise ValueError("User doen't have access to scientific council group")
+        notification = CollectionNotification(
+            collection_id=coll_id,
+            user_id=user_data.id,
+        )
+
+        async with uow as uow:
+            notification = await uow.repository.add(notification)
+            link_id = await uow.link_repository.add(obj_id=coll_id, related_obj_id=user_data.id)
             await uow.commit()
 
 
