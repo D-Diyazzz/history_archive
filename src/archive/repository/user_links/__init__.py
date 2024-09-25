@@ -1,6 +1,6 @@
-from .sci_council_group_repository import SciCouncilGroupRepository
+from .collection_user_group_repository import CollectionUserGroupRepository
 
 
 __all__ = [
-    "SciCouncilGroupRepository",
+    "CollectionUserGroupRepository",
 ]

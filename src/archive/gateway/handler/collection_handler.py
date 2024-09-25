@@ -12,7 +12,7 @@ from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
 from src.archive.repository.document_links import DocumentsLinkRepostiory
 from src.archive.repository.notification import CollectionNotificationRepository
-from src.archive.repository.user_links.sci_council_group_repository import SciCouncilGroupRepository
+from src.archive.repository.user_links import CollectionUserGroupRepository
 from src.archive.service.collection import CollectionService
 from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest, CollectionPinDocumentRequest 
 from src.archive.database.engine import get_session, init_engine
@@ -77,11 +77,11 @@ async def bind_user_to_collection_handler(id: str, user_id: str, user_data=Depen
 
     user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
 
-    await service.bind_user_to_scientific_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=SciCouncilGroupRepository, session_factory=get_session))
+    await service.bind_user_to_collection_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=CollectionUserGroupRepository, session_factory=get_session))
     return ["200"]
 
 
 async def approve_collection_by_sci_user(id: str, approve: bool, user_data=Depends(check_sci_role)):
 
-    await service.approve_by_sci_user(coll_id=id, user_id=user_data["id"], approve=approve, uow=UnitOfWork(link_repository=SciCouncilGroupRepository, session_factory=get_session))
+    await service.approve_by_sci_user(coll_id=id, user_id=user_data["id"], approve=approve, uow=UnitOfWork(link_repository=CollectionUserGroupRepository, session_factory=get_session))
     return ["200"]

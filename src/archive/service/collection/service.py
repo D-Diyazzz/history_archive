@@ -196,23 +196,23 @@ class CollectionService:
             await uow.commit()
 
 
-    async def bind_user_to_scientific_group(
+    async def bind_user_to_collection_group(
             self,
             coll_id: str,
             user_data: BaseModel,
             uow: AbstractUnitOfWork,    
     ):
-        if user_data.role != Role.ScientificCouncil.value:
-            raise ValueError("User doen't have access to scientific council group")
         notification = CollectionNotification(
             collection_id=coll_id,
             user_id=user_data.id,
         )
-
-        async with uow as uow:
-            notification = await uow.repository.add(notification)
-            link_id = await uow.link_repository.add(obj_id=coll_id, related_obj_id=user_data.id)
-            await uow.commit()
+        try:
+            async with uow as uow:
+                notification = await uow.repository.add(notification)
+                link_id = await uow.link_repository.add(obj_id=coll_id, related_obj_id=user_data.id, user_role=user_data.role)
+                await uow.commit()
+        except ValueError:
+            raise ValueError("User doen't have access to scientific council group")
 
 
     async def approve_by_sci_user(
@@ -223,7 +223,7 @@ class CollectionService:
             uow: AbstractUnitOfWork
     ):
         async with uow as uow:
-            await uow.link_repository.update(obj_id=coll_id, related_obj_id=user_id, approve=approve)
+            await uow.link_repository.update(obj_id=coll_id, related_obj_id=user_id, approve=approve, user_role=Role.ScientificCouncil.value)
             await uow.commit()
 
 

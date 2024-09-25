@@ -29,3 +29,21 @@ update_sci_council_group = text("""
         AND
         "scientific_council_id"=:sci_council_id
 """)
+
+
+insert_redactor_group = text("""
+    insert into redactor_group(
+        "collection_id",
+        "redactor_id"
+    ) values (
+        :collection_id,
+        :redactor_id
+    ) returning id 
+""")
+
+delete_redactor_group = text("""
+    delete from redactor_group where
+        "collection_id"=:collection_id
+    AND
+        "redactor_id"=:redactor_id
+""")

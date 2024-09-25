@@ -57,7 +57,6 @@ redactor_group = Table(
     Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
     Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
     Column("redactor_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
-    Column("created_at", DateTime(timezone=True), nullable=False),
     UniqueConstraint('collection_id', 'redactor_id', name='uix_collection_redactor')
 )
 
@@ -69,7 +68,6 @@ notification_collection = Table(
     Column("user_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
     Column("is_seen", Boolean, nullable=False, default=False),
     Column("created_at", DateTime(timezone=True), nullable=False),
-    UniqueConstraint('collection_id', 'user_id', name='uix_collection_user')
 )
 
 # documents = Table(
