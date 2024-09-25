@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.archive.core.repository import AbstractLinkRepository
-from .statements import insert_sci_council_group, delete_sci_council_group 
+from .statements import insert_sci_council_group, delete_sci_council_group, update_sci_council_group
 
 
 class SciCouncilGroupRepository(AbstractLinkRepository):
@@ -19,6 +19,16 @@ class SciCouncilGroupRepository(AbstractLinkRepository):
             }
         )
         return id.scalar()
+
+    async def update(self, obj_id: str, related_obj_id: str, **kwargs):
+        await self.session.execute(
+            update_sci_council_group,
+            {
+                "collection_id": obj_id,
+                "sci_council_id": related_obj_id,
+                "is_approved": kwargs["approve"]
+            }
+        )
 
 
     async def delete(self, obj_id: str, related_obj_id: str, **kwargs):

@@ -19,3 +19,13 @@ delete_sci_council_group = text("""
     AND
         "scientific_council_id"=:sci_council_id
 """)
+
+update_sci_council_group = text("""
+    update scientific_council_group
+    set 
+        "is_approved"=:is_approved
+    where 
+        "collection_id"=:collection_id
+        AND
+        "scientific_council_id"=:sci_council_id
+""")

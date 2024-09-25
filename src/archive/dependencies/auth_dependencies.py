@@ -46,3 +46,14 @@ def check_all_admin_group_role(authorization_header: str = Security(APIKeyHeader
         raise HTTPException(status_code=403, detail="Access denied")
     
     return data
+
+
+def check_sci_role(authorization_header: str = Security(APIKeyHeader(name="Authorization", auto_error=False))):
+    data = decode_jwt_token(authorization_header)
+    required_roles = [Role.ScientificCouncil.value]
+    
+    if data["role"] not in required_roles:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    return data
+

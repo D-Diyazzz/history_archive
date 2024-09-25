@@ -215,3 +215,15 @@ class CollectionService:
             await uow.commit()
 
 
+    async def approve_by_sci_user(
+            self,
+            coll_id: str,
+            user_id: str,
+            approve: bool,
+            uow: AbstractUnitOfWork
+    ):
+        async with uow as uow:
+            await uow.link_repository.update(obj_id=coll_id, related_obj_id=user_id, approve=approve)
+            await uow.commit()
+
+

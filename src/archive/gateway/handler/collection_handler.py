@@ -7,7 +7,7 @@ from pydantic import parse_obj_as
 from sqlalchemy.ext.asyncio import engine
 
 from src.archive.core import UnitOfWork, cache_service, LinkUnitOfWork, repository
-from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role
+from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role, check_sci_role
 from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
 from src.archive.repository.document_links import DocumentsLinkRepostiory
@@ -78,4 +78,10 @@ async def bind_user_to_collection_handler(id: str, user_id: str, user_data=Depen
     user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
 
     await service.bind_user_to_scientific_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=SciCouncilGroupRepository, session_factory=get_session))
+    return ["200"]
+
+
+async def approve_collection_by_sci_user(id: str, approve: bool, user_data=Depends(check_sci_role)):
+
+    await service.approve_by_sci_user(coll_id=id, user_id=user_data["id"], approve=approve, uow=UnitOfWork(link_repository=SciCouncilGroupRepository, session_factory=get_session))
     return ["200"]
