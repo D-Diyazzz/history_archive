@@ -79,7 +79,7 @@ class UserViews:
                     JOIN redactor_group rg ON u.id = rg.redactor_id
                     WHERE rg.collection_id = :id
                 """), {
-                    "id": id
+                    "id": coll_id
                 }
             )).all()
 

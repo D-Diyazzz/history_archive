@@ -33,8 +33,8 @@ class CollectionViews:
                 }
             )).one()
             
-            sci_council_group = UserViews.get_sci_group_by_coll_id(coll_id=id, engine=engine)
-            redactor_group = UserViews.get_redactor_group_by_coll_id(coll_id=id, engine=engine)
+            sci_council_group = await UserViews.get_sci_group_by_coll_id(coll_id=id, engine=engine)
+            redactor_group = await UserViews.get_redactor_group_by_coll_id(coll_id=id, engine=engine)
 
             documents_row = (await conn.execute(
                 text("""
@@ -92,5 +92,5 @@ class CollectionViews:
                     }
                 )).all()
 
-            return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row)
+            return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row, sci_group=sci_council_group, redactor_group=redactor_group)
 

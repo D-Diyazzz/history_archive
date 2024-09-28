@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import Row
 
 from src.archive.gateway.converter.document_converter import DocumentConverter
@@ -11,7 +12,9 @@ class CollectionConverter:
     def row_to_collection(
             cls, 
             collection: Row,
-            documents: Row
+            documents: Row,
+            sci_group: BaseModel,
+            redactor_group: BaseModel
         ) -> CollectionResponse:
         documents_res = DocumentConverter.row_to_document_list(documents=documents)
         return CollectionResponse(
@@ -27,8 +30,8 @@ class CollectionConverter:
                 role=collection.user_role,
                 email=collection.user_email
             ),
-            scientific_council_group=None,
-            redactor_group=None,
+            scientific_council_group=sci_group,
+            redactor_group=redactor_group,
             documents=documents_res,
             is_approved=collection.is_approved,
             hash_code=collection.hash_code,
