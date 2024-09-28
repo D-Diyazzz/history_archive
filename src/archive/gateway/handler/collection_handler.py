@@ -83,5 +83,23 @@ async def bind_user_to_collection_handler(id: str, user_id: str, user_data=Depen
 
 async def approve_collection_by_sci_user(id: str, approve: bool, user_data=Depends(check_sci_role)):
 
-    await service.approve_by_sci_user(coll_id=id, user_id=user_data["id"], approve=approve, uow=UnitOfWork(link_repository=CollectionUserGroupRepository, session_factory=get_session))
+    await service.approve_by_sci_user(coll_id=id, user_id=user_data["id"], approve=approve, uow=UnitOfWork(reposiotry=CollectionRepository,link_repository=CollectionUserGroupRepository, session_factory=get_session))
+    return ["200"]
+
+
+async def approve_collection_by_admin_redactor_user_handler(id: str, approve:bool, user_data=Depends(check_role)):
+
+    sci_group = await UserViews.get_sci_group_by_coll_id(coll_id=id, engine=init_engine())
+
+
+    try:
+        await service.approve_by_admin_redactor_users(
+            coll_id=id, 
+            user_id=user_data["id"], 
+            user_role=user_data["role"], 
+            approve=approve, 
+            sci_group=sci_group,
+            uow=UnitOfWork(link_repository=CollectionUserGroupRepository, reposiotry=CollectionRepository, session_factory=get_session))
+    except ValueError as e:
+        return [str(e)]
     return ["200"]

@@ -49,6 +49,12 @@ class DocumentsLinkRepostiory(AbstractLinkRepository):
         else:
             raise ValueError(f"document type {kwargs['doc_type']} doesn't exist")
 
+    async def update(self, obj_id: str, related_obj_id: str, **kwargs):
+        pass
+
+    async def exist(self, obj_id:str, related_obj_id:str, **kwargs):
+        pass
+
     async def delete(self, obj_id: str, related_obj_id: str, **kwargs) -> None:
         table_map = {
             "document": "document_links",

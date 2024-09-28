@@ -8,3 +8,6 @@ class UserResponse(BaseModel):
     role: str
     email: str
 
+
+class SciUserReponse(UserResponse):
+    is_approved: bool

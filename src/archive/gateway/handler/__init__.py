@@ -7,6 +7,7 @@ from .collection_handler import (
     delete_document_link_handler,
     bind_user_to_collection_handler,
     approve_collection_by_sci_user,
+    approve_collection_by_admin_redactor_user_handler,
 )
 
 from .document_handler import(
@@ -43,6 +44,7 @@ __all__ = [
     "delete_document_link_handler",
     "bind_user_to_collection_handler",
     "approve_collection_by_sci_user",
+    "approve_collection_by_admin_redactor_user_handler",
     "create_document_handler",
     "get_document_handler",
     "get_list_document_handler",

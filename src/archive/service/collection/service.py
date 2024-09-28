@@ -223,7 +223,41 @@ class CollectionService:
             uow: AbstractUnitOfWork
     ):
         async with uow as uow:
+            collection = await uow.repository.get(id=coll_id)
+            collection._is_approved = False
             await uow.link_repository.update(obj_id=coll_id, related_obj_id=user_id, approve=approve, user_role=Role.ScientificCouncil.value)
+            await uow.repository.update(model=collection)
             await uow.commit()
 
+
+    async def approve_by_admin_redactor_users(
+        self,
+        coll_id: str,
+        user_id: str,
+        user_role: str,
+        approve: bool,
+        sci_group: BaseModel,
+        uow: AbstractUnitOfWork
+    ):
+        async with uow as uow:
+            is_user_in_group = False
+            collection = await uow.repository.get(id=coll_id)
+            if user_role == Role.RedactorUser.value:
+                is_user_in_group = await uow.link_repository.exist(obj_id=coll_id, related_obj_id=user_id, user_role=user_role)
+            elif user_role == Role.AdminUser.value:
+                is_user_in_group = str(collection.author_id) == user_id
+       
+        for sci in sci_group:
+            if sci.is_approved == False:
+                raise ValueError("Collection not approved by all scientific Council")
+
+        if is_user_in_group == False:
+            raise ValueError("Access denied")
+
+        async with uow as uow:
+            collection._is_approved = approve
+            collection = await uow.repository.update(model=collection)
+            await uow.commit()
+
+        return collection
 

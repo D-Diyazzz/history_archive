@@ -32,5 +32,13 @@ class AbstractLinkRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    async def update(self, obj_id, related_obj_id, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def exist(self, obj_id, related_obj_id, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
     async def delete(self, obj_id, related_obj_id, **kwargs):
         raise NotImplementedError

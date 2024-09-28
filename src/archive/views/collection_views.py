@@ -4,6 +4,7 @@ from typing import List
 from src.archive.database.engine import AsyncEngine
 from src.archive.gateway.converter.collection_converter import CollectionConverter
 from src.archive.gateway.schemas import CollectionResponse
+from src.archive.views.user_views import UserViews
 
 
 class CollectionViews:
@@ -32,27 +33,8 @@ class CollectionViews:
                 }
             )).one()
             
-            sci_council_group_row = (await conn.execute(
-                text("""
-                    SELECT u.*
-                        FROM "user" u
-                    JOIN scientific_council_group scg ON u.id = scg.scientific_council_id
-                    WHERE scg.collection_id = :id
-                """),{
-                    "id": id
-                }
-            )).all()
-
-            redactor_group_row = (await conn.execute(
-                text("""
-                    SELECT u.*
-                        FROM "user" u
-                    JOIN redactor_group rg ON u.id = rg.redactor_id
-                    WHERE rg.collection_id = :id
-                """), {
-                    "id": id
-                }
-            )).all()
+            sci_council_group = UserViews.get_sci_group_by_coll_id(coll_id=id, engine=engine)
+            redactor_group = UserViews.get_redactor_group_by_coll_id(coll_id=id, engine=engine)
 
             documents_row = (await conn.execute(
                 text("""

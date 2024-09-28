@@ -47,3 +47,11 @@ delete_redactor_group = text("""
     AND
         "redactor_id"=:redactor_id
 """)
+
+exist_redactor_in_group = text("""
+    SELECT EXISTS(
+        SELECT 1
+        FROM redactor_group
+        WHERE collection_id=:collection_id AND redactor_id=:redactor_id
+    )
+""")

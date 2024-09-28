@@ -39,6 +39,8 @@ class UnitOfWork(AbstractUnitOfWork):
     async def __aexit__(self, *args):
         await super().__aexit__()
         await self.session.close()
+        self.repository = self.repository.__class__ if self.repository else None
+        self.link_repository = self.link_repository.__class__ if self.link_repository else None
 
     async def commit(self):
         await self.session.commit()
