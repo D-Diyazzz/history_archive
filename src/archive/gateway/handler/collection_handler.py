@@ -1,5 +1,6 @@
 import json
 
+from os import link
 from uuid import UUID, uuid4
 from fastapi import Depends, UploadFile, File, Form
 from fastapi.exceptions import HTTPException
@@ -78,6 +79,17 @@ async def bind_user_to_collection_handler(id: str, user_id: str, user_data=Depen
     user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
 
     await service.bind_user_to_collection_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=CollectionUserGroupRepository, session_factory=get_session))
+    return ["200"]
+
+
+async def del_bind_user_from_collection_handler(id: str, user_id: str, user_data=Depends(check_role)):
+
+    user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
+    await service.del_bind_user_from_collection_group(
+        coll_id=id,
+        user_data=user,
+        uow=UnitOfWork(link_repository=CollectionUserGroupRepository, session_factory=get_session)
+    )
     return ["200"]
 
 

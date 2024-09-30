@@ -6,6 +6,7 @@ from .collection_handler import (
     pin_document_to_collection_handler,
     delete_document_link_handler,
     bind_user_to_collection_handler,
+    del_bind_user_from_collection_handler,
     approve_collection_by_sci_user,
     approve_collection_by_admin_redactor_user_handler,
 )
@@ -27,6 +28,7 @@ from .auth_handler import(
 
 from .user_handler import(
     get_admin_users_handler,
+    get_sci_users_handler,
 )
 
 from .notification_handler import(
@@ -43,6 +45,7 @@ __all__ = [
     "pin_document_to_collection_handler",
     "delete_document_link_handler",
     "bind_user_to_collection_handler",
+    "del_bind_user_from_collection_handler",
     "approve_collection_by_sci_user",
     "approve_collection_by_admin_redactor_user_handler",
     "create_document_handler",
@@ -53,6 +56,7 @@ __all__ = [
     "delete_document_handler",
     "remove_files_handler",
     "get_admin_users_handler",
+    "get_sci_users_handler",
     "get_notifications_handler",
     "read_collection_notification_handler",
 

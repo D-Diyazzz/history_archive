@@ -9,6 +9,7 @@ from src.archive.gateway.handler import (
     pin_document_to_collection_handler,
     delete_document_link_handler,
     bind_user_to_collection_handler,
+    del_bind_user_from_collection_handler,
     approve_collection_by_sci_user,
     approve_collection_by_admin_redactor_user_handler,
 
@@ -24,6 +25,7 @@ from src.archive.gateway.handler import (
     refresh_token_handler,
 
     get_admin_users_handler,
+    get_sci_users_handler,
 
     get_notifications_handler,
     read_collection_notification_handler,
@@ -39,6 +41,7 @@ def get_collection_router() -> APIRouter:
     router.post("/collection/{id}/document", status_code=200)(pin_document_to_collection_handler)
     router.delete("/collection/{id}/document", status_code=200)(delete_document_link_handler)
     router.post("/collection/{id}/user_group", status_code=200)(bind_user_to_collection_handler)
+    router.delete("/collection/{id}/user_group", status_code=200)(del_bind_user_from_collection_handler)
     router.patch("/collection/{id}/sci_group", status_code=200)(approve_collection_by_sci_user)
     router.patch("/collection/{id}/approve", status_code=200)(approve_collection_by_admin_redactor_user_handler)
     return router
@@ -63,6 +66,7 @@ def get_auth_router() -> APIRouter:
 def get_user_router() -> APIRouter:
     router = APIRouter(tags=["User"], prefix="/v1")
     router.get("/user/admin", status_code=200)(get_admin_users_handler)
+    router.get("/user/sci", status_code=200)(get_sci_users_handler)
     return router
 
 

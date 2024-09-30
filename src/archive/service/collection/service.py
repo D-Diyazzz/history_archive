@@ -3,6 +3,7 @@ import re
 from pydantic import BaseModel
 from uuid import uuid4, UUID
 from fpdf import FPDF
+from sqlalchemy import delete
 
 from src.archive.core import AbstractUnitOfWork, AbstractCacheService
 from src.archive.core.unit_of_work import AbstractLinkUnitOfWork
@@ -213,6 +214,19 @@ class CollectionService:
                 await uow.commit()
         except ValueError:
             raise ValueError("User doen't have access to scientific council group")
+
+    async def del_bind_user_from_collection_group(
+            self,
+            coll_id: str,
+            user_data: BaseModel,
+            uow: AbstractUnitOfWork
+    ):
+        try:
+            async with uow as uow:
+                await uow.link_repository.delete(obj_id=coll_id, related_obj_id=user_data.id, user_role=user_data.role)
+                await uow.commit()
+        except ValueError:
+            raise ValueError("User don't have access")
 
 
     async def approve_by_sci_user(
