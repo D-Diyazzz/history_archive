@@ -29,6 +29,7 @@ from .auth_handler import(
 from .user_handler import(
     get_admin_users_handler,
     get_sci_users_handler,
+    get_redactor_users_handler,
 )
 
 from .notification_handler import(
@@ -57,6 +58,7 @@ __all__ = [
     "remove_files_handler",
     "get_admin_users_handler",
     "get_sci_users_handler",
+    "get_redactor_users_handler",
     "get_notifications_handler",
     "read_collection_notification_handler",
 

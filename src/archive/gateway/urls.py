@@ -26,6 +26,7 @@ from src.archive.gateway.handler import (
 
     get_admin_users_handler,
     get_sci_users_handler,
+    get_redactor_users_handler,
 
     get_notifications_handler,
     read_collection_notification_handler,
@@ -67,6 +68,7 @@ def get_user_router() -> APIRouter:
     router = APIRouter(tags=["User"], prefix="/v1")
     router.get("/user/admin", status_code=200)(get_admin_users_handler)
     router.get("/user/sci", status_code=200)(get_sci_users_handler)
+    router.get("/user/redactor", status_code=200)(get_redactor_users_handler)
     return router
 
 

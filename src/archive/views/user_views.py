@@ -61,6 +61,23 @@ class UserViews:
 
 
     @classmethod
+    async def get_redactor_users(
+        cls,
+        engine: AsyncEngine
+    ) -> List[UserResponse]:
+        async with engine.begin() as conn:
+            user_row = (await conn.execute(
+                text("""
+                    select * from "user" where role=:role
+                """), {
+                    "role": Role.RedactorUser.value
+                    }
+            )).all()
+
+        return UserConverter.row_to_user_list(users=user_row)
+
+
+    @classmethod
     async def get_sci_group_by_coll_id(
         cls,
         coll_id: str,
