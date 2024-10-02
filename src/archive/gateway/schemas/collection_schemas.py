@@ -4,7 +4,7 @@ from datetime import datetime
 from uuid import UUID
 
 from src.archive.gateway.schemas.document_schemas import DocumentResponse, PhonoDocumentResponse, PhotoDocumentResponse, VideoDocumentResponse
-from src.archive.gateway.schemas.user_schemas import UserResponse
+from src.archive.gateway.schemas.user_schemas import UserResponse, SciUserReponse
 
 
 class CollectionRequest(BaseModel):
@@ -19,7 +19,7 @@ class CollectionResponse(BaseModel):
     theme: str
     title: str
     author: UserResponse
-    scientific_council_group: Optional[List[UserResponse]]
+    scientific_council_group: Optional[List[SciUserReponse]]
     redactor_group: Optional[List[UserResponse]]
     documents: Optional[List[Union[DocumentResponse, PhotoDocumentResponse, PhonoDocumentResponse, VideoDocumentResponse]]]
     is_approved: bool
