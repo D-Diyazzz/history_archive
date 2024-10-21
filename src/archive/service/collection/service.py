@@ -67,6 +67,10 @@ width: 100%;
 	caret-color: black;
 }
 
+.pdf-redactor-page-tools{
+    display: none;
+}
+
 .bold{
 	font-weight: bold;
 }
