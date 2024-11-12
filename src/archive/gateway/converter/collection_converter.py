@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from sqlalchemy import Row
 
 from src.archive.gateway.converter.document_converter import DocumentConverter
-from src.archive.gateway.schemas.collection_schemas import CollectionResponse
+from src.archive.gateway.schemas.collection_schemas import CollectionResponse, CollectionCommentResponse
 from src.archive.gateway.schemas.user_schemas import UserResponse
 
 
@@ -37,4 +37,17 @@ class CollectionConverter:
             hash_code=collection.hash_code,
             created_at=collection.created_at,
             activeEditor=None
+        )
+
+    @classmethod
+    def row_to_collection_comment(
+        cls,
+        comment: Row
+    ) -> CollectionCommentResponse:
+        return CollectionCommentResponse(
+            id=comment.id,
+            collection_id=str(comment.collection_id),
+            user_id=str(comment.user_id),
+            text=comment.text,
+            created_at=comment.created_at
         )

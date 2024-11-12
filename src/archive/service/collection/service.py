@@ -13,6 +13,7 @@ from src.archive.adapters import PDFAdapter
 from src.archive.domains.notification import CollectionNotification
 from src.archive.domains.user import Role
 from src.archive.domains.user_link import SciCouncilGroupCollectionLink, RedactorGroupCollectionLink
+from src.archive.domains.collection_comment import CollectionComment
 
 
 start_html_content = '''
@@ -212,6 +213,11 @@ class CollectionService:
             collection_id=coll_id,
             user_id=user_data.id,
         )
+        coll_comment = CollectionComment(
+            collection_id=coll_id,
+            user_id=user_data.id,
+            text=""
+        )
         try:
             user = None
             if user_data.role == Role.ScientificCouncil.value:
@@ -224,9 +230,9 @@ class CollectionService:
                     collection_id=coll_id,
                     redactor_id=user_data.id
                 )
-            print(user)
             async with uow as uow:
                 notification = await uow.add(notification)
+                comment = await uow.add(coll_comment)
                 link_id = await uow.add(user)
                 await uow.commit()
         except ValueError:
@@ -244,6 +250,8 @@ class CollectionService:
                     repo = await uow.get_repository(SciCouncilGroupCollectionLink)       
                 elif user_data.role == Role.RedactorUser.value:
                     repo = await uow.get_repository(RedactorGroupCollectionLink)
+                comment_repo = await uow.get_repository(CollectionComment)
+                await comment_repo.delete_by_coll_and_user_id(coll_id, user_data.id)
                 await repo.delete_by_coll_and_user_id(coll_id, user_data.id)
                 await uow.commit()
         except ValueError:

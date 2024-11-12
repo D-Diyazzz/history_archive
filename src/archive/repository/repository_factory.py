@@ -9,12 +9,12 @@ from src.archive.repository.document.video_doc_repository import VideoDocumentRe
 from src.archive.repository.document_links.repository import DocumentsLinkRepostiory
 from src.archive.repository.notification.collection_notification_repository import CollectionNotificationRepository
 from src.archive.repository.user.repository import UserRepository
-from src.archive.repository.user_links.collection_user_group_repository import CollectionUserGroupRepository
 from src.archive.repository.user_links import SciCouncilGroupCollectionLinkRepository, RedactorGroupCollectionLinkRepository
 
 from src.archive.domains.collection import Collection
 from src.archive.domains.notification import CollectionNotification
 from src.archive.domains.user_link import SciCouncilGroupCollectionLink, RedactorGroupCollectionLink
+from src.archive.domains.collection_comment import CollectionComment
 
 
 class RepositoryFactory:
@@ -26,7 +26,7 @@ class RepositoryFactory:
         print(obj_type == CollectionNotification)
         if obj_type == Collection:
             return CollectionRepository(self.session_factory)
-        elif obj_type == CollectionCommentRepository:
+        elif obj_type == CollectionComment:
             return CollectionCommentRepository(self.session_factory)
         elif obj_type == DocumentRepository:
             return DocumentRepository(self.session_factory)

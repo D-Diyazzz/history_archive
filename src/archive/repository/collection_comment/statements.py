@@ -10,6 +10,7 @@ insert_collection_comment = text("""
     ) values (
         :collection_id,
         :user_id,
+        :text,
         :created_at
     ) returning id 
 """)
@@ -33,4 +34,11 @@ update_collection_comment = text("""
 
 delete_collection_comment = text("""
     delete from collection_comment where id=:id
+""")
+
+delete_collection_comment_by_coll_and_user_id = text("""
+    delete from collection_comment where
+        collection_id=:coll_id 
+    AND 
+        user_id=:user_id
 """)

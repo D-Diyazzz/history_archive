@@ -4,6 +4,7 @@ from typing import List
 from src.archive.database.engine import AsyncEngine
 from src.archive.gateway.converter.collection_converter import CollectionConverter
 from src.archive.gateway.schemas import CollectionResponse
+from src.archive.gateway.schemas.collection_schemas import CollectionCommentResponse
 from src.archive.views.user_views import UserViews
 
 
@@ -94,3 +95,25 @@ class CollectionViews:
 
             return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row, sci_group=sci_council_group, redactor_group=redactor_group)
 
+
+    @classmethod
+    async def get_user_comment(
+        cls,
+        coll_id: str,
+        user_id: str,
+        engine: AsyncEngine
+    ):
+        async with engine.begin() as conn:
+            comment_row = (await conn.execute(
+                text("""
+                    select * from collection_comment where
+                        collection_id=:collection_id
+                    AND
+                        user_id=:user_id
+                """),{
+                    "collection_id": coll_id,
+                    "user_id": user_id
+                }
+            )).one()
+
+        return CollectionConverter.row_to_collection_comment(comment=comment_row)

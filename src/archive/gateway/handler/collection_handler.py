@@ -114,3 +114,10 @@ async def approve_collection_by_admin_redactor_user_handler(id: str, approve:boo
     except ValueError as e:
         return [str(e)]
     return ["200"]
+
+
+async def get_user_collection_comment_handler(id: str, user_data=Depends(check_all_admin_group_role)):
+    
+    comment = await CollectionViews.get_user_comment(coll_id=id, user_id=user_data["id"], engine=init_engine())
+    print(comment.__dict__)
+    return comment

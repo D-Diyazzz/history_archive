@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from uuid import UUID
 
+
 from src.archive.gateway.schemas.document_schemas import DocumentResponse, PhonoDocumentResponse, PhotoDocumentResponse, VideoDocumentResponse
 from src.archive.gateway.schemas.user_schemas import UserResponse, SciUserReponse
 
@@ -37,3 +38,11 @@ class CollectionEditRequest(BaseModel):
 class CollectionPinDocumentRequest(BaseModel):
     doc_id: str
     doc_type: str
+
+
+class CollectionCommentResponse(BaseModel):
+    id: int
+    collection_id: str
+    user_id: str
+    text: str
+    created_at: datetime 

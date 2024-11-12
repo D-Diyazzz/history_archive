@@ -20,7 +20,7 @@ class CollectionComment(AbstractBaseEntity):
         self._collection_id = collection_id
         self._user_id = user_id
         self._text = text
-        self._created_at = created_at or datetime.utcnow(pytz.UTC)
+        self._created_at = created_at or datetime.utcnow()
 
     @property
     def id(self) -> int:
