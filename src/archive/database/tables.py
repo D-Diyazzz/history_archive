@@ -70,6 +70,17 @@ notification_collection = Table(
     Column("created_at", DateTime(timezone=True), nullable=False),
 )
 
+collection_comment = Table(
+    "collection_comment",
+    mapper_registry.metadata,
+    Column("id", BigInteger, primary_key=True, index=True, autoincrement=True),
+    Column("collection_id",  UUID(as_uuid=True), ForeignKey("collection.id", ondelete="CASCADE"), nullable=False),
+    Column("user_id",  UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False),
+    Column("text", Text, nullable=True),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint('collection_id', 'user_id', name="uix_collection_comment")
+)
+
 # documents = Table(
 #     "documents",
 #     mapper_registry.metadata,

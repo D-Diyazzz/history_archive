@@ -13,11 +13,30 @@ insert_sci_council_group = text("""
     ) returning id
 """)
 
-delete_sci_council_group = text("""
-    delete from scientific_council_group where
-        "collection_id"=:collection_id
+select_sci_council_group_by_id = text("""
+    select * from scientific_council_group where id=:id
+""")
+
+select_sci_council_group = text("""
+    select * from scientific_council_group
+""")
+
+select_sci_council_group_by_coll_and_user_id = text("""
+    select * from scientific_council_group where 
+        collection_id=:collection_id
     AND
-        "scientific_council_id"=:sci_council_id
+        scientific_council_id=:sci_council_id
+""")
+
+delete_sci_council_group = text("""
+    delete from scientific_council_group where id=:id
+""")
+
+delete_sci_council_group_by_coll_and_user_id = text("""
+    delete from scientific_council_group where
+        collection_id=:collection_id
+    AND
+        scientific_council_id=:sci_council_id
 """)
 
 update_sci_council_group = text("""
@@ -41,11 +60,23 @@ insert_redactor_group = text("""
     ) returning id 
 """)
 
-delete_redactor_group = text("""
-    delete from redactor_group where
-        "collection_id"=:collection_id
+select_redactor_group = text("""
+    select * from redactor_group
+""")
+
+select_redactor_group_by_id = text("""
+    select * from redactor_group where id=:id
+""")
+
+select_redactor_group_by_coll_and_user_id = text("""
+    select * from redactor_group where 
+        collection_id=:collection_id
     AND
-        "redactor_id"=:redactor_id
+        redactor_id=:redactor_id
+""")
+
+delete_redactor_group = text("""
+    delete from redactor_group where id=:id
 """)
 
 exist_redactor_in_group = text("""
@@ -54,4 +85,11 @@ exist_redactor_in_group = text("""
         FROM redactor_group
         WHERE collection_id=:collection_id AND redactor_id=:redactor_id
     )
+""")
+
+delete_redactor_group_by_coll_and_user_id = text("""
+    delete from redactor_group where
+        collection_id=:collection_id
+    AND
+        redactor_id=:redactor_id
 """)

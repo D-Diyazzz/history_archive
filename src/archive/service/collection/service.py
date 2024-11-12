@@ -6,12 +6,13 @@ from fpdf import FPDF
 from sqlalchemy import delete
 
 from src.archive.core import AbstractUnitOfWork, AbstractCacheService
-from src.archive.core.unit_of_work import AbstractLinkUnitOfWork
+from src.archive.core.unit_of_work import AbstractLinkUnitOfWork, AbstractUnitOfWork2
 from src.archive.domains.collection import Collection
 from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S
 from src.archive.adapters import PDFAdapter
 from src.archive.domains.notification import CollectionNotification
 from src.archive.domains.user import Role
+from src.archive.domains.user_link import SciCouncilGroupCollectionLink, RedactorGroupCollectionLink
 
 
 start_html_content = '''
@@ -205,16 +206,28 @@ class CollectionService:
             self,
             coll_id: str,
             user_data: BaseModel,
-            uow: AbstractUnitOfWork,    
+            uow: AbstractUnitOfWork2,   
     ):
         notification = CollectionNotification(
             collection_id=coll_id,
             user_id=user_data.id,
         )
         try:
+            user = None
+            if user_data.role == Role.ScientificCouncil.value:
+                user = SciCouncilGroupCollectionLink(
+                    collection_id=coll_id,
+                    scientific_council_id=user_data.id
+                )
+            elif user_data.role == Role.RedactorUser.value:
+                user = RedactorGroupCollectionLink(
+                    collection_id=coll_id,
+                    redactor_id=user_data.id
+                )
+            print(user)
             async with uow as uow:
-                notification = await uow.repository.add(notification)
-                link_id = await uow.link_repository.add(obj_id=coll_id, related_obj_id=user_data.id, user_role=user_data.role)
+                notification = await uow.add(notification)
+                link_id = await uow.add(user)
                 await uow.commit()
         except ValueError:
             raise ValueError("User doen't have access to scientific council group")
@@ -223,11 +236,15 @@ class CollectionService:
             self,
             coll_id: str,
             user_data: BaseModel,
-            uow: AbstractUnitOfWork
+            uow: AbstractUnitOfWork2
     ):
         try:
             async with uow as uow:
-                await uow.link_repository.delete(obj_id=coll_id, related_obj_id=user_data.id, user_role=user_data.role)
+                if user_data.role == Role.ScientificCouncil.value:
+                    repo = await uow.get_repository(SciCouncilGroupCollectionLink)       
+                elif user_data.role == Role.RedactorUser.value:
+                    repo = await uow.get_repository(RedactorGroupCollectionLink)
+                await repo.delete_by_coll_and_user_id(coll_id, user_data.id)
                 await uow.commit()
         except ValueError:
             raise ValueError("User don't have access")

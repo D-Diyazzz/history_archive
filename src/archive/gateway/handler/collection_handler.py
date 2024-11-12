@@ -7,7 +7,7 @@ from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 from sqlalchemy.ext.asyncio import engine
 
-from src.archive.core import UnitOfWork, cache_service, LinkUnitOfWork, repository
+from src.archive.core import UnitOfWork, cache_service, LinkUnitOfWork, repository, UnitOfWork2
 from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role, check_sci_role
 from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
@@ -19,10 +19,12 @@ from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest
 from src.archive.database.engine import get_session, init_engine
 from src.archive.views.collection_views import CollectionViews
 from src.archive.views.user_views import UserViews
+from src.archive.repository import RepositoryFactory
 
 
 service = CollectionService()
 redis_service = RedisCacheService()
+uow2 = UnitOfWork2(session_factory=get_session, repository_factory=RepositoryFactory)
 
 
 async def create_collection_handler(data: CollectionRequest, user_data = Depends(check_role)):
@@ -78,18 +80,15 @@ async def bind_user_to_collection_handler(id: str, user_id: str, user_data=Depen
 
     user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
 
-    await service.bind_user_to_collection_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=CollectionUserGroupRepository, session_factory=get_session))
+    # await service.bind_user_to_collection_group(coll_id=id, user_data=user,uow=UnitOfWork(reposiotry=CollectionNotificationRepository, link_repository=CollectionUserGroupRepository, session_factory=get_session))
+    await service.bind_user_to_collection_group(coll_id=id, user_data=user, uow=uow2)
     return ["200"]
 
 
 async def del_bind_user_from_collection_handler(id: str, user_id: str, user_data=Depends(check_role)):
 
     user = await UserViews.get_user_by_id_view(id=user_id, engine=init_engine())
-    await service.del_bind_user_from_collection_group(
-        coll_id=id,
-        user_data=user,
-        uow=UnitOfWork(link_repository=CollectionUserGroupRepository, session_factory=get_session)
-    )
+    await service.del_bind_user_from_collection_group(coll_id=id, user_data=user,uow=uow2)
     return ["200"]
 
 
