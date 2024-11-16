@@ -1,4 +1,4 @@
-from .collection_schemas import CollectionRequest, CollectionResponse, CollectionEditRequest, CollectionPinDocumentRequest
+from .collection_schemas import CollectionRequest, CollectionResponse, CollectionEditRequest, CollectionPinDocumentRequest, CollectionCommentResponse, CollectionCommentEditRequest
 from .document_schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest
 from .auth_schemas import RegistrationForm, LoginForm, TokenResponse, RefreshTokenRequest, LoginResponse
 from .search_data_schemas import SearchDataRequest, SearchDataResponse, SearchDataUpdate
@@ -25,4 +25,6 @@ __all__ = [
     "UserResponse",
     "SciUserReponse",
     "NotificationAddToCollectionResponse",
+    "CollectionCommentEditRequest",
+    "CollectionCommentResponse",
 ]

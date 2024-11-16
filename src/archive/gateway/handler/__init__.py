@@ -9,7 +9,6 @@ from .collection_handler import (
     del_bind_user_from_collection_handler,
     approve_collection_by_sci_user,
     approve_collection_by_admin_redactor_user_handler,
-    get_user_collection_comment_handler
 )
 
 from .document_handler import(
@@ -38,6 +37,12 @@ from .notification_handler import(
     read_collection_notification_handler,
 )
 
+from .collection_comment_handler import(
+    get_user_collection_comment_handler,
+    edit_collection_comment_handler,
+    get_user_collection_comment_by_user_id_handler
+)
+
 
 __all__ = [
 
@@ -63,6 +68,8 @@ __all__ = [
     "get_redactor_users_handler",
     "get_notifications_handler",
     "read_collection_notification_handler",
+    "edit_collection_comment_handler",
+    "get_user_collection_comment_by_user_id_handler",
 
     "registration_handler",
     "login_handler",

@@ -40,6 +40,11 @@ class CollectionPinDocumentRequest(BaseModel):
     doc_type: str
 
 
+class CollectionCommentEditRequest(BaseModel):
+    id: int
+    text: str
+
+
 class CollectionCommentResponse(BaseModel):
     id: int
     collection_id: str

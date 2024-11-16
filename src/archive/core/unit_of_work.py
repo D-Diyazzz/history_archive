@@ -59,6 +59,10 @@ class AbstractUnitOfWork2(ABC):
     @abstractmethod
     async def get(self, id, obj_type):
         raise NotImplementedError
+
+    @abstractmethod
+    async def update(eslf, model: AbstractBaseEntity):
+        raise NotImplementedError
     
 
 class UnitOfWork(AbstractUnitOfWork):
@@ -134,6 +138,13 @@ class UnitOfWork2(AbstractUnitOfWork2):
 
     async def get(self, id, obj_type):
         repository = await self.get_repository(obj_type)
+        response = await repository.get(id)
+        return response
+
+    async def update(self, model: AbstractBaseEntity):
+        repository = await self.get_repository(type(model))
+        response = await repository.update(model)
+        return response
 
 
 class AbstractLinkUnitOfWork(ABC):
