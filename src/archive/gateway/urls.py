@@ -14,6 +14,7 @@ from src.archive.gateway.handler import (
     approve_collection_by_admin_redactor_user_handler,
     get_user_collection_comment_handler,
     get_user_collection_comment_by_user_id_handler,
+    get_collection_list_admin_panel_handler,
 
     edit_collection_handler,
 
@@ -51,6 +52,7 @@ def get_collection_router() -> APIRouter:
     router.patch("/collection/{id}/sci_group", status_code=200)(approve_collection_by_sci_user)
     router.patch("/collection/{id}/approve", status_code=200)(approve_collection_by_admin_redactor_user_handler)
     router.get("/collection/{id}/comment", status_code=200)(get_user_collection_comment_handler)
+    router.get("/collection/admin_list", status_code=200)(get_collection_list_admin_panel_handler)
     return router
 
 def get_collection_comment_router() -> APIRouter:

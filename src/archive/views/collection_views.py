@@ -3,7 +3,7 @@ from typing import List
 
 from src.archive.database.engine import AsyncEngine
 from src.archive.gateway.converter.collection_converter import CollectionConverter
-from src.archive.gateway.schemas import CollectionResponse
+from src.archive.gateway.schemas import CollectionResponse, CollectionShortResponse
 from src.archive.gateway.schemas.collection_schemas import CollectionCommentResponse
 from src.archive.views.user_views import UserViews
 
@@ -59,7 +59,6 @@ class CollectionViews:
                     "collection_id": id
                     }
                 )).all()
-            print(documents_row)
             photo_documents_row = (await conn.execute(
                 text("""
                     SELECT pd.*
@@ -117,3 +116,90 @@ class CollectionViews:
             )).one()
 
         return CollectionConverter.row_to_collection_comment(comment=comment_row)
+
+
+    @classmethod
+    async def get_collection_by_user_id_admin(
+        cls,
+        id: str,
+        engine: AsyncEngine
+    ) -> List[CollectionShortResponse]:
+        async with engine.begin() as conn:
+            coll_row = (await conn.execute(
+                text("""
+                    select 
+                        c.*,
+                        u.id as user_id,
+                        u.firstname as user_firstname,
+                        u.lastname as user_lastname,
+                        u.email as user_email,
+                        u.role as user_role
+                    from collection c 
+                    join "user" u on c.author_id = u.id
+                    where u.id=:id
+                """),{
+                    "id": id
+                }
+            )).all()
+
+        return CollectionConverter.row_to_collection_short_list(collections=coll_row)
+
+    @classmethod
+    async def get_collection_by_user_id_sci(
+        cls,
+        id: str,
+        engine: AsyncEngine
+    ) -> List[CollectionShortResponse]:
+        async with engine.begin() as conn:
+            coll_row = (await conn.execute(
+                text("""
+                    SELECT 
+                        c.*, 
+                        u.id as user_id,
+                        u.firstname as user_firstname,
+                        u.lastname as user_lastname,
+                        u.email as user_email,
+                        u.role as user_role
+                    FROM collection c
+                    JOIN scientific_council_group sci_u 
+                      ON sci_u.collection_id = c.id
+                    JOIN "user" u
+                      ON u.id = c.author_id
+                    WHERE sci_u.scientific_council_id = :id;
+
+                """),{
+                    "id": id
+                    }
+            )).all()
+
+        return CollectionConverter.row_to_collection_short_list(collections=coll_row)
+
+
+    @classmethod
+    async def get_collection_by_user_id_redactor(
+        cls,
+        id: str,
+        engine: AsyncEngine
+    ) -> List[CollectionShortResponse]:
+        async with engine.begin() as conn:
+            coll_row = (await conn.execute(
+                text("""
+                    SELECT 
+                        c.*, 
+                        u.id as user_id,
+                        u.firstname as user_firstname,
+                        u.lastname as user_lastname,
+                        u.email as user_email,
+                        u.role as user_role
+                    FROM collection c
+                    JOIN redactor_group redactor_u 
+                      ON redactor_u.collection_id = c.id
+                    JOIN "user" u
+                      ON u.id = c.author_id
+                    WHERE redactor_u.redactor_id = :id;
+                """),{
+                    "id": id
+                    }
+            )).all()
+
+        return CollectionConverter.row_to_collection_short_list(collections=coll_row)

@@ -29,6 +29,18 @@ class CollectionResponse(BaseModel):
     activeEditor: Optional[UserResponse]
 
 
+class CollectionShortResponse(BaseModel):
+    id: str
+    file_url: str
+    html_url: str
+    theme: str
+    title: str
+    author: UserResponse
+    hash_code: str
+    created_at: datetime
+    is_approved: bool
+
+
 class CollectionEditRequest(BaseModel):
     theme: str
     title: str

@@ -9,6 +9,8 @@ from sqlalchemy.ext.asyncio import engine
 
 from src.archive.core import UnitOfWork, cache_service, LinkUnitOfWork, repository, UnitOfWork2
 from src.archive.dependencies.auth_dependencies import check_all_admin_group_role, check_role, check_sci_role
+from src.archive.domains import collection
+from src.archive.domains.user.model import Role
 from src.archive.integrations.redis import RedisCacheService
 from src.archive.repository.collection import CollectionRepository
 from src.archive.repository.document_links import DocumentsLinkRepostiory
@@ -115,3 +117,18 @@ async def approve_collection_by_admin_redactor_user_handler(id: str, approve:boo
         return [str(e)]
     return ["200"]
 
+
+async def get_collection_list_admin_panel_handler(user_data=Depends(check_all_admin_group_role)):
+
+    collection_list = []
+
+    if user_data["role"] == Role.AdminUser.value:
+        collection_list = await CollectionViews.get_collection_by_user_id_admin(id=user_data["id"], engine=init_engine())
+
+    elif user_data["role"] == Role.RedactorUser.value:
+        collection_list = await CollectionViews.get_collection_by_user_id_redactor(id=user_data["id"], engine=init_engine())
+
+    elif user_data["role"] == Role.ScientificCouncil.value:
+        collection_list = await CollectionViews.get_collection_by_user_id_sci(id=user_data["id"], engine=init_engine())
+
+    return collection_list
