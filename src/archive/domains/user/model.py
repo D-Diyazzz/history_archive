@@ -3,6 +3,7 @@ import pytz
 from enum import Enum
 from passlib.context import CryptContext
 from datetime import datetime
+from uuid import UUID, uuid4
 
 from src.archive.core import AbstractBaseEntity
 
@@ -19,7 +20,7 @@ class Role(Enum):
 
 class User(AbstractBaseEntity):
 
-    _id: str | None
+    _id: UUID | None
     _firstname: str
     _lastname: str
     _email: str
@@ -30,9 +31,9 @@ class User(AbstractBaseEntity):
 
     def __init__(
             self,
-            id: str = None,
+            id: UUID = None,
     ):
-        self._id = id
+        self._id = id or uuid4()
 
 
     @classmethod    
@@ -73,7 +74,7 @@ class User(AbstractBaseEntity):
         return user
 
     @property
-    def get_id(self) -> str:
+    def get_id(self) -> UUID:
         return self._id
     
     @property

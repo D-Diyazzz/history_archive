@@ -20,8 +20,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import registry, relationship
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.archive.domains.user import User, Role
-
 
 mapper_registry = registry()
 
@@ -224,11 +222,9 @@ user = Table(
     Column("firstname", String(250), nullable=False),
     Column("lastname", String(250), nullable=False),
     Column("email", String(250), nullable=False, unique=True, index=True),
-    Column("role", Enum(Role), nullable=False),
+    Column("role", String(250), nullable=False),
     Column("hashed_password", Text, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False)
 )
 
 
-def start_mappers():
-    mapper_registry.map_imperatively(User, user)

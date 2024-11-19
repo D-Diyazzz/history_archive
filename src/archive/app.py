@@ -10,7 +10,6 @@ from src.archive.gateway.urls import (
     get_notification_router,
     get_collection_comment_router,
 )
-from src.archive.database import start_mappers
 
 
 app = FastAPI(
@@ -34,7 +33,6 @@ app.add_middleware(
 
 app.mount("/archive/files", StaticFiles(directory="files"), name="static")
 
-start_mappers()
 
 app.include_router(get_collection_router())
 app.include_router(get_document_router())

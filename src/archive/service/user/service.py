@@ -44,7 +44,7 @@ class UserService:
         
         data = dict(
             id=str(user.get_id),
-            role=user.get_role.name,
+            role=user.get_role,
             name=user.get_firstname,
         )
         
