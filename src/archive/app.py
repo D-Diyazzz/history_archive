@@ -10,13 +10,14 @@ from src.archive.gateway.urls import (
     get_notification_router,
     get_collection_comment_router,
 )
-
+from src.archive.config import FRONT_URL
 
 app = FastAPI(
     title="Archive",
 )
 
 origins = [
+    FRONT_URL,
     "http://localhost:5173",
     "http://localhost",
     "http://127.0.0.1:5173",
