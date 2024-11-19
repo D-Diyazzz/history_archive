@@ -9,7 +9,7 @@ def user_to_dict(model: User):
         "lastname": model.get_lastname,
         "email": model.get_email,
         "hashed_password": model.get_password,
-        "role": model.get_role.value,
+        "role": model.get_role,
         "created_at": model.get_created_at
     }
 

@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.archive.domains.user.model import User
 from src.archive.repository.collection.repostiory import CollectionRepository
 from src.archive.repository.collection_comment.repository import CollectionCommentRepository
 from src.archive.repository.document.doc_repository import DocumentRepository
@@ -46,4 +47,6 @@ class RepositoryFactory:
             return SciCouncilGroupCollectionLinkRepository(self.session_factory)
         elif obj_type == RedactorGroupCollectionLink:
             return RedactorGroupCollectionLinkRepository(self.session_factory)
+        elif obj_type == User:
+            return UserRepository(self.session_factory)
 

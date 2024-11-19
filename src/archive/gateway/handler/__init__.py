@@ -31,6 +31,7 @@ from .user_handler import(
     get_admin_users_handler,
     get_sci_users_handler,
     get_redactor_users_handler,
+    change_user_role_handler,
 )
 
 from .notification_handler import(
@@ -68,6 +69,7 @@ __all__ = [
     "get_admin_users_handler",
     "get_sci_users_handler",
     "get_redactor_users_handler",
+    "change_user_role_handler",
     "get_notifications_handler",
     "read_collection_notification_handler",
     "edit_collection_comment_handler",

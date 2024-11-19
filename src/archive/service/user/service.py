@@ -5,7 +5,8 @@ from pydantic import BaseModel
 from datetime import datetime, timedelta
 
 from src.archive.core import AbstractUnitOfWork
-from src.archive.domains.user import User
+from src.archive.core.unit_of_work import AbstractUnitOfWork2
+from src.archive.domains.user import User, Role
 from src.archive.config import SECRET_KEY, ALGORITHM, REFRESH_TOKEN_EXPIRE, ACCESS_TOKEN_EXPIRE
 
 
@@ -103,6 +104,22 @@ class UserService:
 
         return access_token, refresh_token
 
+
+    async def change_user_role(
+        self,
+        id: str,
+        data: BaseModel,
+        uow: AbstractUnitOfWork2,
+    ):
+
+        if data.new_role not in (item.value for item in Role):
+            raise ValueError("Role doesn't exist")
+    
+        async with uow as uow:
+            user = await uow.get(id, User)
+            user.update_role(data.new_role)
+            await uow.update(user)
+            await uow.commit()
         
 
     def __get_token(

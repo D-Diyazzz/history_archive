@@ -13,6 +13,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Role(Enum):
     BasicUser = "BasicUser"
+    SuperAdminUser = "SuperAdminUser"
     AdminUser = "AdminUser"
     RedactorUser = "RedactorUser"
     ScientificCouncil = "ScientificCouncil"
@@ -103,3 +104,6 @@ class User(AbstractBaseEntity):
     
     def verify_password(self, input_password: str) -> bool:
         return pwd_context.verify(input_password, self.get_password)
+
+    def update_role(self, new_role):
+        self._role = new_role

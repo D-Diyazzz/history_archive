@@ -11,3 +11,7 @@ class UserResponse(BaseModel):
 
 class SciUserReponse(UserResponse):
     is_approved: bool
+
+
+class UserChangeRoleRequest(BaseModel):
+    new_role: str
