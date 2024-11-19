@@ -33,3 +33,8 @@ async def change_user_role_handler(id: str, data: UserChangeRoleRequest, user_da
     except ValueError as e:
         return HTTPException(status_code=400, detail=str(e))
     return ["200"]
+
+
+async def get_all_users_handler(user_data=Depends(check_super_admin_role)):
+    users = await UserViews.get_all_users(engine=init_engine())
+    return users

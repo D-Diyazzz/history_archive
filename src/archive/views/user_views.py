@@ -10,6 +10,20 @@ from src.archive.domains.user import Role
 class UserViews:
 
     @classmethod
+    async def get_all_users(
+        cls,
+        engine: AsyncEngine
+    ) -> List[UserResponse]:
+        async with engine.begin() as conn:
+            user_rows = (await conn.execute(
+                text("""
+                    select * from "user"
+                """)
+            )).all()
+
+        return UserConverter.row_to_user_list(users=user_rows) 
+
+    @classmethod
     async def get_user_by_id_view(
         cls,
         id: str,
