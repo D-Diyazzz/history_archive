@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, delete, update
+import time
 
 from src.archive.core import AbstractRepository
 from src.archive.domains.document import Document
@@ -14,16 +15,13 @@ class DocumentRepository(AbstractRepository):
 
     async def add(self, model: Document) -> Document:
         search_data_dict = search_data_to_dict(model=model)
-
         search_data_id = await self.session.execute(
             insert_search_data,
             search_data_dict
         )
-
         search_data_id = search_data_id.scalars().first()
         model._search_data._id = search_data_id
         document_data_dict = document_to_dict(model=model)
-        print(model.__dict__)
         id = await self.session.execute(
             insert_document,
             document_data_dict

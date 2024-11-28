@@ -22,7 +22,7 @@ def document_to_dict(model: Document):
     print(model.id)
     model_dict = {
         "id": str(model.id) if model.id else None,
-        "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
+        "file_urls": json.dumps(model.file_urls, ensure_ascii=False) if model.file_urls else None,
         "author": model.author if model.author else None,
         "dating": model.dating if model.dating else None,
         "place_of_creating": model.place_of_creating if model.place_of_creating else None,
@@ -40,7 +40,7 @@ def document_to_dict(model: Document):
 
 def photo_document_to_dict(model):
     return {
-        "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
+        "file_urls": json.dumps(model.file_urls, ensure_ascii=False) if model.file_urls else None,
         "author": model.author if model.author else None,
         "dating": model.dating if model.dating else None,
         "place_of_creating": model.place_of_creating if model.place_of_creating else None,
@@ -56,7 +56,7 @@ def photo_document_to_dict(model):
 
 def video_document_to_dict(model):
     return {
-        "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
+        "file_urls": json.dumps(model.file_urls, ensure_ascii=False) if model.file_urls else None,
         "author": model.author if model.author else None,
         "dating": model.dating if model.dating else None,
         "place_of_creating": model.place_of_creating if model.place_of_creating else None,
@@ -72,7 +72,7 @@ def video_document_to_dict(model):
 
 def phono_document_to_dict(model):
     return {
-        "file_urls": json.dumps(model.file_urls) if model.file_urls else None,
+        "file_urls": json.dumps(model.file_urls, ensure_ascii=False) if model.file_urls else None,
         "author": model.author if model.author else None,
         "dating": model.dating if model.dating else None,
         "place_of_creating": model.place_of_creating if model.place_of_creating else None,

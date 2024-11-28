@@ -30,7 +30,7 @@ def check_access_token(authorization_header: str = Security(APIKeyHeader(name="A
 def check_role(authorization_header: str = Security(APIKeyHeader(name="Authorization", auto_error=False))):
     data = decode_jwt_token(authorization_header)
     
-    required_roles = [Role.AdminUser.value, Role.RedactorUser.value]
+    required_roles = [Role.AdminUser.value, Role.RedactorUser.value, Role.SuperAdminUser.value]
     
     if data["role"] not in required_roles:
         raise HTTPException(status_code=403, detail="Access denied")
@@ -40,7 +40,7 @@ def check_role(authorization_header: str = Security(APIKeyHeader(name="Authoriza
 
 def check_all_admin_group_role(authorization_header: str = Security(APIKeyHeader(name="Authorization", auto_error=False))):
     data = decode_jwt_token(authorization_header)
-    required_roles = [Role.AdminUser.value, Role.RedactorUser.value, Role.ScientificCouncil.value]
+    required_roles = [Role.AdminUser.value, Role.RedactorUser.value, Role.ScientificCouncil.value, Role.SuperAdminUser.value]
     
     if data["role"] not in required_roles:
         raise HTTPException(status_code=403, detail="Access denied")
