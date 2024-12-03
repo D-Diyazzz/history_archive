@@ -39,6 +39,15 @@ async def create_collection_handler(data: CollectionRequest, user_data = Depends
     return response
 
 
+async def delete_collection_handler(id: str, user_data = Depends(check_role)):
+    try:
+        await service.delete_collection(coll_id=id, user_id=user_data["id"], uow=uow2)
+    except ValueError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+
+    return [200]
+
+
 async def open_session_handler(id: str, user_data = Depends(check_role)):
 
     try:
@@ -122,7 +131,7 @@ async def get_collection_list_admin_panel_handler(user_data=Depends(check_all_ad
 
     collection_list = []
 
-    if user_data["role"] == Role.AdminUser.value:
+    if user_data["role"] == Role.AdminUser.value or user_data["role"] == Role.SuperAdminUser.value:
         collection_list = await CollectionViews.get_collection_by_user_id_admin(id=user_data["id"], engine=init_engine())
 
     elif user_data["role"] == Role.RedactorUser.value:

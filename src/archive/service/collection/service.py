@@ -303,4 +303,17 @@ class CollectionService:
             await uow.commit()
 
         return collection
-
+    
+    
+    async def delete_collection(
+        self,
+        coll_id: str,
+        user_id: str,
+        uow: AbstractUnitOfWork2
+    ):
+        async with uow as uow:
+            coll = await uow.get(coll_id, Collection)
+            if str(coll.author_id) != user_id:
+                raise ValueError("Access denied")
+            await uow.delete(coll_id, Collection)
+            await uow.commit()
