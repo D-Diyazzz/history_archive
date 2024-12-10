@@ -47,6 +47,10 @@ from .collection_comment_handler import(
     get_user_collection_comment_by_user_id_handler
 )
 
+from .gpt_handler import (
+    get_response_from_question,
+)
+
 
 __all__ = [
 
@@ -82,4 +86,6 @@ __all__ = [
     "registration_handler",
     "login_handler",
     "refresh_token_handler",
+
+    "get_response_from_question",
 ]

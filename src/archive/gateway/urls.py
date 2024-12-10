@@ -40,6 +40,7 @@ from src.archive.gateway.handler import (
     read_collection_notification_handler,
 )
 from src.archive.gateway.handler.collection_comment_handler import edit_collection_comment_handler
+from src.archive.gateway.handler.gpt_handler import get_response_from_question
 
 
 def get_collection_router() -> APIRouter:
@@ -96,4 +97,10 @@ def get_notification_router() -> APIRouter:
     router = APIRouter(tags=["Notification"], prefix="/v1")
     router.get("/notification/{id}", status_code=200)(get_notifications_handler)
     router.patch("/notification/{id}", status_code=200)(read_collection_notification_handler)
+    return router
+
+
+def get_gpt_router() -> APIRouter:
+    router = APIRouter(tags=["Gpt"], prefix="/v1")
+    router.post('/gpt', status_code=200)(get_response_from_question)
     return router

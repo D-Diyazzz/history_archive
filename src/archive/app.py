@@ -9,6 +9,7 @@ from src.archive.gateway.urls import (
     get_user_router,
     get_notification_router,
     get_collection_comment_router,
+    get_gpt_router,
 )
 from src.archive.config import FRONT_URL
 
@@ -41,3 +42,4 @@ app.include_router(get_auth_router())
 app.include_router(get_user_router())
 app.include_router(get_notification_router())
 app.include_router(get_collection_comment_router())
+app.include_router(get_gpt_router())

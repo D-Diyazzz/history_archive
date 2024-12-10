@@ -26,6 +26,7 @@ redis = "^5.0.8"
 fpdf = "^1.7.2"
 weasyprint = "^62.3"
 python-dotenv = "^1.0.1"
+gpt4all = "^2.8.2"
 
 
 [build-system]
