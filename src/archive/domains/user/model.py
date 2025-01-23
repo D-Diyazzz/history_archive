@@ -50,7 +50,7 @@ class User(AbstractBaseEntity):
         user._lastname = lastname
         user._email = email
         user._password = pwd_context.hash(password)
-        user._role = Role.BasicUser
+        user._role = Role.BasicUser.value
         user._created_at = datetime.now(pytz.UTC)
         return user
     
