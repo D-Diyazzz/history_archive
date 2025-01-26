@@ -19,13 +19,15 @@ from src.archive.views import DocumentViews
 service = DocumentService()
 allowed_formats = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/png", "image/jpeg", "image/webp", "image/jpg"]
 
-async def create_document_handler(user_data = Depends(check_role), files: List[UploadFile] = File(...), data: str = Form(...)):
+async def create_document_handler(user_data = Depends(check_role), files: List[UploadFile] = File(None), data: str = Form(...)):
     files_dict = {}
-    for file in files:
-        if file.content_type not in allowed_formats:
-            raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
-        filename = str(uuid4()) + "_"+ file.filename 
-        files_dict[filename] = await file.read()
+    if files:
+        for file in files:
+            if file.content_type not in allowed_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
+            filename = str(uuid4()) + "_"+ file.filename 
+            files_dict[filename] = await file.read()
+
     try:
         data = json.loads(data)
         data = parse_obj_as(DocumentRequest, data)

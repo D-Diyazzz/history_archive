@@ -19,7 +19,7 @@ class DocumentRequest(BaseModel):
 
 class DocumentResponse(BaseModel):
     id: str
-    file_urls: List[str]
+    file_urls: List[str] | None
     author: str
     dating: str
     place_of_creating: str

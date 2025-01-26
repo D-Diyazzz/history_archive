@@ -42,10 +42,11 @@ class DocumentService:
         async with uow as uow:
             document = await uow.repository.add(document)
             await uow.commit()
-
-        for file_url, file_bytes in files.items():
-            with open(f"files/{file_url}", "wb") as buffer:
-                buffer.write(file_bytes)
+        
+        if files:
+            for file_url, file_bytes in files.items():
+                with open(f"files/{file_url}", "wb") as buffer:
+                    buffer.write(file_bytes)
         
         return document
 
