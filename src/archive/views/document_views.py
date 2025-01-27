@@ -11,6 +11,23 @@ from src.archive.gateway.schemas.document_schemas import PhonoDocumentResponse
 class DocumentViews:
 
     @classmethod
+    async def get_all_documents_view(
+        cls,
+        engine: AsyncEngine
+    ) -> List:
+        all = []
+        documents = await DocumentViews.get_documents_view(engine)
+        phono_documents = await DocumentViews.get_phono_document(engine)
+        for i in documents:
+            all.append(i)
+        for i in phono_documents:
+            all.append(i)
+        print(len(all))
+        
+        all = sorted(all, key=lambda x: x.created_at, reverse=True)
+        return all
+
+    @classmethod
     async def get_document_by_id_view(
             cls,
             id: int,
@@ -66,7 +83,8 @@ class DocumentViews:
                 """)
             )).all()
         
-        return DocumentConverter.row_to_document_list(documents=docs_row)
+        documents = DocumentConverter.row_to_document_list(documents=docs_row)
+        return documents[::-1]
 
 
     @classmethod
@@ -103,4 +121,5 @@ class DocumentViews:
                 """)
             )).all()
         
-        return PhonoDocumentConverter.row_to_document_list(documents=docs_row)
+        documents = PhonoDocumentConverter.row_to_document_list(documents=docs_row)
+        return documents[::-1]

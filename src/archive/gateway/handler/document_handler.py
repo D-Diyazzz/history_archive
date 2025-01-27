@@ -22,6 +22,11 @@ from src.archive.views import DocumentViews
 service = DocumentService()
 allowed_formats = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/png", "image/jpeg", "image/webp", "image/jpg"]
 
+
+async def get_all_documents_handler(user_data=Depends(check_role)):
+    documetns = await DocumentViews.get_all_documents_view(engine=init_engine())
+    return documetns
+
 async def create_document_handler(user_data = Depends(check_role), files: List[UploadFile] = File(None), data: str = Form(...)):
     files_dict = {}
     if files:

@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from src.archive.gateway.urls import (
     get_collection_router,
     get_document_router,
+    get_all_documents_router,
     get_phono_document_router,
     get_auth_router,
     get_user_router,
@@ -39,6 +40,7 @@ app.mount("/archive/files", StaticFiles(directory="files"), name="static")
 
 app.include_router(get_collection_router())
 app.include_router(get_document_router())
+app.include_router(get_all_documents_router())
 app.include_router(get_phono_document_router())
 app.include_router(get_auth_router())
 app.include_router(get_user_router())

@@ -21,6 +21,8 @@ from .document_handler import(
     delete_document_handler,
     remove_files_handler,
 
+    get_all_documents_handler,
+
     create_phono_document_handler,
     get_phono_document_handler,
     get_list_phono_document_handler,
@@ -78,6 +80,8 @@ __all__ = [
     "update_document_handler",
     "delete_document_handler",
     "remove_files_handler",
+
+    "get_all_documents_handler",
 
     "create_phono_document_handler",
     "get_phono_document_handler",

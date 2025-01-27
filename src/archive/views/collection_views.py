@@ -142,7 +142,8 @@ class CollectionViews:
                 }
             )).all()
 
-        return CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        return collections[::-1]            
 
     @classmethod
     async def get_collection_by_user_id_sci(
@@ -172,7 +173,8 @@ class CollectionViews:
                     }
             )).all()
 
-        return CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        return collections[::-1]
 
 
     @classmethod
@@ -202,4 +204,5 @@ class CollectionViews:
                     }
             )).all()
 
-        return CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
+        return collections[::-1]
