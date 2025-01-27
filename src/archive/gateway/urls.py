@@ -25,6 +25,8 @@ from src.archive.gateway.handler import (
     update_document_handler,
     delete_document_handler,
     remove_files_handler,
+    
+    create_phono_document_handler,
 
     registration_handler,
     login_handler,
@@ -74,6 +76,11 @@ def get_document_router() -> APIRouter:
     router.patch("/document/{id}", status_code=200)(update_document_handler)
     router.delete("/document/{id}/file", status_code=200)(remove_files_handler)
     router.delete("/document/{id}", status_code=202)(delete_document_handler)
+    return router
+
+def get_phono_document_router() -> APIRouter:
+    router = APIRouter(tags=["PhonoDocument"], prefix="/v1")
+    router.post("/phono-document", status_code=200)(create_phono_document_handler)
     return router
 
 def get_auth_router() -> APIRouter:

@@ -1,16 +1,18 @@
 from sqlalchemy import Row
 from typing import List
 
+from src.archive.domains.document.phono_document import PhonoDocument
 from src.archive.gateway.schemas import DocumentResponse, SearchDataResponse
 from src.archive.domains.document import Document
+from src.archive.gateway.schemas.document_schemas import PhonoDocumentResponse
 
 class DocumentConverter:
-
+    
     @classmethod
     def row_to_document(cls, document: Row) -> DocumentResponse:
         return DocumentResponse(
             id=str(document.id),
-            file_urls=document.file_urls,
+            file_urls=document.file_urls if document.file_urls else None,
             author=document.author,
             dating=document.dating,
             place_of_creating=document.place_of_creating,
@@ -43,7 +45,7 @@ class DocumentConverter:
     def model_to_document(cls, document: Document) -> DocumentResponse:
         return DocumentResponse(
         id=str(document.id),
-        file_urls=document.file_urls,
+        file_urls=document.file_urls if document.file_urls else None,
         author=document.author,
         dating=document.dating,
         place_of_creating=document.place_of_creating,
@@ -71,3 +73,51 @@ class DocumentConverter:
     @classmethod
     def model_to_document_list(cls, documents: List[Document]) -> List[Document]:
         return [cls.model_to_document(doc) for doc in documents]
+
+
+class PhonoDocumentConverter:
+
+    @classmethod
+    def row_to_document(cls, document: Row) -> PhonoDocumentResponse:
+        return PhonoDocumentResponse(
+            id=str(document.id),
+            file_urls=document.file_urls if document.file_urls else None,
+            author=document.author,
+            dating=document.dating,
+            place_of_creating=document.place_of_creating,
+            genre=document.genre,
+            brief_summary=document.brief_summary,
+            addressee=document.addressee,
+            cypher=document.cypher,
+            lang=document.lang,
+            storage_media=document.storage_media,
+            created_at=document.created_at
+        )
+
+    @classmethod
+    def row_to_document_list(cls, documents) -> List[DocumentResponse]:
+        return [cls.row_to_document(doc) for doc in documents]
+
+
+    @classmethod
+    def model_to_document(cls, document: PhonoDocument) -> PhonoDocumentResponse:
+        return PhonoDocumentResponse(
+            id=str(document.id),
+            file_urls=document.file_urls if document.file_urls else None,
+            author=document.author,
+            dating=document.dating,
+            place_of_creating=document.place_of_creating,
+            genre=document.genre,
+            brief_summary=document.brief_summary,
+            addressee=document.addressee,
+            cypher=document.cypher,
+            lang=document.lang,
+            storage_media=document.storage_media,
+            created_at=document.created_at
+        )
+
+    @classmethod
+    def model_to_document_list(cls, documents: List[PhonoDocument]) -> List[DocumentResponse]:
+        return [cls.row_to_document(doc) for doc in documents]
+
+ 

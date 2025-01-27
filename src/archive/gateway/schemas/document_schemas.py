@@ -17,6 +17,18 @@ class DocumentRequest(BaseModel):
     search_data: SearchDataRequest
 
 
+class PhonoDocumentRequest(BaseModel):
+    author: str
+    dating: str
+    place_of_creating: str
+    genre: str
+    brief_summary: str
+    addressee: str 
+    cypher: str
+    lang: str 
+    storage_media: str 
+
+
 class DocumentResponse(BaseModel):
     id: str
     file_urls: List[str] | None
@@ -33,6 +45,22 @@ class DocumentResponse(BaseModel):
     type: str = "document"
 
 
+class PhonoDocumentResponse(BaseModel):
+    id: str 
+    file_urls: List[str] | None 
+    author: str
+    dating: str
+    place_of_creating: str
+    genre: str
+    brief_summary: str
+    addressee: str 
+    cypher: str
+    lang: str 
+    storage_media: str 
+    created_at: datetime
+    type: str = "phono_document"
+
+
 class DocumentUpdateRequest(BaseModel):
     author: str | None
     dating: str | None
@@ -46,10 +74,6 @@ class DocumentUpdateRequest(BaseModel):
 
 
 class PhotoDocumentResponse(BaseModel):
-    id: str
-
-
-class PhonoDocumentResponse(BaseModel):
     id: str
 
 

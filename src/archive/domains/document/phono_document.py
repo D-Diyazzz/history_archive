@@ -87,3 +87,10 @@ class PhonoDocument(AbstarctDocument, AbstractBaseEntity):
         self._cypher = new_cypher if new_cypher else self._cypher
         self._lang = new_lang if new_lang else self._lang
         self._storage_media = new_storage_media if new_storage_media else self._storage_media
+
+    def remove_url_files_from_files(
+            self,
+            file_urls: List[str]
+    ):
+        for file in file_urls:
+            self._file_urls = [f for f in self._file_urls if f != file]

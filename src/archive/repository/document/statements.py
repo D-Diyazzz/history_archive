@@ -146,6 +146,7 @@ delete_search_data = text("""
 insert_photo_document = text("""
 
     insert into photo_documents (
+        id,
         search_data_id,
         file_urls,
         author,
@@ -159,6 +160,7 @@ insert_photo_document = text("""
         image_scale,
         created_at
     ) values (
+        :id,
         :search_data_id,
         :file_urls,
         :author,
@@ -242,6 +244,7 @@ delete_photo_document = text("""
 insert_video_document = text("""
 
     insert into video_documents (
+        id,
         search_data_id,
         file_urls,
         author,
@@ -255,6 +258,7 @@ insert_video_document = text("""
         info_of_publication,
         created_at
     ) values (
+        :id,
         :search_data_id,
         :file_urls,
         :author,
@@ -338,6 +342,7 @@ delete_video_document = text("""
 insert_phono_document = text("""
 
     insert into phono_documents (
+        id,
         file_urls,
         author,
         dating,
@@ -350,6 +355,7 @@ insert_phono_document = text("""
         storage_media,
         created_at
     ) values (
+        :id,
         :file_urls,
         :author,
         :dating,

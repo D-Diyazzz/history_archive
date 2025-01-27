@@ -45,6 +45,9 @@ class AbstarctDocument(ABC):
     @property
     def created_at(self) -> dating:
         return self._created_at
+
+    def remove_url_files_from_files(self, file_urls: List[str]):
+        return NotImplementedError
     
 
 class SearchData:

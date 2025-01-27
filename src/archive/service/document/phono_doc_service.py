@@ -3,7 +3,7 @@ import os
 from typing import List, Dict
 from pydantic import BaseModel
 
-from src.archive.core import AbstractUnitOfWork
+from src.archive.core import AbstractUnitOfWork, AbstractUnitOfWork2
 from src.archive.domains.document import PhonoDocument
 
 
@@ -32,12 +32,34 @@ class PhonoDocumentService:
         async with uow as uow:
             document = await uow.repository.add(document)
             await uow.commit()
-
-        for file_url, file_bytes in files.items():
-            with open(f"files/{file_url}", "wb") as buffer:
-                buffer.write(file_bytes)
+        
+        if files:
+            for file_url, file_bytes in files.items():
+                with open(f"files/{file_url}", "wb") as buffer:
+                    buffer.write(file_bytes)
         
         return document
+
+
+    async def remove_file_in_document(
+        self,
+        id: int,
+        uow: AbstractUnitOfWork2,
+        files: List[str] = None,
+    ) -> PhonoDocument:
+
+        async with uow as uow:
+            document = await uow.get(id, PhonoDocument)
+            document.remove_url_files_from_files(files)
+
+            document = await uow.update(model=document)
+            await uow.commit()
+
+        for file_url in files:
+            try:
+                os.remove(f"files/{file_url}")
+            except FileNotFoundError:
+                pass
 
 
     async def update_document(
@@ -67,12 +89,6 @@ class PhonoDocumentService:
             await uow.commit()
     
         if files:
-            for old_file_url in old_file_urls:
-                try:
-                    os.remove(f"files/{old_file_url}")
-                except FileNotFoundError:
-                    pass
-
             for file_url, file_bytes in files.items():
                 with open(f"files/{file_url}", "wb") as buffer:
                     buffer.write(file_bytes)

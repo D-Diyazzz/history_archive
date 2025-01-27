@@ -7,12 +7,15 @@ from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 
 from src.archive.core import UnitOfWork
+from src.archive.gateway.schemas.document_schemas import PhonoDocumentRequest
 from src.archive.repository.document import DocumentRepository
+from src.archive.repository.document.phono_doc_repository import PhonoDocumentRepository
 from src.archive.service.document import DocumentService
 from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest, SearchDataResponse
 from src.archive.database.engine import get_session, init_engine
 from src.archive.dependencies.auth_dependencies import check_access_token, check_role
-from src.archive.gateway.converter import DocumentConverter
+from src.archive.gateway.converter import DocumentConverter, PhonoDocumentConverter
+from src.archive.service.document.phono_doc_service import PhonoDocumentService
 from src.archive.views import DocumentViews
 
 
@@ -89,3 +92,36 @@ async def delete_document_handler(id: int):
     await service.delete_document(id=id, uow=UnitOfWork(reposiotry=DocumentRepository, session_factory=get_session))
 
     return ["Delete success"]
+
+
+phono_service = PhonoDocumentService()
+
+async def create_phono_document_handler(
+        user_data = Depends(check_role), 
+        files: List[UploadFile] = File(None),
+        data: str = Form(...)
+):
+    files_dict = {}
+    if files:
+        for file in files:
+            if file.content_type not in allowed_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
+            filename = str(uuid4()) + "_"+ file.filename 
+            files_dict[filename] = await file.read()
+
+    try:
+        data = json.loads(data)
+        data = parse_obj_as(PhonoDocumentRequest, data)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
+
+    document = await phono_service.create_document(
+        files=files_dict,
+        data=data,
+        uow=UnitOfWork(reposiotry=PhonoDocumentRepository, session_factory=get_session)
+    )
+    
+    response = PhonoDocumentConverter.model_to_document(document=document)
+
+    return response

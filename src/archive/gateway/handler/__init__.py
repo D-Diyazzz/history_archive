@@ -20,6 +20,8 @@ from .document_handler import(
     update_document_handler,
     delete_document_handler,
     remove_files_handler,
+
+    create_phono_document_handler,
 )
 
 from .auth_handler import(
@@ -66,6 +68,7 @@ __all__ = [
     "get_user_collection_comment_handler",
     "get_collection_list_admin_panel_handler",
     "delete_collection_handler",
+
     "create_document_handler",
     "get_document_handler",
     "get_list_document_handler",
@@ -73,6 +76,9 @@ __all__ = [
     "update_document_handler",
     "delete_document_handler",
     "remove_files_handler",
+
+    "create_phono_document_handler",
+
     "get_admin_users_handler",
     "get_sci_users_handler",
     "get_redactor_users_handler",
