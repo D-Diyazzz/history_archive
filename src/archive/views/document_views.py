@@ -3,7 +3,9 @@ from typing import List
 
 from src.archive.database.engine import AsyncEngine
 from src.archive.gateway.converter import DocumentConverter
+from src.archive.gateway.converter.document_converter import PhonoDocumentConverter
 from src.archive.gateway.schemas import DocumentResponse
+from src.archive.gateway.schemas.document_schemas import PhonoDocumentResponse
 
 
 class DocumentViews:
@@ -65,3 +67,40 @@ class DocumentViews:
             )).all()
         
         return DocumentConverter.row_to_document_list(documents=docs_row)
+
+
+    @classmethod
+    async def get_phono_document_by_id_view(
+            cls,
+            id: str,
+            engine: AsyncEngine
+    ) -> PhonoDocumentResponse:
+        async with engine.begin() as conn:
+            doc_row = (await conn.execute(
+                text("""
+                    select
+                        *
+                    from phono_documents d 
+                    where d.id=:id
+                """),{
+                    "id": id
+                }
+            )).one() 
+
+        return PhonoDocumentConverter.row_to_document(doc_row)
+
+    @classmethod
+    async def get_phono_document(
+        cls,
+        engine: AsyncEngine
+    ) -> List[PhonoDocumentResponse]:
+        async with engine.begin() as conn:
+            docs_row = (await conn.execute(
+                text("""
+                    select
+                        *
+                    from phono_documents
+                """)
+            )).all()
+        
+        return PhonoDocumentConverter.row_to_document_list(documents=docs_row)

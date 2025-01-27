@@ -94,6 +94,8 @@ async def delete_document_handler(id: int):
     return ["Delete success"]
 
 
+
+
 phono_service = PhonoDocumentService()
 
 async def create_phono_document_handler(
@@ -125,3 +127,15 @@ async def create_phono_document_handler(
     response = PhonoDocumentConverter.model_to_document(document=document)
 
     return response
+
+
+async def get_phono_document_handler(id: str, user_data=Depends(check_access_token)):
+
+    document = await DocumentViews.get_phono_document_by_id_view(id=id, engine=init_engine())
+    return document 
+
+
+async def get_list_phono_document_handler(user_data = Depends(check_access_token)):
+
+    documents = await DocumentViews.get_phono_document(engine=init_engine())
+    return documents

@@ -27,6 +27,8 @@ from src.archive.gateway.handler import (
     remove_files_handler,
     
     create_phono_document_handler,
+    get_phono_document_handler,
+    get_list_phono_document_handler,
 
     registration_handler,
     login_handler,
@@ -81,6 +83,8 @@ def get_document_router() -> APIRouter:
 def get_phono_document_router() -> APIRouter:
     router = APIRouter(tags=["PhonoDocument"], prefix="/v1")
     router.post("/phono-document", status_code=200)(create_phono_document_handler)
+    router.get("/phono-document", status_code=200)(get_list_phono_document_handler)
+    router.get("/phono-document/{id}", status_code=200)(get_phono_document_handler)
     return router
 
 def get_auth_router() -> APIRouter:
