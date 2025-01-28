@@ -13,7 +13,7 @@ from src.archive.gateway.urls import (
     get_collection_comment_router,
     get_gpt_router,
 )
-from src.archive.config import FRONT_URL
+from src.archive.config import FRONT_URL, SAVE_FILES_URL
 
 app = FastAPI(
     title="Archive",
@@ -35,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.mount("/archive/files", StaticFiles(directory="files"), name="static")
+app.mount("/archive/files", StaticFiles(directory=SAVE_FILES_URL), name="static")
 
 
 app.include_router(get_collection_router())
