@@ -140,10 +140,12 @@ class CollectionService:
            document_id: str,
            cache_service: AbstractCacheService
     ):
-       if cache_service.exists(document_id):
-           raise ValueError(f"Document with id {document_id} already editing")
+        if cache_service.exists(document_id):
+            edit_user_id = cache_service.get(document_id)
+            if edit_user_id != user_id:
+                raise ValueError(f"Document with id {document_id} already editing")
 
-       cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
+        cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
 
 
     async def edit_collection(
