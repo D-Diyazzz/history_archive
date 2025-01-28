@@ -8,7 +8,7 @@ from sqlalchemy import delete
 from src.archive.core import AbstractUnitOfWork, AbstractCacheService
 from src.archive.core.unit_of_work import AbstractLinkUnitOfWork, AbstractUnitOfWork2
 from src.archive.domains.collection import Collection
-from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S
+from src.archive.config import EDITING_COLLECTION_SESSION_EXPIRE_S, SAVE_FILES_URL
 from src.archive.adapters import PDFAdapter
 from src.archive.domains.notification import CollectionNotification
 from src.archive.domains.user import Role
@@ -128,8 +128,8 @@ class CollectionService:
 
         pdf = FPDF()
         pdf.add_page()
-        pdf.output(f"files/collections/{file_url}")
-        with open(f"files/collections/{html_url}", "w") as html_file:
+        pdf.output(f"{SAVE_FILES_URL}collections/{file_url}")
+        with open(f"{SAVE_FILES_URL}collections/{html_url}", "w") as html_file:
             html_file.write(start_html_content)
 
         return collection
@@ -167,17 +167,17 @@ class CollectionService:
                 collection = await uow.repository.update(model=collection)
             await uow.commit()
 
-        with open(f"files/collections/{collection.html_url}", 'r', encoding='utf-8') as file:
+        with open(f"{SAVE_FILES_URL}collections/{collection.html_url}", 'r', encoding='utf-8') as file:
             html_content = file.read()
 
         pattern = re.compile(r'(?<=</head>)(.*?)(?=</html>)', re.DOTALL)
 
         updated_html_content = re.sub(pattern, data.html_data, html_content)
 
-        with open(f"files/collections/{collection.html_url}", 'w', encoding='utf-8') as file:
+        with open(f"{SAVE_FILES_URL}collections/{collection.html_url}", 'w', encoding='utf-8') as file:
             file.write(updated_html_content)
 
-        PDFAdapter.html_to_pdf(html_code=updated_html_content, path=f"files/collections/{collection.file_url}") 
+        PDFAdapter.html_to_pdf(html_code=updated_html_content, path=f"{SAVE_FILES_URL}collections/{collection.file_url}") 
 
         cache_service.set(document_id, user_id, EDITING_COLLECTION_SESSION_EXPIRE_S)
 

@@ -22,7 +22,6 @@ class DocumentViews:
             all.append(i)
         for i in phono_documents:
             all.append(i)
-        print(len(all))
         
         all = sorted(all, key=lambda x: x.created_at, reverse=True)
         return all

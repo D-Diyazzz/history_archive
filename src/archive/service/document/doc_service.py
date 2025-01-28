@@ -3,6 +3,7 @@ import os
 from typing import List, Dict
 from pydantic import BaseModel
 
+from src.archive.config import SAVE_FILES_URL
 from src.archive.core import AbstractUnitOfWork
 from src.archive.domains.document import Document, SearchData
 
@@ -45,7 +46,7 @@ class DocumentService:
         
         if files:
             for file_url, file_bytes in files.items():
-                with open(f"files/{file_url}", "wb") as buffer:
+                with open(SAVE_FILES_URL+file_url, "wb") as buffer:
                     buffer.write(file_bytes)
         
         return document
@@ -67,7 +68,7 @@ class DocumentService:
         
         for file_url in files:
             try:
-                os.remove(f"files/{file_url}")
+                os.remove(SAVE_FILES_URL + file_url)
             except FileNotFoundError:
                 pass
 
@@ -115,7 +116,7 @@ class DocumentService:
 
         if files:
             for file_url, file_bytes in files.items():
-                with open(f"files/{file_url}", "wb") as buffer:
+                with open(SAVE_FILES_URL+file_url, "wb") as buffer:
                     buffer.write(file_bytes)
         
         return document
@@ -133,6 +134,6 @@ class DocumentService:
         file_urls = document.file_urls
         for file_url in file_urls:
             try:
-                os.remove(f"files/{file_url}")
+                os.remove(SAVE_FILES_URL+file_url)
             except FileNotFoundError:
                 pass
