@@ -143,7 +143,9 @@ class CollectionViews:
             )).all()
 
         collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
-        return collections[::-1]            
+        collections = sorted(collections, key=lambda x: x.created_at, reverse=True)
+
+        return collections
 
     @classmethod
     async def get_collection_by_user_id_sci(
@@ -174,7 +176,8 @@ class CollectionViews:
             )).all()
 
         collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
-        return collections[::-1]
+        collections = sorted(collections, key=lambda x: x.created_at, reverse=True)
+        return collections
 
 
     @classmethod
@@ -205,4 +208,5 @@ class CollectionViews:
             )).all()
 
         collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
-        return collections[::-1]
+        collections = sorted(collections, key=lambda x: x.created_at, reverse=True)
+        return collections
