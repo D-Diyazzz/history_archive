@@ -210,3 +210,30 @@ class CollectionViews:
         collections = CollectionConverter.row_to_collection_short_list(collections=coll_row)
         collections = sorted(collections, key=lambda x: x.created_at, reverse=True)
         return collections
+
+
+    @classmethod 
+    async def get_collections_for_user(
+        cls,
+        engine: AsyncEngine
+    ) -> List[CollectionShortResponse]:
+        async with engine.begin() as conn:
+            coll_rows = (await conn.execute(
+                text("""
+                    SELECT 
+                        c.*, 
+                        u.id as user_id,
+                        u.firstname as user_firstname,
+                        u.lastname as user_lastname,
+                        u.email as user_email,
+                        u.role as user_role
+                    FROM collection c
+                    JOIN "user" u
+                      ON u.id = c.author_id
+                    WHERE c.is_approved = true
+                """)
+            )).all()
+
+        collections = CollectionConverter.row_to_collection_short_list(collections=coll_rows)
+        collections = sorted(collections, key=lambda x: x.created_at, reverse=True)
+        return collections

@@ -141,3 +141,10 @@ async def get_collection_list_admin_panel_handler(user_data=Depends(check_all_ad
         collection_list = await CollectionViews.get_collection_by_user_id_sci(id=user_data["id"], engine=init_engine())
 
     return collection_list
+
+
+async def get_collection_list_for_user_handler():
+    
+     collection_list = await CollectionViews.get_collections_for_user(engine=init_engine())
+
+     return collection_list
