@@ -16,6 +16,8 @@ class Collection(AbstractBaseEntity):
             author_id: UUID,
             id: UUID = None,
             is_approved: bool = False,
+            isbn_link: str = None,
+            description: str = None,
             created_at: datetime = None,
             hash_code: str = None,
             reference = None
@@ -28,6 +30,8 @@ class Collection(AbstractBaseEntity):
         self._title = title
         self._author_id = author_id
         self._is_approved = is_approved
+        self._isbn_link = isbn_link
+        self._description = description
         self._created_at = created_at or datetime.utcnow()
         self._hash_code = hash_code or self.generate_hash_code()
 
@@ -60,6 +64,14 @@ class Collection(AbstractBaseEntity):
         return self._is_approved
 
     @property
+    def isbn_link(self) -> str:
+        return self._isbn_link
+
+    @property 
+    def description(self) -> str:
+        return self._description
+
+    @property
     def created_at(self) -> datetime:
         return self._created_at
 
@@ -76,14 +88,20 @@ class Collection(AbstractBaseEntity):
             self,
             new_theme: Optional[str] = None,
             new_title: Optional[str] = None,
+            new_description: Optional[str] = None,
     ):
         if new_theme:
             self._theme = new_theme
         if new_title:
             self._title = new_title
+        if new_description:
+            self._description = new_description
 
     def to_approve(self):
         self._is_approved = True
 
     def dont_approve(self):
         self._is_approved = False
+
+    def set_isbn_link(self, new_isbn_link):
+        self._isbn_link = new_isbn_link

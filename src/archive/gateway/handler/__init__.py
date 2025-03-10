@@ -12,6 +12,7 @@ from .collection_handler import (
     get_collection_list_admin_panel_handler,
     delete_collection_handler,
     get_collection_list_for_user_handler,
+    set_isbn_link_handler,
 )
 
 from .document_handler import(
@@ -74,6 +75,7 @@ __all__ = [
     "get_collection_list_admin_panel_handler",
     "delete_collection_handler",
     "get_collection_list_for_user_handler",
+    "set_isbn_link_handler",
 
     "create_document_handler",
     "get_document_handler",

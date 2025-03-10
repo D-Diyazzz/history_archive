@@ -10,6 +10,8 @@ def collection_to_dict(model: Collection):
         "title": model.title,
         "author_id": model.author_id,
         "hash_code": model.hash_code,
+        "isbn_link": model.isbn_link,
+        "description": model.description,
         "is_approved": model.is_approved,
         "created_at": model.created_at
     }
@@ -25,6 +27,8 @@ def dict_to_collection(collection):
         title=collection.title,
         author_id=collection.author_id,
         hash_code=collection.hash_code,
+        isbn_link=collection.isbn_link,
+        description=collection.description,
         is_approved=collection.is_approved,
         created_at=collection.created_at
     )

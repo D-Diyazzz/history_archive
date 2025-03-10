@@ -33,6 +33,8 @@ collection = Table(
     Column("theme", String(700), nullable=False),
     Column("title", String(700), nullable=False),
     Column("author_id", UUID(as_uuid=True), ForeignKey("user.id"), nullable=False),
+    Column("isbn_link", String(255), nullable=True),
+    Column("description", Text, nullable=True),
     Column("hash_code", String(7), nullable=False, unique=True),
     Column("is_approved", Boolean, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False),

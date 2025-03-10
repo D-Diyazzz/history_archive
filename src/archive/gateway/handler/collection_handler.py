@@ -17,7 +17,7 @@ from src.archive.repository.document_links import DocumentsLinkRepostiory
 from src.archive.repository.notification import CollectionNotificationRepository
 from src.archive.repository.user_links import CollectionUserGroupRepository
 from src.archive.service.collection import CollectionService
-from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest, CollectionPinDocumentRequest 
+from src.archive.gateway.schemas import CollectionRequest, CollectionEditRequest, CollectionPinDocumentRequest, CollectionSetISBN
 from src.archive.database.engine import get_session, init_engine
 from src.archive.views.collection_views import CollectionViews
 from src.archive.views.user_views import UserViews
@@ -148,3 +148,9 @@ async def get_collection_list_for_user_handler():
      collection_list = await CollectionViews.get_collections_for_user(engine=init_engine())
 
      return collection_list
+
+
+async def set_isbn_link_handler(coll_id: str, data: CollectionSetISBN, user_data=Depends(check_role)):
+    await service.set_isbn_link(coll_id=coll_id, data=data, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
+    return ["200"] 
+

@@ -17,6 +17,7 @@ from src.archive.gateway.handler import (
     get_collection_list_admin_panel_handler,
     delete_collection_handler,
     get_collection_list_for_user_handler,
+    set_isbn_link_handler,
 
     edit_collection_handler,
 
@@ -66,6 +67,7 @@ def get_collection_router() -> APIRouter:
     router.get("/collection/admin_list", status_code=200)(get_collection_list_admin_panel_handler)
     router.delete("/collection/{id}", status_code=200)(delete_collection_handler)
     router.get("/collection", status_code=200)(get_collection_list_for_user_handler)
+    router.post("/collection/{coll_id}/isbn", status_code=200)(set_isbn_link_handler)
     return router
 
 def get_collection_comment_router() -> APIRouter:

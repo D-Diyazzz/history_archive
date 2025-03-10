@@ -96,6 +96,15 @@ p{
 	margin-bottom:0;
 }
 
+.pdf-redactor-page-number{
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+
+	top: 45px; /* padding-bottom от исходного padding */
+}
+
     </style>
 </head>
 
@@ -161,9 +170,8 @@ class CollectionService:
             if collection.theme != data.theme or collection.title != data.title:
                 collection.update(
                     new_theme = data.theme,
-                    new_title = data.title
+                    new_title = data.title,
                 )
-                print(collection.__dict__)
                 collection = await uow.repository.update(model=collection)
             await uow.commit()
 
@@ -305,6 +313,19 @@ class CollectionService:
             await uow.commit()
 
         return collection
+
+
+    async def set_isbn_link(
+        self,
+        coll_id: str,
+        data: BaseModel,
+        uow: AbstractUnitOfWork
+    ):
+        async with uow as uow:
+            collection = await uow.repository.get(id=coll_id)
+            collection.set_isbn_link(data.isbn_link)
+            collection = await uow.repository.update(model=collection)
+            await uow.commit()
     
     
     async def delete_collection(

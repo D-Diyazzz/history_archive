@@ -10,6 +10,8 @@ insert_collection = text("""
         "title",
         "author_id",
         "hash_code",
+        "isbn_link",
+        "description",
         "is_approved",
         "created_at"
     ) values (
@@ -20,6 +22,8 @@ insert_collection = text("""
         :title,
         :author_id,
         :hash_code,
+        :isbn_link,
+        :description,
         :is_approved,
         :created_at
     ) returning id
@@ -34,6 +38,8 @@ select_collection = text("""
         title,
         author_id,
         hash_code,
+        isbn_link,
+        description,
         is_approved,
         created_at
     from collection
@@ -48,6 +54,8 @@ select_collection_by_id = text("""
         title,
         author_id,
         hash_code,
+        isbn_link,
+        description,
         is_approved,
         created_at
     from collection where id=:id
@@ -58,7 +66,9 @@ update_collection = text("""
     set 
         theme=:theme,
         title=:title,
-        is_approved=:is_approved
+        is_approved=:is_approved,
+        isbn_link=:isbn_link,
+        description=:description
     where id=:id
 """)
 

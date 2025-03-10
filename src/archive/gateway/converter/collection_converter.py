@@ -24,6 +24,8 @@ class CollectionConverter:
             html_url=collection.html_url,
             theme=collection.theme,
             title=collection.title,
+            isbn_link=collection.isbn_link,
+            description=collection.description,
             author=UserResponse(
                 id=str(collection.user_id),
                 firstname=collection.user_firstname,
@@ -65,6 +67,8 @@ class CollectionConverter:
             html_url=collection.html_url,
             theme=collection.theme,
             title=collection.title,
+            isbn_link=collection.isbn_link,
+            description=collection.description,
             author=UserResponse(
                 id=str(collection.user_id),
                 firstname=collection.user_firstname,

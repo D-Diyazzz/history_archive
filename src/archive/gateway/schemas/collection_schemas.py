@@ -12,6 +12,9 @@ class CollectionRequest(BaseModel):
     theme: str
     title: str
 
+class CollectionSetISBN(BaseModel):
+    isbn_link: str
+
 
 class CollectionResponse(BaseModel):
     id: str
@@ -19,6 +22,8 @@ class CollectionResponse(BaseModel):
     html_url: str
     theme: str
     title: str
+    isbn_link: str | None
+    description: str | None
     author: UserResponse
     scientific_council_group: Optional[List[SciUserReponse]]
     redactor_group: Optional[List[UserResponse]]
@@ -35,6 +40,8 @@ class CollectionShortResponse(BaseModel):
     html_url: str
     theme: str
     title: str
+    isbn_link: str | None
+    description: str | None
     author: UserResponse
     hash_code: str
     created_at: datetime
