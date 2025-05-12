@@ -34,6 +34,10 @@ from src.archive.gateway.handler import (
     get_phono_document_handler,
     get_list_phono_document_handler,
 
+    create_videodocument_handler,
+
+    create_photodocument_handler,
+
     registration_handler,
     login_handler,
     refresh_token_handler,
@@ -96,6 +100,16 @@ def get_phono_document_router() -> APIRouter:
     router.post("/phono-document", status_code=200)(create_phono_document_handler)
     router.get("/phono-document", status_code=200)(get_list_phono_document_handler)
     router.get("/phono-document/{id}", status_code=200)(get_phono_document_handler)
+    return router
+
+def get_vidoe_document_router() -> APIRouter:
+    router = APIRouter(tags=["VideoDocument"], prefix="/v1")
+    router.post("/video-document", status_code=200)(create_videodocument_handler)
+    return router
+
+def get_photo_document_router() -> APIRouter:
+    router = APIRouter(tags=["PhotoDocument"], prefix="/v1")
+    router.post("/photo-document", status_code=200)(create_photodocument_handler)
     return router
 
 def get_auth_router() -> APIRouter:

@@ -17,6 +17,32 @@ class DocumentRequest(BaseModel):
     search_data: SearchDataRequest
 
 
+class VideoDocumentRequest(BaseModel):
+    author: str
+    dating: str 
+    place_of_creating: str 
+    title: str 
+    volume: str 
+    num_of_parts: str 
+    color: str 
+    creator: str 
+    info_of_publication: str
+    search_data: SearchDataRequest
+
+
+class PhotoDocumentRequest(BaseModel):
+    author: str 
+    dating: str 
+    place_of_creating: str 
+    title: str 
+    completeness_of_reproduction: str 
+    storage_media: str 
+    color: str 
+    size_of_original: str 
+    image_scale: str 
+    search_data: SearchDataRequest
+
+
 class PhonoDocumentRequest(BaseModel):
     author: str
     dating: str

@@ -12,6 +12,8 @@ from src.archive.gateway.urls import (
     get_notification_router,
     get_collection_comment_router,
     get_gpt_router,
+    get_vidoe_document_router,
+    get_photo_document_router,
 )
 from src.archive.config import FRONT_URL, SAVE_FILES_URL
 
@@ -47,3 +49,5 @@ app.include_router(get_user_router())
 app.include_router(get_notification_router())
 app.include_router(get_collection_comment_router())
 app.include_router(get_gpt_router())
+app.include_router(get_vidoe_document_router())
+app.include_router(get_photo_document_router())

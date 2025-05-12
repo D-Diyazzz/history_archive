@@ -28,6 +28,10 @@ from .document_handler import(
     create_phono_document_handler,
     get_phono_document_handler,
     get_list_phono_document_handler,
+
+    create_videodocument_handler,
+
+    create_photodocument_handler,
 )
 
 from .auth_handler import(
@@ -90,6 +94,10 @@ __all__ = [
     "create_phono_document_handler",
     "get_phono_document_handler",
     "get_list_phono_document_handler",
+
+    "create_videodocument_handler",
+
+    "create_photodocument_handler",
 
     "get_admin_users_handler",
     "get_sci_users_handler",

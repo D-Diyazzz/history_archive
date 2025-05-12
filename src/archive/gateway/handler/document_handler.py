@@ -7,20 +7,45 @@ from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 
 from src.archive.core import UnitOfWork
-from src.archive.gateway.schemas.document_schemas import PhonoDocumentRequest
+from src.archive.gateway.schemas.document_schemas import PhonoDocumentRequest, PhotoDocumentRequest, VideoDocumentRequest
 from src.archive.repository.document import DocumentRepository
 from src.archive.repository.document.phono_doc_repository import PhonoDocumentRepository
+from src.archive.repository.document.photo_doc_repository import PhotoDocumentRepository
+from src.archive.repository.document.video_doc_repository import VideoDocumentRepository
 from src.archive.service.document import DocumentService
 from src.archive.gateway.schemas import DocumentRequest, DocumentResponse, DocumentUpdateRequest, SearchDataResponse
 from src.archive.database.engine import get_session, init_engine
 from src.archive.dependencies.auth_dependencies import check_access_token, check_role
 from src.archive.gateway.converter import DocumentConverter, PhonoDocumentConverter
 from src.archive.service.document.phono_doc_service import PhonoDocumentService
+from src.archive.service.document.photo_doc_service import PhotoDocumentService
+from src.archive.service.document.video_doc_service import VideoDocumentService
 from src.archive.views import DocumentViews
 
 
 service = DocumentService()
 allowed_formats = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/png", "image/jpeg", "image/webp", "image/jpg"]
+allowed_video_formats = [
+    "video/mp4",               # .mp4
+    "video/x-msvideo",         # .avi
+    "video/x-matroska",        # .mkv
+    "video/webm",              # .webm
+    "video/quicktime",         # .mov
+    "video/mpeg",              # .mpeg, .mpg
+    "video/3gpp",              # .3gp
+    "video/ogg",               # .ogv
+    "application/vnd.apple.mpegurl",  # .m3u8 (HLS playlist)
+    "video/mp2t"               # .ts (MPEG-TS)
+]
+allowed_image_formats = [
+    "image/png",     # .png
+    "image/jpeg",    # .jpeg, .jpg
+    "image/jpg",     # .jpg (некоторые клиенты отправляют отдельно от image/jpeg)
+    "image/webp",    # .webp
+    "image/gif",     # .gif
+    "image/bmp",     # .bmp
+    "image/tiff"     # .tiff, .tif
+]
 
 
 async def get_all_documents_handler(user_data=Depends(check_role)):
@@ -144,3 +169,55 @@ async def get_list_phono_document_handler(user_data = Depends(check_access_token
 
     documents = await DocumentViews.get_phono_document(engine=init_engine())
     return documents
+
+
+
+video_doc_service = VideoDocumentService()
+
+async def create_videodocument_handler(user_data = Depends(check_role), files: List[UploadFile] = File(None), data: str = Form(...)):
+    files_dict = {}
+    if files:
+        for file in files:
+            if file.content_type not in allowed_video_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {{file.content_type}}. Allowed formats: mp4, avi, mkv, webm, mov, mpeg, 3gp, ogv, m3u8, ts")
+            filename = str(uuid4()) + "_"+ file.filename 
+            files_dict[filename] = await file.read()
+
+    try:
+        data = json.loads(data)
+        data = parse_obj_as(VideoDocumentRequest, data)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
+    
+    document = await video_doc_service.create_document(files=files_dict, data=data, uow=UnitOfWork(reposiotry=VideoDocumentRepository, session_factory=get_session))
+
+
+    return ["200"]
+
+
+
+photo_doc_service = PhotoDocumentService()
+
+async def create_photodocument_handler(user_data = Depends(check_role), files: List[UploadFile] = File(None), data: str = Form(...)):
+    files_dict = {}
+    if files:
+        for file in files:
+            if file.content_type not in allowed_image_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {{file.content_type}}. Allowed formats: png, jpg, jpeg, webp, gif, bmp, tiff")
+
+            filename = str(uuid4()) + "_"+ file.filename 
+            files_dict[filename] = await file.read()
+
+    try:
+        data = json.loads(data)
+        data = parse_obj_as(PhotoDocumentRequest, data)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
+    
+    document = await photo_doc_service.create_document(files=files_dict, data=data, uow=UnitOfWork(reposiotry=PhotoDocumentRepository, session_factory=get_session))
+
+
+    return ["200"]
+
