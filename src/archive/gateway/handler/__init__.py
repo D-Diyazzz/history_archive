@@ -30,8 +30,12 @@ from .document_handler import(
     get_list_phono_document_handler,
 
     create_videodocument_handler,
+    get_video_document_handler,
+    get_list_video_document_handler,
 
     create_photodocument_handler,
+    get_photo_document_handler,
+    get_list_photo_document_handler,
 )
 
 from .auth_handler import(
@@ -96,8 +100,12 @@ __all__ = [
     "get_list_phono_document_handler",
 
     "create_videodocument_handler",
+    "get_video_document_handler",
+    "get_list_video_document_handler",
 
     "create_photodocument_handler",
+    "get_photo_document_handler",
+    "get_list_photo_document_handler",
 
     "get_admin_users_handler",
     "get_sci_users_handler",

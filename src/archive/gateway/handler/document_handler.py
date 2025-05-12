@@ -7,6 +7,7 @@ from fastapi.exceptions import HTTPException
 from pydantic import parse_obj_as
 
 from src.archive.core import UnitOfWork
+from src.archive.gateway.converter.document_converter import PhotoDocumentConverter, VideoDocumentConverter
 from src.archive.gateway.schemas.document_schemas import PhonoDocumentRequest, PhotoDocumentRequest, VideoDocumentRequest
 from src.archive.repository.document import DocumentRepository
 from src.archive.repository.document.phono_doc_repository import PhonoDocumentRepository
@@ -46,6 +47,17 @@ allowed_image_formats = [
     "image/bmp",     # .bmp
     "image/tiff"     # .tiff, .tif
 ]
+allowed_audio_formats = [
+    "audio/mpeg",       # .mp3
+    "audio/wav",        # .wav
+    "audio/x-wav",      # .wav (альтернативный MIME-тип)
+    "audio/ogg",        # .ogg
+    "audio/webm",       # .webm (может содержать аудио)
+    "audio/mp4",        # .m4a
+    "audio/x-aac",      # .aac
+    "audio/flac"        # .flac
+]
+
 
 
 async def get_all_documents_handler(user_data=Depends(check_role)):
@@ -136,8 +148,9 @@ async def create_phono_document_handler(
     files_dict = {}
     if files:
         for file in files:
-            if file.content_type not in allowed_formats:
-                raise HTTPException(status_code=400, detail=f"Unsupported format {file.content_type}. Allowed formats: png, jpg, jpeg, doc, docs, pdf")
+            if file.content_type not in allowed_audio_formats:
+                raise HTTPException(status_code=400, detail=f"Unsupported format {{file.content_type}}. Allowed formats: mp3, wav, ogg, webm, m4a, aac, flac"
+)
             filename = str(uuid4()) + "_"+ file.filename 
             files_dict[filename] = await file.read()
 
@@ -159,7 +172,7 @@ async def create_phono_document_handler(
     return response
 
 
-async def get_phono_document_handler(id: str, user_data=Depends(check_access_token)):
+async def get_phono_document_handler(id: str):
 
     document = await DocumentViews.get_phono_document_by_id_view(id=id, engine=init_engine())
     return document 
@@ -191,9 +204,18 @@ async def create_videodocument_handler(user_data = Depends(check_role), files: L
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
     
     document = await video_doc_service.create_document(files=files_dict, data=data, uow=UnitOfWork(reposiotry=VideoDocumentRepository, session_factory=get_session))
+    response = VideoDocumentConverter.model_to_document(document=document)
+    return response
+
+async def get_video_document_handler(id: str):
+    document = await DocumentViews.get_video_document_by_id_view(id=id, engine=init_engine())
+    return document
 
 
-    return ["200"]
+async def get_list_video_document_handler(user_data = Depends(check_access_token)):
+    documents = await DocumentViews.get_video_documents_view(engine=init_engine())
+    return documents
+
 
 
 
@@ -217,7 +239,16 @@ async def create_photodocument_handler(user_data = Depends(check_role), files: L
         raise HTTPException(status_code=400, detail=f"Error parsing data: {str(e)}")
     
     document = await photo_doc_service.create_document(files=files_dict, data=data, uow=UnitOfWork(reposiotry=PhotoDocumentRepository, session_factory=get_session))
+    response = PhotoDocumentConverter.model_to_document(document=document)
+    return response
 
 
-    return ["200"]
+async def get_photo_document_handler(id: str):
+    document = await DocumentViews.get_photo_document_by_id_view(id=id, engine=init_engine())
+    return document
+
+
+async def get_list_photo_document_handler(user_data = Depends(check_access_token)):
+    documents = await DocumentViews.get_photo_documents_view(engine=init_engine())
+    return documents
 

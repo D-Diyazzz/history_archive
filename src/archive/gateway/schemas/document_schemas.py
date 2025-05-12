@@ -101,7 +101,33 @@ class DocumentUpdateRequest(BaseModel):
 
 class PhotoDocumentResponse(BaseModel):
     id: str
+    file_urls: List[str] | None 
+    author: str 
+    dating: str 
+    place_of_creating: str 
+    title: str 
+    completeness_of_reproduction: str 
+    storage_media: str 
+    color: str 
+    size_of_original: str 
+    image_scale: str 
+    search_data: SearchDataResponse 
+    created_at: datetime 
+    type: str = "photo_document"
 
 
 class VideoDocumentResponse(BaseModel):
     id: str
+    file_urls: List[str] | None
+    author: str 
+    dating: str 
+    place_of_creating: str 
+    title: str 
+    volume: str 
+    num_of_parts: str 
+    color: str 
+    creator: str 
+    info_of_publication: str 
+    search_data: SearchDataResponse
+    created_at: datetime 
+    type: str = "video_document"
