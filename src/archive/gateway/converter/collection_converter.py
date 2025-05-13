@@ -2,7 +2,7 @@ from typing import List
 from pydantic import BaseModel
 from sqlalchemy import Row
 
-from src.archive.gateway.converter.document_converter import DocumentConverter
+from src.archive.gateway.converter.document_converter import DocumentConverter, PhonoDocumentConverter, PhotoDocumentConverter, VideoDocumentConverter
 from src.archive.gateway.schemas.collection_schemas import CollectionResponse, CollectionCommentResponse, CollectionShortResponse
 from src.archive.gateway.schemas.user_schemas import UserResponse
 
@@ -15,9 +15,25 @@ class CollectionConverter:
             collection: Row,
             documents: Row,
             sci_group: BaseModel,
-            redactor_group: BaseModel
+            redactor_group: BaseModel,
+            video_documents: Row, 
+            photo_documents: Row,
+            phono_documents: Row
         ) -> CollectionResponse:
         documents_res = DocumentConverter.row_to_document_list(documents=documents)
+        video_documents_res = VideoDocumentConverter.row_to_document_list(documents=video_documents)
+        photo_documents_res = PhotoDocumentConverter.row_to_document_list(documents=photo_documents)
+        phono_documents_res = PhonoDocumentConverter.row_to_document_list(documents=phono_documents)
+
+        all_documents = (
+            documents_res +
+            video_documents_res +
+            photo_documents_res +
+            phono_documents_res
+        )
+
+        all_documents_sorted = sorted(all_documents, key=lambda x: x.created_at, reverse=True)
+
         return CollectionResponse(
             id=str(collection.id),
             file_url=collection.file_url,
@@ -35,7 +51,7 @@ class CollectionConverter:
             ),
             scientific_council_group=sci_group,
             redactor_group=redactor_group,
-            documents=documents_res,
+            documents=all_documents_sorted,
             is_approved=collection.is_approved,
             hash_code=collection.hash_code,
             created_at=collection.created_at,

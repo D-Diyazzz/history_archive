@@ -61,25 +61,48 @@ class CollectionViews:
                 )).all()
             photo_documents_row = (await conn.execute(
                 text("""
-                    SELECT pd.*
+                    SELECT pd.*,
+                        s.id as search_data_id,
+                        s.cypher as search_data_cypher,
+                        s.fund as search_data_fund,
+                        s.inventory as search_data_inventory,
+                        s.case as search_data_case,
+                        s.leaf as search_data_leaf,
+                        s.authenticity as search_data_authenticity,
+                        s.lang as search_data_lang,
+                        s.playback_method as search_data_playback_method,
+                        s.other as search_data_other
                     FROM photo_documents pd
                     JOIN photo_document_links pdl ON pd.id = pdl.photo_document_id
+                    JOIN search_data s ON pd.search_data_id = s.id
                     WHERE pdl.collection_id = :collection_id
-                """),{
+                """), {
                     "collection_id": id
-                    }
-                )).all()
+                }
+            )).all()
 
             video_documents_row = (await conn.execute(
                 text("""
-                    SELECT vd.*
+                    SELECT vd.*,
+                        s.id as search_data_id,
+                        s.cypher as search_data_cypher,
+                        s.fund as search_data_fund,
+                        s.inventory as search_data_inventory,
+                        s.case as search_data_case,
+                        s.leaf as search_data_leaf,
+                        s.authenticity as search_data_authenticity,
+                        s.lang as search_data_lang,
+                        s.playback_method as search_data_playback_method,
+                        s.other as search_data_other
                     FROM video_documents vd
                     JOIN video_document_links vdl ON vd.id = vdl.video_document_id
+                    JOIN search_data s ON vd.search_data_id = s.id
                     WHERE vdl.collection_id = :collection_id
-                """),{
+                """), {
                     "collection_id": id
-                    }
-                )).all()
+                }
+            )).all()
+
 
             phono_documents_row = (await conn.execute(
                 text("""
@@ -87,12 +110,13 @@ class CollectionViews:
                     FROM phono_documents phd
                     JOIN phono_document_links phdl ON phd.id = phdl.phono_document_id
                     WHERE phdl.collection_id = :collection_id
-                """),{
+                """), {
                     "collection_id": id
-                    }
-                )).all()
+                }
+            )).all()
 
-            return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row, sci_group=sci_council_group, redactor_group=redactor_group)
+
+            return CollectionConverter.row_to_collection(collection=coll_row, documents=documents_row, sci_group=sci_council_group, redactor_group=redactor_group, video_documents=video_documents_row, photo_documents=photo_documents_row, phono_documents=phono_documents_row)
 
 
     @classmethod

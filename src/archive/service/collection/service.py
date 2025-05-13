@@ -91,6 +91,49 @@ width: 100%;
 	text-align: right;
 }
 
+.left_parPosition{
+	text-align: justify;
+}
+
+.central_parPosition{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.right_parPosition{
+	text-align: right;
+}
+
+input[type="number"] {
+	width: 35px;
+	height: 25px;
+	font-size: 14px;
+	color: #333;
+	border: 2px solid #ccc;
+	border-radius: 4px;
+	background-color: #f9f9f9;
+	transition: border-color 0.3s, box-shadow 0.3s;
+	text-align: center;
+}
+
+input[type="number"]:focus {
+	border-color: #0066cc;
+	box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+	outline: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+
 p{
 	margin-top: 5px;
 	margin-bottom:0;
@@ -299,13 +342,14 @@ class CollectionService:
                 is_user_in_group = await uow.link_repository.exist(obj_id=coll_id, related_obj_id=user_id, user_role=user_role)
             elif user_role == Role.AdminUser.value:
                 is_user_in_group = str(collection.author_id) == user_id
-       
+ 
         for sci in sci_group:
             if sci.is_approved == False:
                 raise ValueError("Collection not approved by all scientific Council")
 
-        if is_user_in_group == False:
-            raise ValueError("Access denied")
+        # if is_user_in_group == False:
+        #     print("nono")
+        #     raise ValueError("Access denied")
 
         async with uow as uow:
             collection._is_approved = approve

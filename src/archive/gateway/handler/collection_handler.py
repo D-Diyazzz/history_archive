@@ -70,7 +70,6 @@ async def get_collection_admin_handler(id: str, user_data = Depends(check_all_ad
 
 
 async def edit_collection_handler(id: str, data:CollectionEditRequest, user_data=Depends(check_role)):
-    
     await service.edit_collection(user_id=user_data["id"], document_id=id, data=data, cache_service=redis_service, uow=UnitOfWork(reposiotry=CollectionRepository, session_factory=get_session))
     return ["200"]
 
@@ -110,7 +109,6 @@ async def approve_collection_by_sci_user(id: str, approve: bool, user_data=Depen
 
 
 async def approve_collection_by_admin_redactor_user_handler(id: str, approve:bool, user_data=Depends(check_role)):
-
     sci_group = await UserViews.get_sci_group_by_coll_id(coll_id=id, engine=init_engine())
 
 
