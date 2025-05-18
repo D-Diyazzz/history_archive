@@ -17,6 +17,7 @@ class DocumentViews:
     ) -> List:
         all_documents = []
         documents = await DocumentViews.get_documents_view(engine)
+        phono_documents = await DocumentViews.get_phono_document(engine)
         photo_documents = await DocumentViews.get_photo_documents_view(engine)
         video_documents = await DocumentViews.get_video_documents_view(engine)
 
@@ -24,6 +25,7 @@ class DocumentViews:
         all_documents.extend(documents)
         all_documents.extend(photo_documents)
         all_documents.extend(video_documents)
+        all_documents.extend(phono_documents)
 
         # Сортируем по дате создания (сначала новые)
         all_documents = sorted(all_documents, key=lambda x: x.created_at, reverse=True)
