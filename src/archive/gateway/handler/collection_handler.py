@@ -57,7 +57,7 @@ async def open_session_handler(id: str, user_data = Depends(check_role)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-async def get_collection_admin_handler(id: str, user_data = Depends(check_all_admin_group_role)):
+async def get_collection_admin_handler(id: str):
 
     response = await CollectionViews.get_collection_by_id_view(id=id, engine=init_engine())
 
