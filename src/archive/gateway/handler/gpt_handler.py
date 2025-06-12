@@ -10,24 +10,24 @@ import requests
 
 MODEL_URL = "https://gpt4all.io/models/gguf/Meta-Llama-3-8B-Instruct.Q4_0.gguf"
 
-def ensure_model_exists():
-    if os.path.exists(GPT_PATH):
-        print(f"✅ Модель уже существует по пути: {GPT_PATH}")
-        return
+# def ensure_model_exists():
+#     if os.path.exists(GPT_PATH):
+#         print(f"✅ Модель уже существует по пути: {GPT_PATH}")
+#         return
+#
+#     print(f"⬇️ Модель не найдена. Скачиваем из {MODEL_URL} ...")
+#     with requests.get(MODEL_URL, stream=True) as r:
+#         r.raise_for_status()
+#         os.makedirs(os.path.dirname(GPT_PATH), exist_ok=True)
+#         with open(GPT_PATH, "wb") as f:
+#             for chunk in r.iter_content(chunk_size=8192):
+#                 f.write(chunk)
+#     print(f"✅ Модель успешно загружена по пути: {GPT_PATH}")
 
-    print(f"⬇️ Модель не найдена. Скачиваем из {MODEL_URL} ...")
-    with requests.get(MODEL_URL, stream=True) as r:
-        r.raise_for_status()
-        os.makedirs(os.path.dirname(GPT_PATH), exist_ok=True)
-        with open(GPT_PATH, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-    print(f"✅ Модель успешно загружена по пути: {GPT_PATH}")
-
-ensure_model_exists()
-
-service = Gpt4AllService()
-gpt_model = Gpt4AllModel(model_name=GPT_PATH)
+# ensure_model_exists()
+#
+# service = Gpt4AllService()
+# gpt_model = Gpt4AllModel(model_name=GPT_PATH)
 
 
 def get_response_from_question(question: str):
