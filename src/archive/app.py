@@ -11,7 +11,7 @@ from src.archive.gateway.urls import (
     get_user_router,
     get_notification_router,
     get_collection_comment_router,
-    get_gpt_router,
+    # get_gpt_router,
     get_vidoe_document_router,
     get_photo_document_router,
 )
