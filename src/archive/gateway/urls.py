@@ -144,7 +144,7 @@ def get_notification_router() -> APIRouter:
     return router
 
 
-def get_gpt_router() -> APIRouter:
-    router = APIRouter(tags=["Gpt"], prefix="/v1")
-    router.post('/gpt', status_code=200)(get_response_from_question)
-    return router
+# def get_gpt_router() -> APIRouter:
+#     router = APIRouter(tags=["Gpt"], prefix="/v1")
+#     router.post('/gpt', status_code=200)(get_response_from_question)
+#     return router
