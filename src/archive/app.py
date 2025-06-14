@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import os
 
 from src.archive.gateway.urls import (
     get_collection_router,
@@ -36,6 +37,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+COLLECTIONS_PATH = os.path.join(SAVE_FILES_URL, "collections/")
+
+os.makedirs(COLLECTIONS_PATH, exist_ok=True)
 
 app.mount("/archive/files", StaticFiles(directory=SAVE_FILES_URL), name="static")
 
